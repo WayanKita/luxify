@@ -36,26 +36,26 @@
             <ul class="nav navbar-nav">
 
                 <!-- Room button -->
-                <li class="">
+                <li class="{% block room_active %} {% endblock %}">
                     <a href="{% url 'floorPlan:room-add' %}">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Room
                     </a>
                 </li>
 
                 <!-- Table button -->
-                <li class="">
+                <li class="{% block table_active %} {% endblock %}">
                     <a href="{% url 'floorPlan:table-add' %}">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Table
                     </a>
                 </li>
-                <li class="">
+                <li class="{% block chair_active %} {% endblock %}">
                     <a href="{% url 'floorPlan:chair-add' %}">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Chair
                     </a>
                 </li>
 
                 <!-- Song button -->
-                <li class="">
+                <li class="{% block window_active %} {% endblock %}">
                     <a href="{% url 'floorPlan:window-add' %}">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Window
                     </a>

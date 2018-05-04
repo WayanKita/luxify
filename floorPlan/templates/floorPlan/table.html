@@ -1,36 +1,34 @@
 {% extends 'floorPlan/base.html' %}
 
 {% block body %}
-    <a href="{% url 'floorPlan:room-add' %}">
-        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add Album
-    </a>
 
-
-<h1>hello</h1>
+<h1>Floor Plan</h1>
 <ul>
    {% for room in all_rooms %}
         <li>
-            {{ room.room_code }}
+            {{ room }}
+            <ul>
+               {% for table in room.table_set.all %}
+                    <li>
+                        {{ table }}
+                        <ul>
+                            {% for chair in table.chair_set.all %}
+                                <li>
+                                    {{ chair }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        </li>
+                {% endfor %}
+                {% for window in room.window_set.all %}
+                    <li>
+                        {{ window }}
+                    </li>
+                {% endfor %}
+            </ul>
         </li>
     {% endfor %}
 </ul>
 
 {% endblock %}
 
-{#<div class="row">#}
-{#    <div class="col-sm-12 col-md-7">#}
-{#        <div class="panel panel-default">#}
-{#            <div class="panel-body">#}
-{#                <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">#}
-{#                    {%  csrf_token %}#}
-{#                    {% include 'floorPlan/form-template.html' %}#}
-{#                    <div class="form-group">#}
-{#                        <div class="col-sm-offset-2 col-sm-10">#}
-{#                            <button type="submit" class="btn btn-success">Submit</button>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </form>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#</div>#}

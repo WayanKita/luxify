@@ -18,7 +18,7 @@ def sandbox(request):
 
 class RoomCreate(CreateView):
     model = Room
-    fields = ['room_code', 'x_length', 'y_length']
+    fields = ['code', 'x_length', 'y_length']
 
 
 class TableCreate(CreateView):
@@ -28,7 +28,7 @@ class TableCreate(CreateView):
 
 class ChairCreate(CreateView):
     model = Chair
-    fields = ['table', 'table_number', 'position', 'occupied']
+    fields = ['table', 'number', 'position', 'occupied']
 
 
 class WindowCreate(CreateView):
