@@ -21,9 +21,6 @@ class Table(models.Model):
     def __str__(self):
         return self.number
 
-    def load_rooms(request):
-        return render(request, 'hr/city_dropdown_list_options.html', {'cities': cities})
-
 
 class Chair(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE)

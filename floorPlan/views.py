@@ -28,9 +28,9 @@ class TableCreate(CreateView):
 
 class ChairCreate(CreateView):
     model = Chair
-    fields = ['table_number', 'position', 'occupied']
+    fields = ['table', 'table_number', 'position', 'occupied']
 
 
 class WindowCreate(CreateView):
     model = Window
-    fields = ['start_pos', 'end_pos']
+    fields = ['room', 'start_pos', 'end_pos']
