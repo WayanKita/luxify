@@ -48,7 +48,7 @@ class Window(models.Model):
     end_pos = models.CharField(max_length=3)
 
     def get_absolute_url(self):
-        return reverse('floorPlan:sandbox')
+        return reverse('floorPlan:room_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return 'Window from '+ self.start_pos + ' to '+ self.end_pos

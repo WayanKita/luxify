@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+from django.urls import reverse_lazy
 from django.views import generic
 from django.template import loader
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -9,7 +10,7 @@ from .models import Room, Table, Chair, Window
 
 def sandbox(request):
     all_rooms = Room.objects.all()
-    template = loader.get_template('floorPlan/table.html')
+    template = loader.get_template('floorPlan/floorPlan.html')
     context = {
         'all_rooms': all_rooms,
     }
@@ -34,3 +35,13 @@ class ChairCreate(CreateView):
 class WindowCreate(CreateView):
     model = Window
     fields = ['room', 'start_pos', 'end_pos']
+
+
+class DetailView(generic.DetailView):
+    model = Room
+    template_name = 'floorPlan/room_detail.html'
+
+
+class RoomDelete(DeleteView):
+    model = Room
+    success_url = reverse_lazy('floorPlan:sandbox')
