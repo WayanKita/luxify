@@ -13,7 +13,7 @@ SECRET_KEY = 'hpc0s#344fps7%e1^=_t-2t938jpn)&^)fs90npa9+a#ad2*r&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['131.155.23.144', 'group10server.win.tue.nl']
 
 
 # Application definition
@@ -65,10 +65,10 @@ WSGI_APPLICATION = 'luxify.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'deeznuts',
-        'USER': 'postgres',
-        'PASSWORD': '290394',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'septest',
+        'USER': 'septest',
+        'PASSWORD': 'septestpass',
         'HOST': 'localhost',
     }
 }
@@ -111,3 +111,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
