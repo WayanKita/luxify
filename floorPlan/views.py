@@ -88,6 +88,6 @@ class UserFormView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return redirect('floorPlan:room-detail')
+                    return redirect('floorPlan:sandbox')
 
         return render(request, self.template_name, {'form': form})
