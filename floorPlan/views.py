@@ -5,8 +5,11 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.template import loader
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import Room, Table, Chair, Window
-
+from .serializer import RoomSerializer
 
 def sandbox(request):
     all_rooms = Room.objects.all()
@@ -45,3 +48,14 @@ class DetailView(generic.DetailView):
 class RoomDelete(DeleteView):
     model = Room
     success_url = reverse_lazy('floorPlan:sandbox')
+
+
+class RoomList(APIView):
+
+    def get(self, request):
+        rooms = Room.objects.all()
+        serializer = RoomSerializer(rooms, many=True)
+        return Response(serializer.data)
+
+    def post(self):
+        pass
