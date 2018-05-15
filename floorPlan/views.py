@@ -1,15 +1,19 @@
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
-from django.urls import reverse_lazy
-from django.views import generic
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
+from django.views import generic
+from django.urls import reverse_lazy
+from django.contrib.auth import authenticate, login
+from django.views.generic import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .form import UserForm
 from .models import Room, Table, Chair, Window
 from .serializer import RoomSerializer
+
+
 
 def sandbox(request):
     all_rooms = Room.objects.all()
@@ -59,3 +63,31 @@ class RoomList(APIView):
 
     def post(self):
         pass
+
+
+class UserFormView(View):
+    form_class = UserForm
+    template_name = 'floorPlan/registration_form.html'
+
+    def get(self, request):
+        form = self.form_class(None)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+            email = form.cleaned_data['email']
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user.set_password(password)
+            user.save()
+
+            user = authenticate(username=email, password=password)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return redirect('floorPlan:room-detail')
+
+        return render(request, self.template_name, {'form': form})

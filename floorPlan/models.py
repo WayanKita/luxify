@@ -51,4 +51,4 @@ class Window(models.Model):
         return reverse('floorPlan:room_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
-        return 'Window from '+ self.start_pos + ' to '+ self.end_pos
+        return 'Window from '+self.start_pos + ' to '+self.end_pos

@@ -54,10 +54,17 @@
                     </a>
                 </li>
 
-                <!-- Song button -->
+                <!-- Window button -->
                 <li class="{% block window_active %} {% endblock %}">
                     <a href="{% url 'floorPlan:window-add' %}">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Window
+                    </a>
+                </li>
+
+                <!-- User button -->
+                <li class="{% block user_active %} {% endblock %}">
+                    <a href="{% url 'floorPlan:user-add' %}">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; User
                     </a>
                 </li>
            </ul>
