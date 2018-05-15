@@ -65,11 +65,8 @@ WSGI_APPLICATION = 'luxify.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'deeznuts',
-        'USER': 'postgres',
-        'PASSWORD': '290394',
-        'HOST': 'localhost',
+       'ENGINE': 'django.db.backends.sqlite3',
+       'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
