@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "code": "MF7.082",
+    "x_length": "100",
+    "y_length": "100"
+  },
+  {
+    "id": 3,
+    "code": "MF5.01",
+    "x_length": "100",
+    "y_length": "50"
+  },
+  {
+    "id": 4,
+    "code": "MF5.01",
+    "x_length": "100",
+    "y_length": "50"
+  },
+  {
+    "id": 5,
+    "code": "MF1.117",
+    "x_length": "49",
+    "y_length": "69"
+  }
+]

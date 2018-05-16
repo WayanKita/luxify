@@ -52,3 +52,12 @@ class Window(models.Model):
 
     def __str__(self):
         return 'Window from '+self.start_pos + ' to '+self.end_pos
+
+
+class Sensor(models.Model):
+    name = models.CharField(max_length=5)
+    date = models.DateTimeField()
+    value = models.FloatField()
+
+
+
