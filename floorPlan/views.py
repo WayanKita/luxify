@@ -4,15 +4,17 @@ from django.template import loader
 from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
+from django.contrib.auth.models import User
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .form import UserForm
 from .models import Room, Table, Chair, Window
-from .serializer import RoomSerializer
-
+from .serializer import RoomSerializer, UserSerializer, UserAndroidSerializer
 
 
 def sandbox(request):
@@ -65,6 +67,7 @@ class RoomList(APIView):
         pass
 
 
+
 class UserFormView(View):
     form_class = UserForm
     template_name = 'floorPlan/registration_form.html'
@@ -91,3 +94,47 @@ class UserFormView(View):
                     return redirect('floorPlan:sandbox')
 
         return render(request, self.template_name, {'form': form})
+
+
+
+class UserAPI(APIView):
+    form_class = UserForm
+
+    @csrf_exempt
+    def get(self, request):
+        user = User.objects.all()
+        serializer = UserAndroidSerializer(user, many=True)
+        return Response(serializer.data)
+
+    @csrf_exempt
+    def post(self, request):
+        serializer = UserForm(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # @api_view(['POST'])
+    # def post(self, request):
+    #     data = request.POST
+    #     pretty_print_POST(prepared)
+    #     form = UserForm(request.POST)
+    #
+    #     if form.is_valid():
+    #         user = form.save(commit=False)
+    #         email = form.cleaned_data['email']
+    #         username = form.cleaned_data['username']
+    #         password = form.cleaned_data['password']
+    #         user.set_password(password)
+    #         user.save()
+    #
+    #         user = authenticate(username=email, password=password)
+    #         if user is not None:
+    #             if user.is_active:
+    #                 login(request, user)
+    #                 return redirect('floorPlan:sandbox')
+
+
+
+
+
