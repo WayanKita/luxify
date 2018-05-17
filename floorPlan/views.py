@@ -4,7 +4,6 @@ from django.template import loader
 from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.contrib.auth.models import User
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -96,23 +95,23 @@ class UserFormView(View):
         return render(request, self.template_name, {'form': form})
 
 
-
 class UserAPI(APIView):
     form_class = UserForm
 
-    @csrf_exempt
     def get(self, request):
         user = User.objects.all()
         serializer = UserAndroidSerializer(user, many=True)
         return Response(serializer.data)
 
-    @csrf_exempt
     def post(self, request):
         serializer = UserForm(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # def post(self, request, *args, **kwargs):
+    #     return HttpResponse('This is POST request')
 
     # @api_view(['POST'])
     # def post(self, request):

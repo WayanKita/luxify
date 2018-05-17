@@ -1,11 +1,12 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 
 
 class Room(models.Model):
     code = models.CharField(max_length=10)
-    x_length = models.CharField(max_length=5)
-    y_length = models.CharField(max_length=5)
+    x_length = models.IntegerField()
+    y_length = models.IntegerField()
 
     def get_absolute_url(self):
         return reverse('floorPlan:sandbox')
@@ -16,48 +17,58 @@ class Room(models.Model):
 
 class Table(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    number = models.CharField(max_length=5)
-    x_pos = models.CharField(max_length=5)
-    y_pos = models.CharField(max_length=5)
-    x_size = models.CharField(max_length=5)
-    y_size = models.CharField(max_length=5)
+    number = models.IntegerField()
+    x_pos = models.IntegerField()
+    y_pos = models.IntegerField()
+    x_size = models.IntegerField()
+    y_size = models.IntegerField()
 
     def get_absolute_url(self):
         return reverse('floorPlan:sandbox')
 
     def __str__(self):
-        return 'Table ' + self.number
+        return 'Table ' + str(self.number)
 
 
 class Chair(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
-    number = models.CharField(max_length=2)
-    position = models.CharField(max_length=3)
+    number = models.IntegerField()
+    position = models.IntegerField()
     occupied = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('floorPlan:sandbox')
 
     def __str__(self):
-        return 'Chair' + self.number
-
-
-class Window(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    start_pos = models.CharField(max_length=3)
-    end_pos = models.CharField(max_length=3)
-
-    def get_absolute_url(self):
-        return reverse('floorPlan:room_detail', kwargs={'pk': self.pk})
-
-    def __str__(self):
-        return 'Window from '+self.start_pos + ' to '+self.end_pos
+        return 'Chair' + str(self.number)
 
 
 class Sensor(models.Model):
     name = models.CharField(max_length=5)
     date = models.DateTimeField()
     value = models.FloatField()
+
+
+class Window(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    start_pos = models.IntegerField()
+    end_pos = models.IntegerField()
+
+    def get_absolute_url(self):
+        return reverse('floorPlan:room_detail', kwargs={'pk': self.pk})
+
+    def __str__(self):
+        return 'Window from '+str(self.start_pos) + ' to '+str(self.end_pos)
+
+
+class Participant(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    room = models.CharField(max_length=5)
+
+    def __str__(self):
+        return str(self.user)
+
+
 
 
 

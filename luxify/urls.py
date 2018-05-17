@@ -8,6 +8,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('rooms/', views.RoomList.as_view()),
     path('floorPlan/', include('floorPlan.urls')),
+    path(r'o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
