@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from rest_framework.exceptions import ValidationError
 
-from floorPlan.form import WayanForm
+from floor_plan.form import WayanForm
 from .models import Room, Wayan
 
 

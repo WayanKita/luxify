@@ -1,7 +1,7 @@
 from django.urls import path, re_path
 from . import views
 
-app_name = "floorPlan"
+app_name = "floor_plan"
 
 urlpatterns = [
     re_path(r'^room/(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='room-detail'),

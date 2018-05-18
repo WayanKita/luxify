@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Room, Table, Participant, Wayan
+
+from floor_plan.models import *
 
 admin.site.register(Room)
 admin.site.register(Table)

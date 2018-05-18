@@ -1,26 +1,23 @@
-from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
-from django.template import loader
-from django.views import generic
-from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.template import loader
+from django.urls import reverse_lazy
+from django.views import generic
 from django.views.generic import View
-from django.contrib.auth.models import User
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, DeleteView
 from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from floor_plan.serializers import *
 from .form import WayanForm
 from .models import Room, Table, Chair, Window
-from .serializer import RoomSerializer, UserSerializer, WayanSerializer, WayanLoginSerializer
 
 
 def sandbox(request):
     all_rooms = Room.objects.all()
-    template = loader.get_template('floorPlan/floorPlan.html')
+    template = loader.get_template('floor_plan/floorPlan.html')
     context = {
         'all_rooms': all_rooms,
     }
@@ -49,12 +46,12 @@ class WindowCreate(CreateView):
 
 class DetailView(generic.DetailView):
     model = Room
-    template_name = 'floorPlan/room_detail.html'
+    template_name = 'floor_plan/room_detail.html'
 
 
 class RoomDelete(DeleteView):
     model = Room
-    success_url = reverse_lazy('floorPlan:sandbox')
+    success_url = reverse_lazy('floor_plan:sandbox')
 
 
 class RoomList(APIView):
@@ -70,7 +67,7 @@ class RoomList(APIView):
 
 class WayanFormView(View):
     form_class = WayanForm
-    template_name = 'floorPlan/registration_form.html'
+    template_name = 'floor_plan/registration_form.html'
 
     def get(self, request):
         form = self.form_class(None)
@@ -89,7 +86,7 @@ class WayanFormView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return redirect('floorPlan:sandbox')
+                    return redirect('floor_plan:sandbox')
 
         return render(request, self.template_name, {'form': form})
 
@@ -143,7 +140,7 @@ class LoginAPI(APIView):
     #         if user is not None:
     #             if user.is_active:
     #                 login(request, user)
-    #                 return redirect('floorPlan:sandbox')
+    #                 return redirect('floor_plan:sandbox')
 
 
 

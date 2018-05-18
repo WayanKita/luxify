@@ -1,4 +1,4 @@
-{% extends 'floorPlan/base.html' %}
+{% extends 'floor_plan/base.html' %}
 
 {% block body %}
 
@@ -6,7 +6,7 @@
 <ul>
    {% for room in all_rooms %}
         <li>
-            <a href="{% url 'floorPlan:room-detail' room.id %}">
+            <a href="{% url 'floor_plan:room-detail' room.id %}">
                 {{ room }}
             </a>
             <ul>

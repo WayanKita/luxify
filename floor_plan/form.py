@@ -1,4 +1,4 @@
-from .models import Wayan
+from .models import *
 from django import forms
 
 

@@ -9,7 +9,7 @@ class Room(models.Model):
     y_length = models.IntegerField()
 
     def get_absolute_url(self):
-        return reverse('floorPlan:sandbox')
+        return reverse('floor_plan:sandbox')
 
     def __str__(self):
         return self.code
@@ -24,7 +24,7 @@ class Table(models.Model):
     y_size = models.IntegerField()
 
     def get_absolute_url(self):
-        return reverse('floorPlan:sandbox')
+        return reverse('floor_plan:sandbox')
 
     def __str__(self):
         return 'Table ' + str(self.number)
@@ -37,7 +37,7 @@ class Chair(models.Model):
     occupied = models.BooleanField(default=False)
 
     def get_absolute_url(self):
-        return reverse('floorPlan:sandbox')
+        return reverse('floor_plan:sandbox')
 
     def __str__(self):
         return 'Chair' + str(self.number)
@@ -55,10 +55,10 @@ class Window(models.Model):
     end_pos = models.IntegerField()
 
     def get_absolute_url(self):
-        return reverse('floorPlan:room_detail', kwargs={'pk': self.pk})
+        return reverse('floor_plan:room_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
-        return 'Window from '+str(self.start_pos) + ' to '+str(self.end_pos)
+        return 'Window from ' + str(self.start_pos) + ' to ' + str(self.end_pos)
 
 
 class Participant(models.Model):
@@ -79,10 +79,3 @@ class Wayan(models.Model):
 
     def __str__(self):
         return self.email
-
-
-
-
-
-
-
