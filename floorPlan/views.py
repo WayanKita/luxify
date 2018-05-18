@@ -1,3 +1,4 @@
+from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
@@ -9,11 +10,12 @@ from django.contrib.auth.models import User
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .form import UserForm
+from .form import WayanForm
 from .models import Room, Table, Chair, Window
-from .serializer import RoomSerializer, UserSerializer, UserAndroidSerializer
+from .serializer import RoomSerializer, UserSerializer, WayanSerializer, WayanLoginSerializer
 
 
 def sandbox(request):
@@ -66,9 +68,8 @@ class RoomList(APIView):
         pass
 
 
-
-class UserFormView(View):
-    form_class = UserForm
+class WayanFormView(View):
+    form_class = WayanForm
     template_name = 'floorPlan/registration_form.html'
 
     def get(self, request):
@@ -81,9 +82,7 @@ class UserFormView(View):
         if form.is_valid():
             user = form.save(commit=False)
             email = form.cleaned_data['email']
-            username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            user.set_password(password)
             user.save()
 
             user = authenticate(username=email, password=password)
@@ -95,19 +94,32 @@ class UserFormView(View):
         return render(request, self.template_name, {'form': form})
 
 
-class UserAPI(APIView):
-    form_class = UserForm
+class RegisterAPI(APIView):
+    form_class = WayanForm
 
     def get(self, request):
         user = User.objects.all()
-        serializer = UserAndroidSerializer(user, many=True)
+        serializer = WayanSerializer(user, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = UserForm(data=request.data)
+        serializer = WayanForm(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginAPI(APIView):
+
+    serializer_class = WayanLoginSerializer
+
+    def post(self, request):
+        serializer = WayanLoginSerializer(data=request.data)
+
+        if serializer.is_valid():
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # def post(self, request, *args, **kwargs):

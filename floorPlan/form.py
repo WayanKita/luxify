@@ -1,11 +1,10 @@
-from django.contrib.auth.models import User
+from .models import Wayan
 from django import forms
 
 
-class UserForm(forms.ModelForm):
+class WayanForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
-        model = User
-        fields = ['email', 'username', 'password']
-
+        model = Wayan
+        fields = "__all__"
