@@ -17,8 +17,9 @@ from .form import ParticipantForm
 from .models import *
 from .serializer import *
 
-
-def sandbox(request):
+# INDEX PAGE
+# Defines presentation of the index page /floorPlan
+def index(request):
     all_rooms = Room.objects.all()
     template = loader.get_template('floorPlan/floorPlan.html')
     context = {
@@ -27,50 +28,49 @@ def sandbox(request):
     return HttpResponse(template.render(context, request))
 
 
+# CREATE VIEWS
+# Defines the fields for the Room form on room_form.html
 class RoomCreate(CreateView):
     model = Room
     fields = ['code', 'x_length', 'y_length']
 
 
+# Defines the fields for the Table form on table_form.html
 class TableCreate(CreateView):
     model = Table
     fields = ['room', 'number', 'x_pos', 'y_pos', 'x_size', 'y_size']
 
 
+# Defines the fields for the Chair form on chair_form.html
 class ChairCreate(CreateView):
     model = Chair
     fields = ['table', 'number', 'position', 'occupied']
 
 
+# Defines the fields for the Window form on window_form.html
 class WindowCreate(CreateView):
     model = Window
     fields = ['room', 'start_pos', 'end_pos']
 
 
+# Defines the fields for the Sensor form on sensor_form.html
 class SensorCreate(CreateView):
     model = Sensor
     fields = ['name', 'date', 'value']
 
 
+# DETAILED VIEWS
+# Defines the detailed view of a Room on room_detail.html
 class DetailView(generic.DetailView):
     model = Room
     template_name = 'floorPlan/room_detail.html'
 
 
+# DELETE VIEWS
+# Defines the delete view of a Room on room_detail.html
 class RoomDelete(DeleteView):
     model = Room
-    success_url = reverse_lazy('floorPlan:sandbox')
-
-
-class RoomList(APIView):
-
-    def get(self, request):
-        rooms = Room.objects.all()
-        serializer = RoomSerializer(rooms, many=True)
-        return Response(serializer.data)
-
-    def post(self):
-        pass
+    success_url = reverse_lazy('floorPlan:index')
 
 
 class ParticipantFormView(View):
@@ -94,11 +94,13 @@ class ParticipantFormView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return redirect('floorPlan:sandbox')
+                    return redirect('floorPlan:index')
 
         return render(request, self.template_name, {'form': form})
 
 
+# API VIEWS
+# Defines the API view of a participant
 class RegisterAPI(APIView):
     form_class = ParticipantForm
 
@@ -115,6 +117,7 @@ class RegisterAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Defines the API view for logging in
 class LoginAPI(APIView):
     serializer_class = ParticipantLoginSerializer
 
@@ -125,6 +128,7 @@ class LoginAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Defines the API view to GET sensors' information
 class SensorAPI(APIView):
     serializer_class = AuthenticateUser
 
@@ -135,6 +139,7 @@ class SensorAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Defines the API view to GET tables' information
 class TableAPI(APIView):
     serializer_class = AuthenticateUser
 
@@ -145,6 +150,7 @@ class TableAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Defines the API view to GET windows' information
 class WindowAPI(APIView):
     serializer_class = AuthenticateUser
 
@@ -153,6 +159,19 @@ class WindowAPI(APIView):
         if serializer.is_valid():
             return Response(WindowSerializer(Window.objects.all(), many=True).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Defines the API view to GET rooms' information
+class RoomAPI(APIView):
+    serializer_class = AuthenticateUser
+
+    def post(self, request):
+        serializer = AuthenticateUser(data=request.data)
+        if serializer.is_valid():
+            return Response(RoomSerializer(Room.objects.all(), many=True).data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 

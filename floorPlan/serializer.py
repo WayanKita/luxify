@@ -9,6 +9,7 @@ from floorPlan.form import ParticipantForm
 from .models import *
 
 
+# Function to check whether a Participant with email matches a Participant in the database
 def user_authentication_check(email):
     try:
         user = Participant.objects.get(email=email)
@@ -20,6 +21,7 @@ def user_authentication_check(email):
         return False
 
 
+# Function to check whether a Participant with email is logged in
 def user_login_check(email):
     try:
         user = Participant.objects.get(email=email)
@@ -31,14 +33,17 @@ def user_login_check(email):
         return False
 
 
+# Serializes a Room object to/from JSON
 class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        # field = ('code', 'x_length', 'y_length')
-        fields = '__all__'
+        fields = '__all__'                                          # select all fields from Room model
+        # exclude = ()                                              # select all fields except ()
+        # fields = ['name', 'size']                                 # select name and size fields
 
 
+# Serializes a ParticipantForm object to/from JSON
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -46,6 +51,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# Serializes a Sensor object to/from JSON
 class SensorSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -53,6 +59,7 @@ class SensorSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# Serializes a Table object to/from JSON
 class TableSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -60,6 +67,7 @@ class TableSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# Serializes a Window object to/from JSON
 class WindowSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -83,6 +91,7 @@ class WindowSerializer(serializers.ModelSerializer):
 #             return email
 
 
+# Serializes a Participant object to/from JSON
 class ParticipantSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -90,34 +99,41 @@ class ParticipantSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+# Validates a Participant object sent by Android application
 class ParticipantLoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Participant
         fields = "__all__"
 
+    # Overwrites is_valid function from Django
     def validate(self, data):
+        # get email and password from POST body
         email = data.get("email", None)
         password = data.get("password", None)
+        # Try to find a Participant with matching email from POST body else raise ValidationError
         try:
             user = Participant.objects.get(email=email)
         except:
-            raise ValidationError("user does not exist, empty")
+            raise ValidationError("User: "+email+" does not exist")
         if not user.email == email:
-            raise ValidationError("user does not exist")
+            raise ValidationError("User: "+email+" does not exist")
+        # if such user is found; does Participant password match POST body password else raise ValidationError
         if not user.password == password:
-            raise ValidationError("This password is WRONG")
-        user.loggedIn = True
-        user.save()
+            raise ValidationError("Password for "+email+" is incorrect")
+        user.loggedIn = True                                        # changes the log in state of Participant to True
+        user.save()                                                 # saves changes made to Participant on the database
         return data
 
 
+# Validate that Participant making a request is logged in
 class AuthenticateUser(serializers.ModelSerializer):
 
     class Meta:
         model = Participant
         fields = "__all__"
 
+    # Overwrite default authentication for Participant
     def validate(self, data):
         email = data.get("email", None)
         if not user_authentication_check(email):

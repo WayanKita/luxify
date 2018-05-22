@@ -6,7 +6,7 @@ from floorPlan import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('rooms/', views.RoomList.as_view()),
+    # redirects floorPlan/* to the floorPlan app's urls.py file (floorPlan/urls.py)
     path('floorPlan/', include('floorPlan.urls')),
 ]
 

@@ -7,3 +7,4 @@ db.sqlite3
 /floorPlan/__pycache__/
 *.pyc
 floorPlan/__pycache__/serializer.cpython-36.pyc
+requirements.txt

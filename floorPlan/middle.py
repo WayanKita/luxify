@@ -1,3 +1,4 @@
+# Class that disables CSRF token throughout the application
 class DisableCSRFMiddleware(object):
 
     def __init__(self, get_response):
