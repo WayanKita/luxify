@@ -13,9 +13,9 @@ from rest_framework.decorators import api_view
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .form import WayanForm
+from .form import ParticipantForm
 from .models import Room, Table, Chair, Window
-from .serializer import RoomSerializer, UserSerializer, WayanSerializer, WayanLoginSerializer
+from .serializer import RoomSerializer, UserSerializer, ParticipantSerializer, ParticipantLoginSerializer
 
 
 def sandbox(request):
@@ -68,8 +68,8 @@ class RoomList(APIView):
         pass
 
 
-class WayanFormView(View):
-    form_class = WayanForm
+class ParticipantFormView(View):
+    form_class = ParticipantForm
     template_name = 'floorPlan/registration_form.html'
 
     def get(self, request):
@@ -95,15 +95,15 @@ class WayanFormView(View):
 
 
 class RegisterAPI(APIView):
-    form_class = WayanForm
+    form_class = ParticipantForm
 
     def get(self, request):
         user = User.objects.all()
-        serializer = WayanSerializer(user, many=True)
+        serializer = ParticipantSerializer(user, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = WayanForm(data=request.data)
+        serializer = ParticipantForm(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -112,10 +112,10 @@ class RegisterAPI(APIView):
 
 class LoginAPI(APIView):
 
-    serializer_class = WayanLoginSerializer
+    serializer_class = ParticipantLoginSerializer
 
     def post(self, request):
-        serializer = WayanLoginSerializer(data=request.data)
+        serializer = ParticipantLoginSerializer(data=request.data)
 
         if serializer.is_valid():
 
