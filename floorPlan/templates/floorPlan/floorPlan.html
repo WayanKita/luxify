@@ -1,0 +1,36 @@
+{% extends 'floorPlan/base.html' %}
+
+{% block body %}
+
+<h1>Floor Plan</h1>
+<ul>
+   {% for room in all_rooms %}
+        <li>
+            <a href="{% url 'floorPlan:room-detail' room.id %}">
+                {{ room }}
+            </a>
+            <ul>
+               {% for table in room.table_set.all %}
+                    <li>
+                        {{ table }}
+                        <ul>
+                            {% for chair in table.chair_set.all %}
+                                <li>
+                                    {{ chair }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        </li>
+                {% endfor %}
+                {% for window in room.window_set.all %}
+                    <li>
+                        {{ window }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+

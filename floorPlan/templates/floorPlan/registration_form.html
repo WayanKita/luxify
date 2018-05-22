@@ -1,0 +1,18 @@
+{% extends 'floorPlan/base.html' %}
+{% block title %}
+    Create a new User
+{% endblock %}
+
+{% block user_active %}
+    active
+{% endblock %}
+
+{% block body %}
+
+    {% include 'floorPlan/template-layout-form.html' %}
+
+    <form action="{% url 'floorPlan:android-add' %}" method="post">
+
+
+
+{% endblock %}
