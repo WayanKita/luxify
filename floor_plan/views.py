@@ -6,12 +6,13 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic import View
 from django.views.generic.edit import CreateView, DeleteView
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from floor_plan.models import MyUser
 from floor_plan.serializers import *
-from .form import WayanForm
+from .form import ParticipantForm
 from .models import Room, Table, Chair, Window
 
 
@@ -65,8 +66,8 @@ class RoomList(APIView):
         pass
 
 
-class WayanFormView(View):
-    form_class = WayanForm
+class ParticipantFormView(View):
+    form_class = ParticipantForm
     template_name = 'floor_plan/registration_form.html'
 
     def get(self, request):
@@ -92,30 +93,69 @@ class WayanFormView(View):
 
 
 class RegisterAPI(APIView):
-    form_class = WayanForm
+    form_class = ParticipantForm
 
     def get(self, request):
         user = User.objects.all()
-        serializer = WayanSerializer(user, many=True)
+        serializer = ParticipantSerializer(user, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = WayanForm(data=request.data)
+        serializer = ParticipantForm(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginAPI(APIView):
+class ShowUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude = ()
 
-    serializer_class = WayanLoginSerializer
+
+class CreateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'password')
+
+
+class MyUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MyUser
+        exclude = ()
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = MyUser.objects.all()
+    serializer_class = MyUserSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = CreateUserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            django_user = User.objects.get(username=serializer.validated_data['email'])
+        except User.DoesNotExist:
+            django_user = User.objects.create_user(
+                username=serializer.validated_data['email'],
+                email=serializer.validated_data['email'],
+                password=serializer.validated_data['password'],
+            )
+        mu_user = MyUser.objects.create(
+            django_user=django_user
+        )
+        headers = self.get_success_headers(serializer.data)
+        response_serializer = MyUserSerializer(instance=mu_user)
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class LoginAPI(APIView):
+    serializer_class = ParticipantLoginSerializer
 
     def post(self, request):
-        serializer = WayanLoginSerializer(data=request.data)
+        serializer = ParticipantLoginSerializer(data=request.data)
 
         if serializer.is_valid():
-
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -141,8 +181,3 @@ class LoginAPI(APIView):
     #             if user.is_active:
     #                 login(request, user)
     #                 return redirect('floor_plan:sandbox')
-
-
-
-
-

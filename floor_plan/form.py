@@ -2,9 +2,9 @@ from .models import *
 from django import forms
 
 
-class WayanForm(forms.ModelForm):
+class ParticipantForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
-        model = Wayan
+        model = Participant
         fields = "__all__"

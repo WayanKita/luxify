@@ -5,4 +5,4 @@ from floor_plan.models import *
 admin.site.register(Room)
 admin.site.register(Table)
 admin.site.register(Participant)
-admin.site.register(Wayan)
+admin.site.register(MyUser)

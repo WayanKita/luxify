@@ -105,3 +105,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+floor_plan/fixtures/
+/floor_plan/migrations/
+/luxify/settings.py

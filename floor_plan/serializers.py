@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from rest_framework.exceptions import ValidationError
 
-from floor_plan.form import WayanForm
-from .models import Room, Wayan
+from floor_plan.form import ParticipantForm
+from .models import Room, Participant
 
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -19,7 +19,7 @@ class RoomSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = WayanForm
+        model = ParticipantForm
         fields = '__all__'
 
 
@@ -39,23 +39,23 @@ class UserSerializer(serializers.ModelSerializer):
 #         else:
 #             return email
 
-class WayanSerializer(serializers.ModelSerializer):
+class ParticipantSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Wayan
+        model = Participant
         fields = "__all__"
 
 
-class WayanLoginSerializer(serializers.ModelSerializer):
+class ParticipantLoginSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Wayan
+        model = Participant
         fields = "__all__"
 
     def validate(self, data):
         email = data.get("email", None)
         password = data.get("password", None)
-        user = Wayan.objects.get(email=email)
+        user = Participant.objects.get(email=email)
         if not user.email == email:
             raise ValidationError("user does not exist")
         if not user.password == password:

@@ -61,18 +61,14 @@ class Window(models.Model):
         return 'Window from ' + str(self.start_pos) + ' to ' + str(self.end_pos)
 
 
-class Participant(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    room = models.CharField(max_length=5)
-    email_address = models.CharField(
-        unique=True, max_length=250
-    )
+class MyUser(models.Model):
+    django_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.user)
 
 
-class Wayan(models.Model):
+class Participant(models.Model):
     email = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     loggedIn = models.BooleanField(default=False)
