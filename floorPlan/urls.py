@@ -1,7 +1,11 @@
 from django.urls import path, re_path
 from . import views
+from rest_framework_swagger.views import get_swagger_view
 
 app_name = "floorPlan"
+
+
+schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
     re_path(r'^room/(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='room-detail'),
@@ -13,6 +17,7 @@ urlpatterns = [
     re_path(r'^add_table/$', views.TableCreate.as_view(), name='table-add'),
     re_path(r'^add_chair/$', views.ChairCreate.as_view(), name='chair-add'),
     re_path(r'^add_window/$', views.WindowCreate.as_view(), name='window-add'),
+    re_path(r'^api_tester$', schema_view)
 ]
 
 
