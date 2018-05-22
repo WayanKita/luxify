@@ -4,8 +4,31 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from rest_framework.exceptions import ValidationError
 
+
 from floorPlan.form import ParticipantForm
-from .models import Room, Participant
+from .models import *
+
+
+def user_authentication_check(email):
+    try:
+        user = Participant.objects.get(email=email)
+    except:
+        return False
+    if user.email == email:
+        return True
+    else:
+        return False
+
+
+def user_login_check(email):
+    try:
+        user = Participant.objects.get(email=email)
+    except:
+        return False
+    if user.email == email:
+        return True
+    else:
+        return False
 
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -23,6 +46,26 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class SensorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Sensor
+        fields = '__all__'
+
+
+class TableSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Table
+        fields = '__all__'
+
+
+class WindowSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Window
+        fields = '__all__'
+
 # class UserAndroidSerializer(serializers.ModelSerializer):
 #
 #     class Meta:
@@ -38,6 +81,7 @@ class UserSerializer(serializers.ModelSerializer):
 #             raise ValidationError("This email already exists")
 #         else:
 #             return email
+
 
 class ParticipantSerializer(serializers.ModelSerializer):
 
@@ -55,7 +99,10 @@ class ParticipantLoginSerializer(serializers.ModelSerializer):
     def validate(self, data):
         email = data.get("email", None)
         password = data.get("password", None)
-        user = Participant.objects.get(email=email)
+        try:
+            user = Participant.objects.get(email=email)
+        except:
+            raise ValidationError("user does not exist, empty")
         if not user.email == email:
             raise ValidationError("user does not exist")
         if not user.password == password:
@@ -63,6 +110,22 @@ class ParticipantLoginSerializer(serializers.ModelSerializer):
         user.loggedIn = True
         user.save()
         return data
+
+
+class AuthenticateUser(serializers.ModelSerializer):
+
+    class Meta:
+        model = Participant
+        fields = "__all__"
+
+    def validate(self, data):
+        email = data.get("email", None)
+        if not user_authentication_check(email):
+            raise ValidationError("User: "+email+" does not exist")
+        if not user_login_check(email):
+            raise ValidationError("User "+email+" is not logged in")
+        return data
+
 
 
 

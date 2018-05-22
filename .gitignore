@@ -2,9 +2,8 @@ luxify/settings.py
 .idea/workspace.xml
 luxify/__pycache__/setting.cpython-36.pyc
 db.sqlite3
-
-
-*.sqlite3
 .idea/*
 /floorPlan/migrations/
 /floorPlan/__pycache__/
+*.pyc
+floorPlan/__pycache__/serializer.cpython-36.pyc

@@ -14,8 +14,8 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .form import ParticipantForm
-from .models import Room, Table, Chair, Window
-from .serializer import RoomSerializer, UserSerializer, ParticipantSerializer, ParticipantLoginSerializer
+from .models import *
+from .serializer import *
 
 
 def sandbox(request):
@@ -45,6 +45,11 @@ class ChairCreate(CreateView):
 class WindowCreate(CreateView):
     model = Window
     fields = ['room', 'start_pos', 'end_pos']
+
+
+class SensorCreate(CreateView):
+    model = Sensor
+    fields = ['name', 'date', 'value']
 
 
 class DetailView(generic.DetailView):
@@ -111,39 +116,44 @@ class RegisterAPI(APIView):
 
 
 class LoginAPI(APIView):
-
     serializer_class = ParticipantLoginSerializer
 
     def post(self, request):
         serializer = ParticipantLoginSerializer(data=request.data)
-
         if serializer.is_valid():
-
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # def post(self, request, *args, **kwargs):
-    #     return HttpResponse('This is POST request')
 
-    # @api_view(['POST'])
-    # def post(self, request):
-    #     data = request.POST
-    #     pretty_print_POST(prepared)
-    #     form = UserForm(request.POST)
-    #
-    #     if form.is_valid():
-    #         user = form.save(commit=False)
-    #         email = form.cleaned_data['email']
-    #         username = form.cleaned_data['username']
-    #         password = form.cleaned_data['password']
-    #         user.set_password(password)
-    #         user.save()
-    #
-    #         user = authenticate(username=email, password=password)
-    #         if user is not None:
-    #             if user.is_active:
-    #                 login(request, user)
-    #                 return redirect('floorPlan:sandbox')
+class SensorAPI(APIView):
+    serializer_class = AuthenticateUser
+
+    def post(self, request):
+        serializer = AuthenticateUser(data=request.data)
+        if serializer.is_valid():
+            return Response(SensorSerializer(Sensor.objects.all(), many=True).data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TableAPI(APIView):
+    serializer_class = AuthenticateUser
+
+    def post(self, request):
+        serializer = AuthenticateUser(data=request.data)
+        if serializer.is_valid():
+            return Response(TableSerializer(Table.objects.all(), many=True).data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WindowAPI(APIView):
+    serializer_class = AuthenticateUser
+
+    def post(self, request):
+        serializer = AuthenticateUser(data=request.data)
+        if serializer.is_valid():
+            return Response(WindowSerializer(Window.objects.all(), many=True).data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 

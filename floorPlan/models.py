@@ -44,9 +44,12 @@ class Chair(models.Model):
 
 
 class Sensor(models.Model):
-    name = models.CharField(max_length=5)
+    name = models.CharField(max_length=10)
     date = models.DateTimeField()
     value = models.FloatField()
+
+    def __str__(self):
+        return self.name
 
 
 class Window(models.Model):
@@ -62,9 +65,10 @@ class Window(models.Model):
 
 
 class Participant(models.Model):
-    email = models.CharField(max_length=200, unique=True)
+    email = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
-    loggedIn = models.BooleanField(default=False)
+    logged_in = models.BooleanField(default=False)
+    survey_done = models.BooleanField(default=False)
 
     def __str__(self):
         return self.email

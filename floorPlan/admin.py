@@ -4,3 +4,4 @@ from .models import *
 admin.site.register(Room)
 admin.site.register(Table)
 admin.site.register(Participant)
+admin.site.register(Sensor)
