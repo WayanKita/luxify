@@ -1,11 +1,11 @@
-from django.contrib.auth.models import User
+from .models import Participant
 from django import forms
 
 
-class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
+# Form for participants, used by ParticipantFormView, to create registration_form.html
+class ParticipantForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)  # hides password field
 
     class Meta:
-        model = User
-        fields = ['email', 'username', 'password']
-
+        model = Participant
+        fields = "__all__"

@@ -1,4 +1,4 @@
-{% extends 'floorPlan/base.html' %}
+{% extends 'floorPlan/template_html/template-navbar.html' %}
 {% block title %}
     Create a new User
 {% endblock %}
@@ -9,15 +9,10 @@
 
 {% block body %}
 
-    {% include 'floorPlan/template-layout-form.html' %}
+    {% include 'floorPlan/template_html/template-layout-form.html' %}
 
     <form action="{% url 'floorPlan:android-add' %}" method="post">
 
-    <input type="text" name="email" value="joe">
-    <input type="text" name="username" value="lol">
-    <input type="text" name="password" value="hahaha">
-     <button type="submit" formmethod="post">test api</button>
-    </form>
 
 
 {% endblock %}

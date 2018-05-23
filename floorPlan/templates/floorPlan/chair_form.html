@@ -1,4 +1,4 @@
-{% extends 'floorPlan/base.html' %}
+{% extends 'floorPlan/template_html/template-navbar.html' %}
 
 <!-- Sets title to page -->
 {% block title %}
@@ -10,9 +10,9 @@
     active
 {% endblock %}
 
-<!-- Beginning of black from base.html-->
+<!-- Beginning of black from Templates/template-navbar.html-->
 {% block body %}
 
-    {% include 'floorPlan/template-layout-form.html' %}
+    {% include 'floorPlan/template_html/template-layout-form.html' %}
 
 {% endblock %}

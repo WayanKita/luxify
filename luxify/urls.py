@@ -6,10 +6,8 @@ from floorPlan import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('rooms/', views.RoomList.as_view()),
+    # redirects floorPlan/* to the floorPlan app's urls.py file (floorPlan/urls.py)
     path('floorPlan/', include('floorPlan.urls')),
-    path(r'o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
