@@ -5,5 +5,7 @@ db.sqlite3
 *.pyc
 *.pyo
 **__pycache__**
+**.save
+**/migrations
 requirements.txt
 /floorPlan/migrations/
