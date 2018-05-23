@@ -10,11 +10,11 @@
                 {{ room }}
             </a>
             <ul>
-               {% for table in room.table_set.all %}
+               {% for desk in room.desk_set.all %}
                     <li>
-                        {{ table }}
+                        {{ desk }}
                         <ul>
-                            {% for chair in table.chair_set.all %}
+                            {% for chair in desk.chair_set.all %}
                                 <li>
                                     {{ chair }}
                                 </li>

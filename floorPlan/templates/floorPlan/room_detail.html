@@ -28,10 +28,10 @@
     </ul>
     <h1>{{ room.code }}</h1>
     <ul>
-        {% for table in room.table_set.all %}
+        {% for desk in room.desk_set.all %}
             <li>
                 <a href="floorPlan:">
-                    {{ table.number }}
+                    {{ desk.number }}
                 </a>
                 <br>
             </li>

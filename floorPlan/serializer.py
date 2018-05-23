@@ -60,10 +60,10 @@ class SensorSerializer(serializers.ModelSerializer):
 
 
 # Serializes a Table object to/from JSON
-class TableSerializer(serializers.ModelSerializer):
+class DeskSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Table
+        model = Desk
         fields = '__all__'
 
 
@@ -73,6 +73,33 @@ class WindowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Window
         fields = '__all__'
+
+
+# Serializes a Chair object to/from JSON
+class ChairSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Chair
+        fields = '__all__'
+
+
+class TableSerializer(serializers.ModelSerializer):
+    chair = ChairSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Desk
+        fields = ('room', 'number', 'pos_x', 'pos_y', 'length_x', 'length_y', 'illuminance', 'chair')
+
+
+class RoomGeneratorSerializer(serializers.ModelSerializer):
+    # room = RoomSerializer(many=True, read_only=True)
+    desk = TableSerializer(many=True, read_only=True)
+    window = WindowSerializer(many=True, read_only=True)
+    chair = ChairSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Room
+        fields = ("room_name", "x_length", "y_length", "desk", "window", "chair")
 
 # class UserAndroidSerializer(serializers.ModelSerializer):
 #
@@ -97,6 +124,12 @@ class ParticipantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Participant
         fields = "__all__"
+
+
+class ParticipantRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ParticipantRequest
+        fields = ('email', 'request_type')
 
 
 # Validates a Participant object sent by Android application
@@ -130,7 +163,7 @@ class ParticipantLoginSerializer(serializers.ModelSerializer):
 class AuthenticateUser(serializers.ModelSerializer):
 
     class Meta:
-        model = Participant
+        model = ParticipantRequest
         fields = "__all__"
 
     # Overwrite default authentication for Participant
