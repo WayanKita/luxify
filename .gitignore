@@ -4,3 +4,4 @@ luxify/settings.py
 db.sqlite3
 *.pyc
 *.pyo
+**__pycache__**
