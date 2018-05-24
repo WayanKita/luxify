@@ -74,6 +74,13 @@ class WindowSerializer(serializers.ModelSerializer):
         model = Window
         fields = '__all__'
 
+# Serializes a Window object to/from JSON
+class DoorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Door
+        fields = '__all__'
+
 
 # Serializes a Chair object to/from JSON
 class ChairSerializer(serializers.ModelSerializer):
