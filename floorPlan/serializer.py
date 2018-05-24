@@ -103,6 +103,7 @@ class RoomGeneratorSerializer(serializers.ModelSerializer):
     desk = TableSerializer(many=True, read_only=True)
     window = WindowSerializer(many=True, read_only=True)
     chair = ChairSerializer(many=True, read_only=True)
+    door = DoorSerializer(many=True, read_only=True)
 
     class Meta:
         model = Room
