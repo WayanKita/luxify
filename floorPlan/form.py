@@ -1,3 +1,6 @@
+from rest_framework.exceptions import ValidationError
+
+from floorPlan import models
 from .models import Participant
 from django import forms
 
@@ -8,4 +11,9 @@ class ParticipantForm(forms.ModelForm):
 
     class Meta:
         model = Participant
-        fields = "__all__"
+        fields = ['email', 'password']
+        # fields = '__all__'
+    # def validate(self, data):
+    #     print("lol")
+    #     if Participant.objects.filter(email=self.email).exists():
+    #         raise ValidationError('Name must be unique per site')

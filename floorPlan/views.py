@@ -207,7 +207,7 @@ class RoomGeneratorAPI(APIView):
     def post(self, request):
         serializer = AuthenticateUser(data=request.data)
         if serializer.is_valid():
-            if request.data.get('request_type') == 'rooms':
+            if request.data.get('request_type') == '0':
                 return Response(RoomSerializer(Room.objects.all(), many=True).data, status=status.HTTP_200_OK)
             else:
                 room = Room.objects.filter(pk=request.data.get('request_type'))
