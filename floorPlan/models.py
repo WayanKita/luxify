@@ -106,8 +106,8 @@ class Participant(models.Model):                                        # User o
     password = models.CharField(max_length=200)                         # password
     logged_in = models.BooleanField(default=False)                      # loggedIn
     survey_done = models.BooleanField(default=False)                    # demographicStatus ; not used
-    room = models.IntegerField()                                        # roomID
-    desk = models.IntegerField()                                        # deskID
+    room = models.IntegerField(blank=True)                                        # roomID
+    desk = models.IntegerField(blank=True)                                        # deskID
 
     # Defines how a User object is displayed
     def __str__(self):
