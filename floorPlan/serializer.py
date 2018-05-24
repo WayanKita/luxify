@@ -106,7 +106,7 @@ class RoomGeneratorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = ("room_name", "x_length", "y_length", "desk", "window", "chair")
+        fields = ("room_name", "x_length", "y_length", "desk", "window", "chair", "door")
 
 # class UserAndroidSerializer(serializers.ModelSerializer):
 #
