@@ -106,14 +106,15 @@ class Participant(models.Model):                                        # User o
     password = models.CharField(max_length=200)                         # password
     logged_in = models.BooleanField(default=False)                      # loggedIn
     survey_done = models.BooleanField(default=False)                    # demographicStatus ; not used
-    room = models.IntegerField(blank=True, null=True, default=None)     # roomID
-    desk = models.IntegerField(blank=True, null=True, default=None)     # deskID
+    room = models.IntegerField(blank=True, null=True, default=1)     # roomID
+    desk = models.IntegerField(blank=True, null=True, default=1)     # deskID
 
     # Defines how a User object is displayed
     def __str__(self):
         return self.email
 
 
+# WORK related models | DUMMY MODELS
 class ParticipantRequest(models.Model):
     email = models.CharField(max_length=200)
     request_type = models.CharField(max_length=200)
