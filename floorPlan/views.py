@@ -104,7 +104,7 @@ class ParticipantFormView(View):
 # URL : /floorPlan/android_add_user
 # Method : GET | POST
 # Data Params : [{ email : [string], password : [string]}]
-# Response Codes: Success (201 CREATED), Bad Request (400)
+# Response Codes: Success (201 CREATED), Bad Request (400),
 class RegisterAPI(APIView):
     form_class = ParticipantForm
 
@@ -125,7 +125,7 @@ class RegisterAPI(APIView):
 # URL : /floorPlan/android_login
 # Method : POST
 # Data Params : [{ email : [string], password : [string]}]
-# Response Codes: Success (200 CREATED), Bad Request (400), Internal Server Error (500)
+# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class LoginAPI(APIView):
     serializer_class = ParticipantLoginSerializer
 
@@ -136,7 +136,11 @@ class LoginAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Defines the API view to GET sensors' information
+# Title : Get sensor information.
+# URL : /floorPlan/android_sensor
+# Method : POST
+# Data Params : [{ email : [string], password : [string]}]
+# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class SensorAPI(APIView):
     serializer_class = AuthenticateUser
 
@@ -147,7 +151,11 @@ class SensorAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Defines the API view to GET desks' information
+# Title : Get table information.
+# URL : None
+# Method : POST
+# Data Params : [{ email : [string], password : [string]}]
+# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class TableAPI(APIView):
     serializer_class = AuthenticateUser
 
@@ -158,7 +166,11 @@ class TableAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Defines the API view to GET windows' information
+# Title : Get window information.
+# URL : /floorPlan/android_window
+# Method : POST
+# Data Params : [{ email : [string], password : [string]}]
+# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class WindowAPI(APIView):
     serializer_class = AuthenticateUser
 
@@ -169,7 +181,11 @@ class WindowAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Defines the API view to GET rooms' information
+# Title : Get room information.
+# URL : /floorPlan/android_room
+# Method : POST
+# Data Params : [{ email : [string], password : [string]}]
+# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class RoomAPI(APIView):
     serializer_class = AuthenticateUser
 
@@ -180,6 +196,11 @@ class RoomAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Title : Get room plan information.
+# URL : /floorPlan/android_sensor
+# Method : POST
+# Data Params : [{ email : [string], room_type : [rooms] | [int(1+)]}]
+# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class RoomGeneratorAPI(APIView):
     serializer_class = ParticipantRequestSerializer
 
