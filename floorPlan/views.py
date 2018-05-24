@@ -32,25 +32,25 @@ def index(request):
 # Defines the fields for the Room form on room_form.html
 class RoomCreate(CreateView):
     model = Room
-    fields = ['code', 'x_length', 'y_length']
+    fields = ["room_name", "x_length", "y_length"]
 
 
-# Defines the fields for the Table form on table_form.html
-class TableCreate(CreateView):
-    model = Table
-    fields = ['room', 'number', 'x_pos', 'y_pos', 'x_size', 'y_size']
+# Defines the fields for the Table form on desk_form.html
+class DeskCreate(CreateView):
+    model = Desk
+    fields = ['room', 'number', 'pos_x', 'pos_y', 'length_x', 'length_y', 'illuminance']
 
 
 # Defines the fields for the Chair form on chair_form.html
 class ChairCreate(CreateView):
     model = Chair
-    fields = ['table', 'number', 'position', 'occupied']
+    fields = ['desk', 'side', 'occupied']
 
 
 # Defines the fields for the Window form on window_form.html
 class WindowCreate(CreateView):
     model = Window
-    fields = ['room', 'start_pos', 'end_pos']
+    fields = ['room', 'margin', 'length', 'side']
 
 
 # Defines the fields for the Sensor form on sensor_form.html
@@ -100,7 +100,11 @@ class ParticipantFormView(View):
 
 
 # API VIEWS
-# Defines the API view of a participant
+# Title : Get registered Participants | Register Participants.
+# URL : /floorPlan/android_add_user
+# Method : GET | POST
+# Data Params : [{ email : [string], password : [string]}]
+# Response Codes: Success (201 CREATED), Bad Request (400)
 class RegisterAPI(APIView):
     form_class = ParticipantForm
 
@@ -117,7 +121,11 @@ class RegisterAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Defines the API view for logging in
+# Title : Log in Participants.
+# URL : /floorPlan/android_login
+# Method : POST
+# Data Params : [{ email : [string], password : [string]}]
+# Response Codes: Success (200 CREATED), Bad Request (400), Internal Server Error (500)
 class LoginAPI(APIView):
     serializer_class = ParticipantLoginSerializer
 
@@ -139,14 +147,14 @@ class SensorAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Defines the API view to GET tables' information
+# Defines the API view to GET desks' information
 class TableAPI(APIView):
     serializer_class = AuthenticateUser
 
     def post(self, request):
         serializer = AuthenticateUser(data=request.data)
         if serializer.is_valid():
-            return Response(TableSerializer(Table.objects.all(), many=True).data, status=status.HTTP_200_OK)
+            return Response(DeskSerializer(Desk.objects.all(), many=True).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -172,9 +180,15 @@ class RoomAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class RoomGeneratorAPI(APIView):
+    serializer_class = ParticipantRequestSerializer
 
-
-
-
-
-
+    def post(self, request):
+        serializer = AuthenticateUser(data=request.data)
+        if serializer.is_valid():
+            if request.data.get('request_type') == 'rooms':
+                return Response(RoomSerializer(Room.objects.all(), many=True).data, status=status.HTTP_200_OK)
+            else:
+                room = Room.objects.filter(pk=request.data.get('request_type'))
+                return Response(RoomGeneratorSerializer(room, many=True, label="room").data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

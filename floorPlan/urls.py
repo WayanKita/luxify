@@ -15,15 +15,16 @@ urlpatterns = [
     re_path(r'^android_login/$', views.LoginAPI.as_view(), name='android-login'),
     re_path(r'^android_room/$', views.RoomAPI.as_view(), name='android-room'),
     re_path(r'^android_sensor/$', views.SensorAPI.as_view(), name='android-sensor'),
-    re_path(r'^android_table/$', views.TableAPI.as_view(), name='android-table'),
+    re_path(r'^android_desk/$', views.TableAPI.as_view(), name='android-desk'),
     re_path(r'^add_user/$', views.ParticipantFormView.as_view(), name='person-add'),
     re_path(r'^android_window/$', views.WindowAPI.as_view(), name='android-window'),
+    re_path(r'^android_room_generator/$', views.RoomGeneratorAPI.as_view(), name='android-window'),
 
     # Create URLs
     re_path(r'^add_chair/$', views.ChairCreate.as_view(), name='chair-add'),
     re_path(r'^add_room/$', views.RoomCreate.as_view(), name='room-add'),
     re_path(r'^add_sensor/$', views.SensorCreate.as_view(), name='sensor-add'),
-    re_path(r'^add_table/$', views.TableCreate.as_view(), name='table-add'),
+    re_path(r'^add_desk/$', views.DeskCreate.as_view(), name='desk-add'),
     re_path(r'^add_window/$', views.WindowCreate.as_view(), name='window-add'),
 
     # Delete URLs
@@ -33,6 +34,3 @@ urlpatterns = [
     re_path(r'^room/(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='room-detail'),
 
 ]
-
-
-
