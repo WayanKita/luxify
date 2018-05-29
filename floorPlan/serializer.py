@@ -105,17 +105,11 @@ class RoomGeneratorSerializer(serializers.ModelSerializer):
     desk = TableSerializer(many=True, read_only=True)
     window = WindowSerializer(many=True, read_only=True)
     chair = ChairSerializer(many=True, read_only=True)
-<<<<<<< HEAD
-    door = ChairSerializer(many=True, read_only=True)
-=======
     door = DoorSerializer(many=True, read_only=True)
->>>>>>> 633dbfdf576944406c19df306d73debfca2db3ad
 
     class Meta:
         model = Room
         fields = ("room_name", "x_length", "y_length", "desk", "window", "chair", "door")
-<<<<<<< HEAD
-=======
 
 # class UserAndroidSerializer(serializers.ModelSerializer):
 #
@@ -132,7 +126,6 @@ class RoomGeneratorSerializer(serializers.ModelSerializer):
 #             raise ValidationError("This email already exists")
 #         else:
 #             return email
->>>>>>> 633dbfdf576944406c19df306d73debfca2db3ad
 
 
 # Serializes a Participant object to/from JSON
