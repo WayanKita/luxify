@@ -1,7 +1,16 @@
+body{
+    font-family: 'Roboto', sans-serif;
+}
+
 .navbar{
     border-radius: 0;
+    background-color: #FFC400;
+}
+
+.navbar a{
+    color: navy;
 }
 
 .navbar-brand{
-    font-family: 'Lobster', cursive;
+
 }

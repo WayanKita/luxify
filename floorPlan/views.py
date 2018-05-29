@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.template import loader
 from django.views import generic
 from django.urls import reverse_lazy
@@ -9,13 +9,12 @@ from django.views.generic import View
 from django.contrib.auth.models import User
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .form import ParticipantForm
 from .models import *
 from .serializer import *
+# from survey.models import *
 
 # INDEX PAGE
 # Defines presentation of the index page /floorPlan
@@ -196,8 +195,8 @@ class RoomAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Title : Get room plan information.
-# URL : /floorPlan/android_sensor
+# Title : Get a bundled room plan (with table(with chair), windows and doors) information.
+# URL : /floorPlan/android_room_generator
 # Method : POST
 # Data Params : [{ email : [string], room_type : [rooms] | [int(1+)]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
@@ -207,9 +206,55 @@ class RoomGeneratorAPI(APIView):
     def post(self, request):
         serializer = AuthenticateUser(data=request.data)
         if serializer.is_valid():
-            if request.data.get('request_type') == '0':
+            if request.data.get('request_type') == 0:
                 return Response(RoomSerializer(Room.objects.all(), many=True).data, status=status.HTTP_200_OK)
             else:
                 room = Room.objects.filter(pk=request.data.get('request_type'))
                 return Response(RoomGeneratorSerializer(room, many=True, label="room").data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# # Title : Receive alertness questionnaire answer.
+# # URL : /floorPlan/android_alertness_questionnaire
+# # Method : POST
+# # Data Params : [{ email : [string], time_stamp : [date:time], answer : int[1-10]}]
+# # Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
+# class AlertnessQuestionnaireAPI(APIView):
+#     serializer_class = ParticipantRequestSerializer
+#
+#     def post(self, request):
+#         serializer = AuthenticateUser(data=request.data)
+#         if serializer.is_valid():
+#             alert_answer = AlertnessQuestionnaire()
+#             alert_answer.email = request.get('email')
+#             alert_answer.time_stamp = request.get('time_stamp')
+#             alert_answer.time_stamp = request.get('answer')
+#             alert_answer.save()
+#             return Response(AlertnessQuestionnaireSerializer(alert_answer).data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#
+#
+# # Title : Receive alertness questionnaire answer.
+# # URL : /floorPlan/android_alertness_questionnaire
+# # Method : POST
+# # Data Params : [{ email : [string], time_stamp : [date:time], answer : int[1-10]}]
+# # Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
+# class DemographicQuestionnaireAPI(APIView):
+#     serializer_class = ParticipantRequestSerializer
+#
+#     def get(self, request):
+#         survey = Question.objects.all()
+#         serializer = QuestionSerializer(survey, many=True)
+#         return Response(serializer.data)
+#
+#     def post(self, request):
+#         serializer = AuthenticateUser(data=request.data)
+#         if serializer.is_valid():
+#             demographic_answer = AlertnessQuestionnaire()
+#             demographic_answer.email = request.get('email')
+#             demographic_answer.time_stamp = request.get('time_stamp')
+#             demographic_answer.time_stamp = request.get('answer')
+#             demographic_answer.save()
+#             return Response(AlertnessQuestionnaireSerializer(demographic_answer).data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

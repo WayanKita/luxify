@@ -12,6 +12,8 @@ urlpatterns = [
 
     # API URLs
     re_path(r'^android_add_user/$', views.RegisterAPI.as_view(), name='android-add'),
+    # re_path(r'^android_alertness_questionnaire/$', views.AlertnessQuestionnaireAPI.as_view(), name='android-alert'),
+    # re_path(r'^android_demographic_questionnaire/$', views.DemographicQuestionnaireAPI.as_view(), name='android-alert'),
     re_path(r'^android_login/$', views.LoginAPI.as_view(), name='android-login'),
     re_path(r'^android_room/$', views.RoomAPI.as_view(), name='android-room'),
     re_path(r'^android_sensor/$', views.SensorAPI.as_view(), name='android-sensor'),

@@ -2,11 +2,14 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 
+# Models in Django represent skeleton (aka blueprints) for databases to create tables on the database
+# Such table are initially empty and are populated through the program
+
 
 # Model that defines the blueprint of a Room on the Database
 class Room(models.Model):
-    room_name = models.CharField(max_length=10)                              # code is a string of max length 10
-    x_length = models.IntegerField()                                    # x_length is an integer of undefined length
+    room_name = models.CharField(max_length=10)                             # code is a string of max length 10
+    x_length = models.IntegerField()                                        # x_length is an integer of undefined length
     y_length = models.IntegerField()
 
     def get_absolute_url(self):
@@ -44,7 +47,6 @@ class Chair(models.Model):
     desk = models.ForeignKey(Desk, on_delete=models.CASCADE, related_name="chair")
     side = models.IntegerField()
     occupied = models.BooleanField(default=False)                        # occupied is a boolean, False when created
-    #
 
     def get_absolute_url(self):
         return reverse('floorPlan:index')
@@ -86,7 +88,7 @@ class Window(models.Model):
 
 # Model that defines the blueprint of a Window on the Database  # android application names
 class Door(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room,                             on_delete=models.CASCADE)
     margin = models.IntegerField()                              # margin
     length = models.IntegerField()                              # length
     side = models.IntegerField()                                # side; int[1-4] defines the side the window is on
@@ -106,15 +108,37 @@ class Participant(models.Model):                                        # User o
     password = models.CharField(max_length=200)                         # password
     logged_in = models.BooleanField(default=False)                      # loggedIn
     survey_done = models.BooleanField(default=False)                    # demographicStatus ; not used
-    room = models.IntegerField(blank=True, null=True, default=1)     # roomID
-    desk = models.IntegerField(blank=True, null=True, default=1)     # deskID
+    room = models.IntegerField(blank=True, null=True, default=1)        # roomID
+    desk = models.IntegerField(blank=True, null=True, default=1)        # deskID
 
     # Defines how a User object is displayed
     def __str__(self):
         return self.email
 
 
+# Model that defines format for alertness questionnaire answers storage
+class AlertnessQuestionnaire(models.Model):
+    email = models.ForeignKey(User, on_delete=models.CASCADE)
+    answer = models.IntegerField()
+    time_stamp = models.DateTimeField()
+
+
+# Model that defines format for alertness questionnaire answers storage
+class DemographicQuestionnaire(models.Model):
+    email = models.ForeignKey(User, on_delete=models.CASCADE)
+    # answer = ArrayField(models.CharField(max_length=250, blank=True), size=8)
+    time_stamp = models.DateTimeField()
+
+
 # WORK related models | DUMMY MODELS
+
+# Used to simplify API testing
 class ParticipantRequest(models.Model):
     email = models.CharField(max_length=200)
-    request_type = models.CharField(max_length=200)
+    request_type = models.IntegerField()
+
+
+
+
+
+

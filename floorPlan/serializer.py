@@ -7,6 +7,7 @@ from rest_framework.exceptions import ValidationError
 
 from floorPlan.form import ParticipantForm
 from .models import *
+# from survey.models import *
 
 
 # Function to check whether a Participant with email matches a Participant in the database
@@ -38,7 +39,8 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = '__all__'                                          # select all fields from Room model
+        fields = '__all__'
+        # select all fields from Room model
         # exclude = ()                                              # select all fields except ()
         # fields = ['name', 'size']                                 # select name and size fields
 
@@ -96,26 +98,11 @@ class RoomGeneratorSerializer(serializers.ModelSerializer):
     desk = TableSerializer(many=True, read_only=True)
     window = WindowSerializer(many=True, read_only=True)
     chair = ChairSerializer(many=True, read_only=True)
+    door = ChairSerializer(many=True, read_only=True)
 
     class Meta:
         model = Room
-        fields = ("room_name", "x_length", "y_length", "desk", "window", "chair")
-
-# class UserAndroidSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = User
-#         fields = ['username', 'password']
-#         email = serializers.EmailField()
-#
-#     def validate_username(self, email):
-#         username = data.get("username", None)
-#         user = User.objects.filter(username=username)
-#         #if user.exists():
-#         if User.objects.filter(username=username).exists():
-#             raise ValidationError("This email already exists")
-#         else:
-#             return email
+        fields = ("room_name", "x_length", "y_length", "desk", "window", "chair", "door")
 
 
 # Serializes a Participant object to/from JSON
@@ -124,6 +111,22 @@ class ParticipantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Participant
         fields = "__all__"
+
+
+# # Serializes a Survey object to/from JSON
+# class SurveySerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = Survey
+#         fields = "__all__"
+#
+#
+# # Serializes a Question object to/from JSON
+# class QuestionSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = Question
+#         exclude = ()
 
 
 class ParticipantRequestSerializer(serializers.ModelSerializer):
@@ -173,4 +176,21 @@ class AuthenticateUser(serializers.ModelSerializer):
             raise ValidationError("User: "+email+" does not exist")
         if not user_login_check(email):
             raise ValidationError("User "+email+" is not logged in")
+        return data
+
+
+# Validate that Participant making a request is logged in
+class AlertnessQuestionnaireSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AlertnessQuestionnaire
+        fields = "__all__"
+
+    # Overwrite default authentication for Participant
+    def validate(self, data):
+        email = data.get("email", None)
+        if not user_authentication_check(email):
+            raise ValidationError("User: " + email + " does not exist")
+        if not user_login_check(email):
+            raise ValidationError("User " + email + " is not logged in")
         return data
