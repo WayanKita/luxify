@@ -118,16 +118,23 @@ class Participant(models.Model):                                        # User o
 
 # Model that defines format for alertness questionnaire answers storage
 class AlertnessQuestionnaire(models.Model):
-    email = models.ForeignKey(User, on_delete=models.CASCADE)
+    email = models.ForeignKey(Participant, on_delete=models.CASCADE)
     answer = models.IntegerField()
     time_stamp = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.email)+" answered: "+str(self.answer)
 
 
 # Model that defines format for alertness questionnaire answers storage
 class DemographicQuestionnaire(models.Model):
-    email = models.ForeignKey(User, on_delete=models.CASCADE)
-    # answer = ArrayField(models.CharField(max_length=250, blank=True), size=8)
+    email = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    answer = models.CharField(max_length=250)
     time_stamp = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.email)+" answered: "+str(self.answer)
+
 
 
 # WORK related models | DUMMY MODELS
@@ -136,6 +143,30 @@ class DemographicQuestionnaire(models.Model):
 class ParticipantRequest(models.Model):
     email = models.CharField(max_length=200)
     request_type = models.IntegerField()
+
+
+class PostDemographicRequest(models.Model):
+    email = models.CharField(max_length=200)
+    request_type = models.IntegerField()
+    answer = models.CharField(max_length=250)
+    time_stamp = models.DateTimeField()
+
+
+class PostAlertnessRequest(models.Model):
+    email = models.CharField(max_length=200)
+    request_type = models.IntegerField()
+    answer = models.IntegerField()
+    time_stamp = models.DateTimeField()
+
+
+
+
+
+
+
+
+
+
 
 
 

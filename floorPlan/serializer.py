@@ -7,28 +7,28 @@ from rest_framework.exceptions import ValidationError
 
 from floorPlan.form import ParticipantForm
 from .models import *
-# from survey.models import *
+from survey.models import Survey, Question
 
 
 # Function to check whether a Participant with email matches a Participant in the database
-def user_authentication_check(email):
+def participant_authentication_check(email):
     try:
-        user = Participant.objects.get(email=email)
+        participant = Participant.objects.get(email=email)
     except:
         return False
-    if user.email == email:
+    if participant.email == email:
         return True
     else:
         return False
 
 
 # Function to check whether a Participant with email is logged in
-def user_login_check(email):
+def participant_login_check(email):
     try:
-        user = Participant.objects.get(email=email)
+        participant = Participant.objects.get(email=email)
     except:
         return False
-    if user.email == email:
+    if participant.email == email:
         return True
     else:
         return False
@@ -75,6 +75,7 @@ class WindowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Window
         fields = '__all__'
+
 
 # Serializes a Window object to/from JSON
 class DoorSerializer(serializers.ModelSerializer):
@@ -136,20 +137,20 @@ class ParticipantSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-# # Serializes a Survey object to/from JSON
-# class SurveySerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = Survey
-#         fields = "__all__"
-#
-#
-# # Serializes a Question object to/from JSON
-# class QuestionSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = Question
-#         exclude = ()
+# Serializes a Survey object to/from JSON
+class SurveySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Survey
+        fields = "__all__"
+
+
+# Serializes a Question object to/from JSON
+class QuestionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Question
+        fields = '__all__'
 
 
 class ParticipantRequestSerializer(serializers.ModelSerializer):
@@ -186,7 +187,7 @@ class ParticipantLoginSerializer(serializers.ModelSerializer):
 
 
 # Validate that Participant making a request is logged in
-class AuthenticateUser(serializers.ModelSerializer):
+class AuthenticateParticipant(serializers.ModelSerializer):
 
     class Meta:
         model = ParticipantRequest
@@ -195,9 +196,9 @@ class AuthenticateUser(serializers.ModelSerializer):
     # Overwrite default authentication for Participant
     def validate(self, data):
         email = data.get("email", None)
-        if not user_authentication_check(email):
+        if not participant_authentication_check(email):
             raise ValidationError("User: "+email+" does not exist")
-        if not user_login_check(email):
+        if not participant_login_check(email):
             raise ValidationError("User "+email+" is not logged in")
         return data
 
@@ -212,8 +213,37 @@ class AlertnessQuestionnaireSerializer(serializers.ModelSerializer):
     # Overwrite default authentication for Participant
     def validate(self, data):
         email = data.get("email", None)
-        if not user_authentication_check(email):
+        if not participant_authentication_check(email):
             raise ValidationError("User: " + email + " does not exist")
-        if not user_login_check(email):
+        if not participant_login_check(email):
             raise ValidationError("User " + email + " is not logged in")
         return data
+
+
+# Validate that Participant making a request is logged in
+class DemographicQuestionnaireSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DemographicQuestionnaire
+        fields = "__all__"
+
+    # Overwrite default authentication for Participant
+    def validate(self, data):
+        email = data.get("email", None)
+        if not participant_authentication_check(email):
+            raise ValidationError("User: " + email + " does not exist")
+        if not participant_login_check(email):
+            raise ValidationError("User " + email + " is not logged in")
+        return data
+
+
+class AlertnessQuestionnairePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostAlertnessRequest
+        fields = '__all__'
+
+
+class DemographicQuestionnairePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostDemographicRequest
+        fields = '__all__'

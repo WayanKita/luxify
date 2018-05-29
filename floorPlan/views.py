@@ -141,10 +141,10 @@ class LoginAPI(APIView):
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class SensorAPI(APIView):
-    serializer_class = AuthenticateUser
+    serializer_class = AuthenticateParticipant
 
     def post(self, request):
-        serializer = AuthenticateUser(data=request.data)
+        serializer = AuthenticateParticipant(data=request.data)
         if serializer.is_valid():
             return Response(SensorSerializer(Sensor.objects.all(), many=True).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -156,10 +156,10 @@ class SensorAPI(APIView):
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class TableAPI(APIView):
-    serializer_class = AuthenticateUser
+    serializer_class = AuthenticateParticipant
 
     def post(self, request):
-        serializer = AuthenticateUser(data=request.data)
+        serializer = AuthenticateParticipant(data=request.data)
         if serializer.is_valid():
             return Response(DeskSerializer(Desk.objects.all(), many=True).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -171,10 +171,10 @@ class TableAPI(APIView):
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class WindowAPI(APIView):
-    serializer_class = AuthenticateUser
+    serializer_class = AuthenticateParticipant
 
     def post(self, request):
-        serializer = AuthenticateUser(data=request.data)
+        serializer = AuthenticateParticipant(data=request.data)
         if serializer.is_valid():
             return Response(WindowSerializer(Window.objects.all(), many=True).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -186,10 +186,10 @@ class WindowAPI(APIView):
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class RoomAPI(APIView):
-    serializer_class = AuthenticateUser
+    serializer_class = AuthenticateParticipant
 
     def post(self, request):
-        serializer = AuthenticateUser(data=request.data)
+        serializer = AuthenticateParticipant(data=request.data)
         if serializer.is_valid():
             return Response(RoomSerializer(Room.objects.all(), many=True).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -204,7 +204,7 @@ class RoomGeneratorAPI(APIView):
     serializer_class = ParticipantRequestSerializer
 
     def post(self, request):
-        serializer = AuthenticateUser(data=request.data)
+        serializer = AuthenticateParticipant(data=request.data)
         if serializer.is_valid():
             if request.data.get('request_type') == 0:
                 return Response(RoomSerializer(Room.objects.all(), many=True).data, status=status.HTTP_200_OK)
@@ -215,46 +215,51 @@ class RoomGeneratorAPI(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# # Title : Receive alertness questionnaire answer.
-# # URL : /floorPlan/android_alertness_questionnaire
-# # Method : POST
-# # Data Params : [{ email : [string], time_stamp : [date:time], answer : int[1-10]}]
-# # Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
-# class AlertnessQuestionnaireAPI(APIView):
-#     serializer_class = ParticipantRequestSerializer
-#
-#     def post(self, request):
-#         serializer = AuthenticateUser(data=request.data)
-#         if serializer.is_valid():
-#             alert_answer = AlertnessQuestionnaire()
-#             alert_answer.email = request.get('email')
-#             alert_answer.time_stamp = request.get('time_stamp')
-#             alert_answer.time_stamp = request.get('answer')
-#             alert_answer.save()
-#             return Response(AlertnessQuestionnaireSerializer(alert_answer).data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#
-# # Title : Receive alertness questionnaire answer.
-# # URL : /floorPlan/android_alertness_questionnaire
-# # Method : POST
-# # Data Params : [{ email : [string], time_stamp : [date:time], answer : int[1-10]}]
-# # Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
-# class DemographicQuestionnaireAPI(APIView):
-#     serializer_class = ParticipantRequestSerializer
-#
-#     def get(self, request):
-#         survey = Question.objects.all()
-#         serializer = QuestionSerializer(survey, many=True)
-#         return Response(serializer.data)
-#
-#     def post(self, request):
-#         serializer = AuthenticateUser(data=request.data)
-#         if serializer.is_valid():
-#             demographic_answer = AlertnessQuestionnaire()
-#             demographic_answer.email = request.get('email')
-#             demographic_answer.time_stamp = request.get('time_stamp')
-#             demographic_answer.time_stamp = request.get('answer')
-#             demographic_answer.save()
-#             return Response(AlertnessQuestionnaireSerializer(demographic_answer).data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# Title : Receive alertness questionnaire answer.
+# URL : /floorPlan/android_alertness_questionnaire
+# Method : POST
+# Data Params : [{ email : [string], time_stamp : [date:time], answer : int[1-10]}]
+# Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
+class AlertnessQuestionnaireAPI(APIView):
+    serializer_class = AlertnessQuestionnairePostSerializer
+
+    def post(self, request):
+        serializer = AuthenticateParticipant(data=request.data)
+        if serializer.is_valid():
+            alert_answer = AlertnessQuestionnaire()
+            alert_answer.email = Participant.objects.get(email=request.data.get("email"))
+            alert_answer.time_stamp = request.data.get('time_stamp')
+            alert_answer.answer = request.data.get('answer')
+            alert_answer.save()
+            return Response(AlertnessQuestionnaireSerializer(alert_answer).data, status=status.HTTP_201_CREATED)
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Title : Receive alertness questionnaire answer.
+# URL : /floorPlan/android_alertness_questionnaire
+# Method : POST
+# Data Params : [{ email : [string], time_stamp : [date:time], answer : int[1-10]}]
+# Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
+class DemographicQuestionnaireAPI(APIView):
+    serializer_class = DemographicQuestionnairePostSerializer
+
+    def get(self, request):
+        survey = Question.objects.all()
+        serializer = QuestionSerializer(survey, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = AuthenticateParticipant(data=request.data)
+        if serializer.is_valid():
+            demographic_answer = DemographicQuestionnaire()
+            demographic_answer.email = Participant.objects.get(email=request.data.get("email"))
+            demographic_answer.time_stamp = request.data.get('time_stamp')
+            demographic_answer.answer = request.data.get('answer')
+            demographic_answer.save()
+            return Response(DemographicQuestionnaireSerializer(demographic_answer).data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# SURVEY MODELS
+
