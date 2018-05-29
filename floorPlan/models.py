@@ -88,7 +88,11 @@ class Window(models.Model):
 
 # Model that defines the blueprint of a Window on the Database  # android application names
 class Door(models.Model):
+<<<<<<< HEAD
     room = models.ForeignKey(Room,                             on_delete=models.CASCADE)
+=======
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="door")
+>>>>>>> 633dbfdf576944406c19df306d73debfca2db3ad
     margin = models.IntegerField()                              # margin
     length = models.IntegerField()                              # length
     side = models.IntegerField()                                # side; int[1-4] defines the side the window is on

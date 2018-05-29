@@ -76,6 +76,13 @@ class WindowSerializer(serializers.ModelSerializer):
         model = Window
         fields = '__all__'
 
+# Serializes a Window object to/from JSON
+class DoorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Door
+        fields = '__all__'
+
 
 # Serializes a Chair object to/from JSON
 class ChairSerializer(serializers.ModelSerializer):
@@ -98,11 +105,34 @@ class RoomGeneratorSerializer(serializers.ModelSerializer):
     desk = TableSerializer(many=True, read_only=True)
     window = WindowSerializer(many=True, read_only=True)
     chair = ChairSerializer(many=True, read_only=True)
+<<<<<<< HEAD
     door = ChairSerializer(many=True, read_only=True)
+=======
+    door = DoorSerializer(many=True, read_only=True)
+>>>>>>> 633dbfdf576944406c19df306d73debfca2db3ad
 
     class Meta:
         model = Room
         fields = ("room_name", "x_length", "y_length", "desk", "window", "chair", "door")
+<<<<<<< HEAD
+=======
+
+# class UserAndroidSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = User
+#         fields = ['username', 'password']
+#         email = serializers.EmailField()
+#
+#     def validate_username(self, email):
+#         username = data.get("username", None)
+#         user = User.objects.filter(username=username)
+#         #if user.exists():
+#         if User.objects.filter(username=username).exists():
+#             raise ValidationError("This email already exists")
+#         else:
+#             return email
+>>>>>>> 633dbfdf576944406c19df306d73debfca2db3ad
 
 
 # Serializes a Participant object to/from JSON
