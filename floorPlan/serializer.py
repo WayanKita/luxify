@@ -28,7 +28,7 @@ def participant_login_check(email):
         participant = Participant.objects.get(email=email)
     except:
         return False
-    if participant.email == email:
+    if participant.logged_in:
         return True
     else:
         return False
@@ -181,8 +181,9 @@ class ParticipantLoginSerializer(serializers.ModelSerializer):
         # if such user is found; does Participant password match POST body password else raise ValidationError
         if not user.password == password:
             raise ValidationError("Password for "+email+" is incorrect")
-        user.loggedIn = True                                        # changes the log in state of Participant to True
-        user.save()                                                 # saves changes made to Participant on the database
+
+        user.logged_in = True                                        # changes the log in state of Participant to True
+        user.save()                                                  # saves changes made to Participant on the database
         return data
 
 
