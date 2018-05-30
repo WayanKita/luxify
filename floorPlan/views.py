@@ -206,7 +206,7 @@ class RoomGeneratorAPI(APIView):
     def post(self, request):
         serializer = AuthenticateParticipant(data=request.data)
         if serializer.is_valid():
-            if request.data.get('request_type') == 0:
+            if request.data.get('request_type') == "0":
                 return Response(RoomSerializer(Room.objects.all(), many=True).data, status=status.HTTP_200_OK)
             else:
                 room = Room.objects.filter(pk=request.data.get('request_type'))
@@ -218,7 +218,7 @@ class RoomGeneratorAPI(APIView):
 # Title : Receive alertness questionnaire answer.
 # URL : /floorPlan/android_alertness_questionnaire
 # Method : POST
-# Data Params : [{ email : [string], time_stamp : [date:time], answer : int[1-10]}]
+# Data Params : [{ email : [string], time_stamp : [YYYY-MM-DDTHH:MM], answer : int[1-10]}]
 # Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
 class AlertnessQuestionnaireAPI(APIView):
     serializer_class = AlertnessQuestionnairePostSerializer
@@ -239,7 +239,7 @@ class AlertnessQuestionnaireAPI(APIView):
 # Title : Receive alertness questionnaire answer.
 # URL : /floorPlan/android_alertness_questionnaire
 # Method : POST
-# Data Params : [{ email : [string], time_stamp : [date:time], answer : int[1-10]}]
+# Data Params : [{ email : [string], time_stamp : [YYYY-MM-DDTHH:MM], answer : [comma separated string]]
 # Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
 class DemographicQuestionnaireAPI(APIView):
     serializer_class = DemographicQuestionnairePostSerializer
