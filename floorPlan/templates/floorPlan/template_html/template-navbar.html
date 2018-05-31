@@ -63,17 +63,24 @@
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Window
                     </a>
                 </li>
-
-                <!-- User button -->
-                <li>
+                <li class="{% block participant_active %} {% endblock %}">
                     <a href="{% url 'floorPlan:person-add' %}">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; User
                     </a>
                 </li>
-                <!-- Sensor button -->
-                <li>
+                <li class="{% block sensor_active %} {% endblock %}">
                     <a href="{% url 'floorPlan:sensor-add' %}">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Sensor
+                    </a>
+                </li>
+                <li class="{% block alertness_active %} {% endblock %}">
+                    <a href="{% url 'floorPlan:alertness-detail' %}">
+                        <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>&nbsp; Alertness Questionnaire
+                    </a>
+                </li>
+                <li class="{% block demographic_active %} {% endblock %}">
+                    <a href="{% url 'floorPlan:demographic-detail' %}">
+                        <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>&nbsp; Demographic Questionnaire
                     </a>
                 </li>
            </ul>

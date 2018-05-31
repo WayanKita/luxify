@@ -108,6 +108,7 @@ class Participant(models.Model):                                        # User o
     password = models.CharField(max_length=200)                         # password
     logged_in = models.BooleanField(default=False)                      # loggedIn
     survey_done = models.BooleanField(default=False)                    # demographicStatus ; not used
+    in_workspace = models.BooleanField(default=False)                   # demographicStatus ; not used
     room = models.IntegerField(blank=True, null=True, default=1)        # roomID
     desk = models.IntegerField(blank=True, null=True, default=1)        # deskID
 
@@ -136,13 +137,16 @@ class DemographicQuestionnaire(models.Model):
         return str(self.email)+" answered: "+str(self.answer)
 
 
-
 # WORK related models | DUMMY MODELS
-
 # Used to simplify API testing
 class ParticipantRequest(models.Model):
     email = models.CharField(max_length=200)
     request_type = models.IntegerField()
+
+
+class ParticipantWorkspace(models.Model):
+    email = models.CharField(max_length=200)
+    in_workspace = models.BooleanField(default=False)
 
 
 class PostDemographicRequest(models.Model):

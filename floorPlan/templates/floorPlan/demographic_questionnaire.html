@@ -1,0 +1,33 @@
+{% extends 'floorPlan/template_html/template-navbar.html' %}
+
+<!-- Sets title to page -->
+{% block title %}
+    Demographic Questionnaire
+{% endblock %}
+
+<!-- Set "alertness" button to active in nav -->
+{% block demographic_active %}
+    active
+{% endblock %}
+
+<!-- Beginning of black from Templates/template-navbar.html-->
+{% block body %}
+
+<table style="width:100%">
+    <tr>
+    <th>Participant</th>
+    <th>Answer</th>
+    <th>Timestamp</th>
+    </tr>
+    {% for questionnaire in all_questionnaire %}
+        <tr>
+            <td>{{ questionnaire.email }}</td>
+            <td>{{ questionnaire.answer }}</td>
+            <td>{{ questionnaire.time_stamp }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+
+
+{% endblock %}

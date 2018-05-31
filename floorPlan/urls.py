@@ -20,6 +20,7 @@ urlpatterns = [
     re_path(r'^android_desk/$', views.TableAPI.as_view(), name='android-desk'),
     re_path(r'^add_user/$', views.ParticipantFormView.as_view(), name='person-add'),
     re_path(r'^android_window/$', views.WindowAPI.as_view(), name='android-window'),
+    re_path(r'^android_workspace/$', views.WorkspaceAPI.as_view(), name='android-workspace'),
     re_path(r'^android_room_generator/$', views.RoomGeneratorAPI.as_view(), name='android-window'),
 
     # Create URLs
@@ -34,5 +35,7 @@ urlpatterns = [
 
     # Detail view URLs
     re_path(r'^room/(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='room-detail'),
+    re_path(r'^alertness_questionnaire/$', views.alertness_questionnaire, name='alertness-detail'),
+    re_path(r'^demographic_questionnaire/$', views.demographic_questionnaire, name='demographic-detail'),
 
 ]

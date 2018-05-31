@@ -27,6 +27,24 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
+def alertness_questionnaire(request):
+    all_questionnaire = AlertnessQuestionnaire.objects.all()
+    template = loader.get_template('floorPlan/alertness_questionnaire.html')
+    context = {
+        'all_questionnaire': all_questionnaire,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def demographic_questionnaire(request):
+    all_questionnaire = DemographicQuestionnaire.objects.all()
+    template = loader.get_template('floorPlan/demographic_questionnaire.html')
+    context = {
+        'all_questionnaire': all_questionnaire,
+    }
+    return HttpResponse(template.render(context, request))
+
+
 # CREATE VIEWS
 # Defines the fields for the Room form on room_form.html
 class RoomCreate(CreateView):
@@ -63,6 +81,12 @@ class SensorCreate(CreateView):
 class DetailView(generic.DetailView):
     model = Room
     template_name = 'floorPlan/room_detail.html'
+
+
+# Defines the detailed view of a Room on room_detail.html
+# class AlertnessQuestionnaireView(generic.DetailView):
+#     model = AlertnessQuestionnaire
+#     template_name = 'floorPlan/alertness_questionnaire.html'
 
 
 # DELETE VIEWS
@@ -108,8 +132,8 @@ class RegisterAPI(APIView):
     form_class = ParticipantForm
 
     def get(self, request):
-        user = User.objects.all()
-        serializer = ParticipantSerializer(user, many=True)
+        participant = Participant.objects.all()
+        serializer = ParticipantSerializer(participant, many=True)
         return Response(serializer.data)
 
     def post(self, request):
@@ -259,6 +283,22 @@ class DemographicQuestionnaireAPI(APIView):
             demographic_answer.save()
             return Response(DemographicQuestionnaireSerializer(demographic_answer).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Title : Get a bundled room plan (with table(with chair), windows and doors) information.
+# URL : /floorPlan/android_room_generator
+# Method : POST
+# Data Params : [{ email : [string], room_type : [rooms] | [int(1+)]}]
+# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
+class WorkspaceAPI(APIView):
+    serializer_class = ParticipantInWorkSpaceSerializer
+
+    def post(self, request):
+        serializer = ParticipantToggleWorkspaceSerializer(data=request.data)
+        if serializer.is_valid():
+            return Response(ParticipantToggleWorkspaceSerializer().data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # SURVEY MODELS

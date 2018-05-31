@@ -13,7 +13,7 @@ class ParticipantForm(forms.ModelForm):
         model = Participant
         fields = ['email', 'password']
         # fields = '__all__'
-    # def validate(self, data):
-    #     print("lol")
-    #     if Participant.objects.filter(email=self.email).exists():
-    #         raise ValidationError('Name must be unique per site')
+
+    def validate(self, data):
+        if Participant.objects.filter(email=self.email).exists():
+            raise ValidationError('Name must be unique per site')
