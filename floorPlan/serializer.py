@@ -162,6 +162,8 @@ class ParticipantRequestSerializer(serializers.ModelSerializer):
 # Validates a Participant object sent by Android application
 class ParticipantLoginSerializer(serializers.ModelSerializer):
 
+    email = serializers.CharField()
+
     class Meta:
         model = Participant
         fields = "__all__"

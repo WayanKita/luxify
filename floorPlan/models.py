@@ -104,7 +104,7 @@ class Door(models.Model):
 
 # Model that defines the blueprint of a Participant on the Database     # Android naming
 class Participant(models.Model):                                        # User object
-    email = models.CharField(max_length=200)                            # email
+    email = models.CharField(max_length=200, unique=True, null=False)   # email
     password = models.CharField(max_length=200)                         # password
     logged_in = models.BooleanField(default=False)                      # loggedIn
     survey_done = models.BooleanField(default=False)                    # demographicStatus ; not used
