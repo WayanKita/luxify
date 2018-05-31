@@ -147,6 +147,7 @@ class ParticipantRequest(models.Model):
 class ParticipantWorkspace(models.Model):
     email = models.CharField(max_length=200)
     in_workspace = models.BooleanField(default=False)
+    room = models.IntegerField()
 
 
 class PostDemographicRequest(models.Model):

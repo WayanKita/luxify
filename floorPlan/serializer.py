@@ -233,6 +233,7 @@ class ParticipantToggleWorkspaceSerializer(serializers.ModelSerializer):
         # get email and password from POST body
         email = data.get("email", None)
         in_workspace = data.get("in_workspace", None)
+        room = data.get("room", None)
         # Try to find a Participant with matching email from POST body else raise ValidationError
         try:
             user = Participant.objects.get(email=email)
@@ -240,6 +241,7 @@ class ParticipantToggleWorkspaceSerializer(serializers.ModelSerializer):
             raise ValidationError("User: " + email + " does not exist")
             # if such user is found; does Participant password match POST body password else raise ValidationError
         user.in_workspace = in_workspace
+        user.room = room
         user.save()
         return data
 
