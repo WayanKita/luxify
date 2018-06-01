@@ -318,5 +318,28 @@ class WorkspaceAPI(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Title : Get a bundled room plan (with table(with chair), windows and doors) information.
+# URL : /floorPlan/android_room_generator
+# Method : POST
+# Data Params : [{ email : [string], room_type : [rooms] | [int(1+)]}]
+# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
+class QuestionnaireCheckAPI(APIView):
+    serializer_class = ParticipantRequestSerializer
+
+    def post(self, request):
+        serializer = AuthenticateParticipant(data=request.data)
+        if serializer.is_valid():
+            if request.data.get('request_type') == "0":
+                participant = Participant.objects.get(email=request.data.get('email'))
+                return Response(ParticipantSerializer(participant).data, status=status.HTTP_200_OK)
+            if request.data.get('request_type') == "1":
+                participant = Participant.objects.get(email=request.data.get('email'))
+                participant.survey_done = True
+                participant.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 # SURVEY MODELS
 
