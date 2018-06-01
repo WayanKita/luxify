@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}
+            Luxify
+        {% endblock %}
+    </title>
+
+    {% load staticfiles %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'FloorPlan/style.css' %}" />﻿
+
+    <link rel="shortcut icon" type="image/png" href="{{STATIC_URL}}floorPlan/bulb.ico"/>
+
+
+</head>
+<body>
+<nav class="navbar navbar">
+    <div class="container-fluid">
+
+        <!-- Header -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'floorPlan:home' %}">Luxify</a>
+        </div>
+
+        <!-- Items -->
+        <div class="collapse navbar-collapse" id="topNavBar">
+            <ul class="nav navbar-nav">
+                <li class="{% block alertness_active %} {% endblock %}">
+                    <a href="{% url 'floorPlan:alertness-detail' %}">
+                        <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>&nbsp; Alertness Questionnaire
+                    </a>
+                </li>
+                <li class="{% block demographic_active %} {% endblock %}">
+                    <a href="{% url 'floorPlan:demographic-detail' %}">
+                        <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>&nbsp; Demographic Questionnaire
+                    </a>
+                </li>
+                <li class="{% block user_active %} {% endblock %}">
+                    <a href="{% url 'floorPlan:user-detail' %}">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; User
+                    </a>
+                </li>
+           </ul>
+        </div>
+    </div>
+</nav>
+    {% block body_nav_data %}
+    {% endblock %}
+</body>
+</html>

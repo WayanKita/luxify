@@ -13,7 +13,7 @@ class Room(models.Model):
     y_length = models.IntegerField()
 
     def get_absolute_url(self):
-        return reverse('floorPlan:index')
+        return reverse('floorPlan:room-plan')
 
     # Defines how a Room object is displayed
     def __str__(self):
@@ -32,7 +32,7 @@ class Desk(models.Model):
     # extra field chair on android app
 
     def get_absolute_url(self):
-        return reverse('floorPlan:index')
+        return reverse('floorPlan:room-plan')
 
     # Defines how a Table object is displayed
     def __str__(self):
@@ -49,7 +49,7 @@ class Chair(models.Model):
     occupied = models.BooleanField(default=False)                        # occupied is a boolean, False when created
 
     def get_absolute_url(self):
-        return reverse('floorPlan:index')
+        return reverse('floorPlan:room-plan')
 
     # Defines how a Chair object is displayed
     def __str__(self):
@@ -76,7 +76,7 @@ class Window(models.Model):
     # pk -> windowID
 
     def get_absolute_url(self):
-        return reverse('floorPlan:index')
+        return reverse('floorPlan:room-plan')
 
     # Defines how a Window object is displayed
     def __str__(self):
@@ -95,7 +95,7 @@ class Door(models.Model):
     # pk -> windowID
 
     def get_absolute_url(self):
-        return reverse('floorPlan:room_detail', kwargs={'pk': self.pk})
+        return reverse('floorPlan:room-plan')
 
     # Defines how a Window object is displayed
     def __str__(self):
@@ -111,6 +111,7 @@ class Participant(models.Model):                                        # User o
     in_workspace = models.BooleanField(default=False)                   # demographicStatus ; not used
     room = models.IntegerField(blank=True, null=True, default=1)        # roomID
     desk = models.IntegerField(blank=True, null=True, default=1)        # deskID
+    profile = models.IntegerField(blank=True, null=True, default=1)        # deskID
 
     # Defines how a User object is displayed
     def __str__(self):

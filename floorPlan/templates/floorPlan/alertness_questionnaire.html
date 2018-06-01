@@ -1,4 +1,4 @@
-{% extends 'floorPlan/template_html/template-navbar.html' %}
+{% extends 'floorPlan/template_html/template_navbar_data.html' %}
 
 <!-- Sets title to page -->
 {% block title %}
@@ -11,14 +11,17 @@
 {% endblock %}
 
 <!-- Beginning of black from Templates/template-navbar.html-->
-{% block body %}
+{% block body_nav_data %}
 
-<table style="width:100%">
-    <tr>
-    <th>Participant</th>
-    <th>Answer</th>
-    <th>Timestamp</th>
-    </tr>
+<table style="width:66%" class="table table-striped table-dark">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Participant</th>
+            <th scope="col">Answer</th>
+            <th scope="col">Timestamp</th>
+        </tr>
+    </thead>
+
     {% for answer in all_questionnaire %}
         <tr>
             <td>{{ answer.email }}</td>

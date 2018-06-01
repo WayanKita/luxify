@@ -16,33 +16,45 @@ from .models import *
 from .serializer import *
 # from survey.models import *
 
+
 # INDEX PAGE
 # Defines presentation of the index page /floorPlan
-def index(request):
+def room_plan(request):
     all_rooms = Room.objects.all()
-    template = loader.get_template('floorPlan/floorPlan.html')
-    context = {
-        'all_rooms': all_rooms,
-    }
-    return HttpResponse(template.render(context, request))
+    return render(request,
+                  'floorPlan/floorPlan.html',
+                  {'all_rooms': all_rooms})
+
+
+# Defines presentation of the index page /floorPlan
+def home(request):
+    all_rooms = Room.objects.all()
+    return render(request,
+                  'floorPlan/home.html',
+                  {'all_rooms': all_rooms})
 
 
 def alertness_questionnaire(request):
     all_questionnaire = AlertnessQuestionnaire.objects.all()
-    template = loader.get_template('floorPlan/alertness_questionnaire.html')
-    context = {
-        'all_questionnaire': all_questionnaire,
-    }
-    return HttpResponse(template.render(context, request))
+    return render(request,
+                  'floorPlan/alertness_questionnaire.html',
+                  {'all_questionnaire': all_questionnaire})
 
 
 def demographic_questionnaire(request):
     all_questionnaire = DemographicQuestionnaire.objects.all()
-    template = loader.get_template('floorPlan/demographic_questionnaire.html')
-    context = {
-        'all_questionnaire': all_questionnaire,
-    }
-    return HttpResponse(template.render(context, request))
+    return render(request,
+                  'floorPlan/demographic_questionnaire.html',
+                  {'all_questionnaire': all_questionnaire})
+
+
+def user(request):
+    all_participant = Participant.objects.all()
+    all_room = Room.objects.all()
+    return render(request,
+                  'floorPlan/user.html',
+                  {'all_participant': all_participant,
+                   'all_room:': all_room})
 
 
 # CREATE VIEWS
@@ -93,7 +105,7 @@ class DetailView(generic.DetailView):
 # Defines the delete view of a Room on room_detail.html
 class RoomDelete(DeleteView):
     model = Room
-    success_url = reverse_lazy('floorPlan:index')
+    success_url = reverse_lazy('floorPlan:room-plan')
 
 
 class ParticipantFormView(View):
@@ -281,6 +293,11 @@ class DemographicQuestionnaireAPI(APIView):
             demographic_answer.time_stamp = request.data.get('time_stamp')
             demographic_answer.answer = request.data.get('answer')
             demographic_answer.save()
+            user = Participant.objects.get(email=request.data.get("email"))
+            profile = request.data.get('answer')
+            profile.split(",")
+            profile.join("")
+            user.profile = profile
             return Response(DemographicQuestionnaireSerializer(demographic_answer).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

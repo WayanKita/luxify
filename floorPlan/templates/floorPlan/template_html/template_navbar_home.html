@@ -1,0 +1,36 @@
+{% extends 'floorPlan/template_html/base_template.html' %}
+{% block body %}
+<nav class="navbar navbar">
+    <div class="container-fluid">
+
+        <!-- Header -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'floorPlan:home' %}">Luxify</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="topNavBar">
+            <ul class="nav navbar-nav">
+
+                <li class="{% block create_active %} {% endblock %}">
+                    <a href="{% url 'floorPlan:room-plan' %}">
+                        <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>&nbsp; Room Creator
+                    </a>
+                </li>
+                <li class="{% block data_active %} {% endblock %}">
+                    <a href="{% url 'floorPlan:alertness-detail' %}">
+                        <span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>&nbsp; Data
+                    </a>
+                </li>
+
+           </ul>
+        </div>
+    </div>
+</nav>
+    {% block body_nav_home %}
+    {% endblock %}
+{% endblock %}
