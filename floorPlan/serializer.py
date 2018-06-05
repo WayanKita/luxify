@@ -296,6 +296,23 @@ class AuthenticateParticipant(serializers.ModelSerializer):
 
 
 # Validate that Participant making a request is logged in
+class AuthenticateUser(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserRequest
+        fields = "__all__"
+
+    # Overwrite default authentication for Participant
+    def validate(self, data):
+        email = data.get("email", None)
+        if not participant_authentication_check(email):
+            raise ValidationError("User: "+email+" does not exist")
+        if not participant_login_check(email):
+            raise ValidationError("User "+email+" is not logged in")
+        return data
+
+
+# Validate that Participant making a request is logged in
 class AlertnessQuestionnaireSerializer(serializers.ModelSerializer):
 
     class Meta:

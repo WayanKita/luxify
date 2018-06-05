@@ -41,4 +41,6 @@ urlpatterns = [
     re_path(r'^data/demographic_questionnaire/$', views.demographic_questionnaire, name='demographic-detail'),
     re_path(r'^data/user/$', views.user, name='user-detail'),
 
+    re_path(r'^api-token-auth/', views.obtain_auth_token)
+
 ]

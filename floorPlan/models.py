@@ -8,6 +8,9 @@ from django.urls import reverse
 
 
 # Model that defines the blueprint of a Room on the Database
+from rest_framework.authtoken.models import Token
+
+
 class Room(models.Model):
     room_name = models.CharField(max_length=10)                             # code is a string of max length 10
     x_length = models.IntegerField()                                        # x_length is an integer of undefined length
@@ -191,7 +194,13 @@ class ParticipantProfiles(models.Model):
 # Used to simplify API testing
 class ParticipantRequest(models.Model):
     email = models.CharField(max_length=200)
-    request_type = models.IntegerField()
+    request_type = models.IntegerField(blank=True)
+
+
+# Used to simplify API testing
+class UserRequest(models.Model):
+    email = models.CharField(max_length=200)
+    request_type = models.IntegerField(blank=True)
 
 
 class ParticipantWorkspace(models.Model):

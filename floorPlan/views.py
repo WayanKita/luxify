@@ -262,10 +262,10 @@ class AlertnessQuestionnaireAPI(APIView):
     serializer_class = AlertnessQuestionnairePostSerializer
 
     def post(self, request):
-        serializer = AuthenticateParticipant(data=request.data)
+        serializer = AuthenticateUser(data=request.data)
         if serializer.is_valid():
             alert_answer = AlertnessQuestionnaire()
-            alert_answer.email = Participant.objects.get(email=request.data.get("email"))
+            alert_answer.email = User.objects.get(email=request.data.get("email"))
             alert_answer.time_stamp = request.data.get('time_stamp')
             alert_answer.answer = request.data.get('answer')
             alert_answer.save()
@@ -374,3 +374,6 @@ class RegisterUserAPI(APIView):
             user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
