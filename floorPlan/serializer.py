@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from rest_framework.exceptions import ValidationError
 
 
-from floorPlan.form import ParticipantForm
+from floorPlan.form import ParticipantForm, UserForm
 from .models import *
 from survey.models import Survey, Question
 
@@ -49,15 +49,23 @@ class RoomSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = ParticipantForm
-        fields = '__all__'
+        model = User
+        fields = ('username', 'password')
+
+    def validate(self, data):
+        username = data.get("username", None)
+        if User.objects.filter(username=username).exists():
+            raise ValidationError("This email already exists")
+        else:
+            return data
+
 
 
 # Serializes a Sensor object to/from JSON
 class SensorSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Sensor
+        model = Sensor_Table
         fields = '__all__'
 
 
@@ -208,7 +216,7 @@ class ParticipantRegisterSerializer(serializers.ModelSerializer):
         except:
             user = Participant()
             user.email = email
-            user.email = password
+            user.password = password
             user.logged_in = True
         if not user.email == email:
             raise ValidationError("User: "+email+" does not exist")
@@ -218,6 +226,30 @@ class ParticipantRegisterSerializer(serializers.ModelSerializer):
 
         user.logged_in = True                                        # changes the log in state of Participant to True
         user.save()                                                  # saves changes made to Participant on the database
+        return data
+
+
+# Validates a Participant object sent by Android application
+class UserRegisterSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = "__all__"
+
+    # Overwrites is_valid function from Django
+    def validate(self, data):
+        # get email and password from POST body
+        email = data.get("email", None)
+        password = data.get("password", None)
+        # Try to find a Participant with matching email from POST body else raise ValidationError
+        try:
+            user = Participant.objects.get(email=email)
+            raise ValidationError("User: " + email + " already exists")
+        except:
+            user = User()
+            user.email = email
+            user.set_password(password)                              # changes the log in state of Participant to True
+            user.save()  # saves changes made to Participant on the database
         return data
 
 

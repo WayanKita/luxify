@@ -11,7 +11,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .form import ParticipantForm
+from .form import *
 from .models import *
 from .serializer import *
 # from survey.models import *
@@ -84,8 +84,8 @@ class WindowCreate(CreateView):
 
 # Defines the fields for the Sensor form on sensor_form.html
 class SensorCreate(CreateView):
-    model = Sensor
-    fields = ['name', 'date', 'value']
+    model = Sensor_Table
+    fields = ['desk', 'time_stamp', 'light_value', 'occupancy_value']
 
 
 # DETAILED VIEWS
@@ -124,7 +124,6 @@ class ParticipantFormView(View):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             user.save()
-
             user = authenticate(username=email, password=password)
             if user is not None:
                 if user.is_active:
@@ -185,7 +184,7 @@ class SensorAPI(APIView):
     def post(self, request):
         serializer = AuthenticateParticipant(data=request.data)
         if serializer.is_valid():
-            return Response(SensorSerializer(Sensor.objects.all(), many=True).data, status=status.HTTP_200_OK)
+            return Response(SensorSerializer(Sensor_Table.objects.all(), many=True).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -297,10 +296,17 @@ class DemographicQuestionnaireAPI(APIView):
             demographic_answer.answer = request.data.get('answer')
             demographic_answer.save()
             user = Participant.objects.get(email=request.data.get("email"))
-            profile = request.data.get('answer')
-            profile.split(",")
-            profile.join("")
-            user.profile = profile
+            try:
+                profile_table = ParticipantProfiles.objects.get(answer=request.data.get("answer"))
+                user.profile = profile_table.profile
+            except:
+                count = ParticipantProfiles.objects.all().count()
+                user.profile = count+1
+                new_profile = ParticipantProfiles()
+                new_profile.answer = request.data.get('answer')
+                new_profile.profile = count+1
+                user.save()
+                new_profile.save()
             return Response(DemographicQuestionnaireSerializer(demographic_answer).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -343,6 +349,28 @@ class QuestionnaireCheckAPI(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 # SURVEY MODELS
 
+
+# SECURE USER
+
+
+# API VIEWS
+# Title : Get registered Participants | Register Participants.
+# URL : /floorPlan/android_add_user
+# Method : GET | POST
+# Data Params : [{ email : [string], password : [string]}]
+# Response Codes: Success (201 CREATED), Bad Request (400),
+class RegisterUserAPI(APIView):
+    serializer_class = UserSerializer
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            username = request.data.get("username")
+            password = request.data.get("password")
+            user = User.objects.create_user(username=username)
+            user.set_password(password)
+            user.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

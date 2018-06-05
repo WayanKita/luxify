@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.dispatch import receiver
 from django.urls import reverse
 
 # Models in Django represent skeleton (aka blueprints) for databases to create tables on the database
@@ -57,14 +58,16 @@ class Chair(models.Model):
 
 
 # Model that defines the blueprint of a Sensor on the Database
-class Sensor(models.Model):
-    name = models.CharField(max_length=10)
-    date = models.DateTimeField()
-    value = models.FloatField()
+class Sensor_Table(models.Model):
+    table = models.ForeignKey(Desk, on_delete=models.CASCADE)
+    time_stamp = models.DateTimeField()
+    light_value = models.IntegerField()
+    occupancy_value = models.IntegerField()
 
     # Defines how a Sensor object is displayed
     def __str__(self):
-        return self.name
+        return self.table
+
 
 
 # Model that defines the blueprint of a Window on the Database  # android application names
@@ -118,6 +121,34 @@ class Participant(models.Model):                                        # User o
         return self.email
 
 
+# Model that defines the blueprint of a Participant on the Database     # Android naming
+class Participant_User(models.Model):                                        # User object
+    email = models.OneToOneField(User, on_delete=models.CASCADE)   # email
+    password = models.CharField(max_length=200)                         # password
+    logged_in = models.BooleanField(default=False)                      # loggedIn
+    survey_done = models.BooleanField(default=False)                    # demographicStatus ; not used
+    in_workspace = models.BooleanField(default=False)                   # demographicStatus ; not used
+    room = models.IntegerField(blank=True, null=True, default=1)        # roomID
+    desk = models.IntegerField(blank=True, null=True, default=1)        # deskID
+    profile = models.IntegerField(blank=True, null=True, default=1)        # deskID
+
+
+    # Defines how a User object is displayed
+    def __str__(self):
+        return self.email
+
+
+# Model that defines the blueprint of a Sensor on the Database
+class Sensor_User(models.Model):
+    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    time_stamp = models.DateTimeField()
+    light_value = models.IntegerField()
+
+    # Defines how a Sensor object is displayed
+    def __str__(self):
+        return self.participant
+
+
 # Model that defines format for alertness questionnaire answers storage
 class AlertnessQuestionnaire(models.Model):
     email = models.ForeignKey(Participant, on_delete=models.CASCADE)
@@ -136,6 +167,24 @@ class DemographicQuestionnaire(models.Model):
 
     def __str__(self):
         return str(self.email)+" answered: "+str(self.answer)
+
+
+# Model that defines user profile based on answers given to questionnaire
+class ParticipantProfiles(models.Model):
+    answer = models.CharField(max_length=50)
+    profile = models.IntegerField()
+
+    def __str__(self):
+        return str(self.answer)+" answer is profile : "+str(self.profile)
+
+
+# Model that defines user profile based on answers given to questionnaire
+class ParticipantProfiles(models.Model):
+    answer = models.CharField(max_length=50)
+    profile = models.IntegerField()
+
+    def __str__(self):
+        return str(self.answer)+" answer is profile : "+str(self.profile)
 
 
 # WORK related models | DUMMY MODELS
