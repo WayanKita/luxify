@@ -26,7 +26,7 @@ def room_plan(request):
                   {'all_rooms': all_rooms})
 
 
-# Defines presentation of the index page /floorPlan
+# Defines presentation of the index page /API
 def home(request):
     all_rooms = Room.objects.all()
     return render(request,
@@ -136,7 +136,7 @@ class ParticipantFormView(View):
 
 # API VIEWS
 # Title : Get registered Participants | Register Participants.
-# URL : /floorPlan/android_add_user
+# URL : luxify/API/add_user
 # Method : GET | POST
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (201 CREATED), Bad Request (400),
@@ -160,7 +160,7 @@ class RegisterAPI(APIView):
 
 
 # Title : Log in Participants.
-# URL : /floorPlan/android_login
+# URL : luxify/API/login
 # Method : POST
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
@@ -175,7 +175,7 @@ class LoginAPI(APIView):
 
 
 # Title : Get sensor information.
-# URL : /floorPlan/android_sensor
+# URL : luxify/API/sensor
 # Method : POST
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
@@ -205,7 +205,7 @@ class TableAPI(APIView):
 
 
 # Title : Get window information.
-# URL : /floorPlan/android_window
+# URL : luxify/API/window
 # Method : POST
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
@@ -220,7 +220,7 @@ class WindowAPI(APIView):
 
 
 # Title : Get room information.
-# URL : /floorPlan/android_room
+# URL : luxify/API/room
 # Method : POST
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
@@ -235,7 +235,7 @@ class RoomAPI(APIView):
 
 
 # Title : Get a bundled room plan (with table(with chair), windows and doors) information.
-# URL : /floorPlan/android_room_generator
+# URL : luxify/API/room_generator
 # Method : POST
 # Data Params : [{ email : [string], room_type : [rooms] | [int(1+)]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
@@ -255,7 +255,7 @@ class RoomGeneratorAPI(APIView):
 
 
 # Title : Receive alertness questionnaire answer.
-# URL : /floorPlan/android_alertness_questionnaire
+# URL : luxify/API/alertness_questionnaire
 # Method : POST
 # Data Params : [{ email : [string], time_stamp : [YYYY-MM-DDTHH:MM], answer : int[1-10]}]
 # Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
@@ -276,7 +276,7 @@ class AlertnessQuestionnaireAPI(APIView):
 
 
 # Title : Receive alertness questionnaire answer.
-# URL : /floorPlan/android_alertness_questionnaire
+# URL : luxify/API/alertness_questionnaire
 # Method : POST
 # Data Params : [{ email : [string], time_stamp : [YYYY-MM-DDTHH:MM], answer : [comma separated string]]
 # Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
@@ -306,7 +306,7 @@ class DemographicQuestionnaireAPI(APIView):
 
 
 # Title : Get a bundled room plan (with table(with chair), windows and doors) information.
-# URL : /floorPlan/android_room_generator
+# URL : luxify/API/room_generator
 # Method : POST
 # Data Params : [{ email : [string], room_type : [rooms] | [int(1+)]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
@@ -322,7 +322,7 @@ class WorkspaceAPI(APIView):
 
 
 # Title : Get a bundled room plan (with table(with chair), windows and doors) information.
-# URL : /floorPlan/android_room_generator
+# URL : luxify/API/room_generator
 # Method : POST
 # Data Params : [{ email : [string], room_type : [rooms] | [int(1+)]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
@@ -342,6 +342,28 @@ class QuestionnaireCheckAPI(APIView):
                 return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Title : Receive analytics from the application
+# URL : luxify/API/analytic
+# Method : POST
+# Data Params : [{ email : [string], time_stamp : [datetime], event : [string] }]
+# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
+class AnalyticsAPI(APIView):
+    serializer_class = AnalyticsSerializer
+
+    def post(self, request):
+        serializer = AuthenticateParticipant(data=request.data)
+        if serializer.is_valid():
+            analytics = Analytics()
+            analytics.email = Participant.objects.get(email=request.data.get("email"))
+            analytics.time_stamp = request.data.get('time_stamp')
+            analytics.event = request.data.get('event')
+            analytics.save()
+            serializer = AnalyticsSerializer(analytics)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
 
 # SURVEY MODELS

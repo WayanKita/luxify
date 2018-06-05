@@ -138,11 +138,22 @@ class DemographicQuestionnaire(models.Model):
         return str(self.email)+" answered: "+str(self.answer)
 
 
+# Model that defines format for analytics being sent by the mobile application
+class Analytics(models.Model):
+    email = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    # email = models.CharField(max_length=250)
+    event = models.CharField(max_length=250)
+    time_stamp = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.event)+" recorded for : "+str(self.email)
+
+
 # WORK related models | DUMMY MODELS
 # Used to simplify API testing
 class ParticipantRequest(models.Model):
     email = models.CharField(max_length=200)
-    request_type = models.IntegerField()
+    request_type = models.IntegerField(blank=True)
 
 
 class ParticipantWorkspace(models.Model):
@@ -162,6 +173,12 @@ class PostAlertnessRequest(models.Model):
     email = models.CharField(max_length=200)
     request_type = models.IntegerField()
     answer = models.IntegerField()
+    time_stamp = models.DateTimeField()
+
+
+class PostAnalyticRequest(models.Model):
+    email = models.CharField(max_length=200)
+    event = models.CharField(max_length=200)
     time_stamp = models.DateTimeField()
 
 
