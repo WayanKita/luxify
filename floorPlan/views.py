@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login
 from django.views.generic import View
 from django.contrib.auth.models import User
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .form import *
@@ -135,7 +135,7 @@ class ParticipantFormView(View):
 
 # API VIEWS
 # Title : Get registered Participants | Register Participants.
-# URL : /floorPlan/android_add_user
+# URL : /API/add_user
 # Method : GET | POST
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (201 CREATED), Bad Request (400),
@@ -158,34 +158,44 @@ class RegisterAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Title : Log in Participants.
-# URL : /floorPlan/android_login
+# Title : Get sensor information.
+# URL : /API/sensor
 # Method : POST
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
-class LoginAPI(APIView):
-    serializer_class = ParticipantLoginSerializer
+class SensorTableAPI(APIView):
+    serializer_class = AuthenticateParticipant
+    permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request):
-        serializer = ParticipantLoginSerializer(data=request.data)
-        if serializer.is_valid():
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, pk):
+        if int(pk) > 0:
+            if Sensor_Table.objects.filter(pk=pk).count() > 0:
+                return Response(SensorTableSerializer(Sensor_Table.objects.filter(pk=pk), many=True).data,
+                                status=status.HTTP_200_OK)
+            return Response("Sensor table "+pk+" not found", status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(SensorTableSerializer(Sensor_Table.objects.all(), many=True).data,
+                            status=status.HTTP_200_OK)
 
 
 # Title : Get sensor information.
-# URL : /floorPlan/android_sensor
+# URL : /API/sensor
 # Method : POST
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
-class SensorAPI(APIView):
+class SensorUserAPI(APIView):
     serializer_class = AuthenticateParticipant
+    permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request):
-        serializer = AuthenticateParticipant(data=request.data)
-        if serializer.is_valid():
-            return Response(SensorSerializer(Sensor_Table.objects.all(), many=True).data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, pk):
+        if int(pk) > 0:
+            if Sensor_User.objects.filter(pk=pk).count() > 0:
+                return Response(SensorUserSerializer(Sensor_User.objects.filter(pk=pk), many=True).data,
+                                status=status.HTTP_200_OK)
+            return Response("Sensor user "+pk+" not found" , status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(SensorUserSerializer(Sensor_User.objects.all(), many=True).data,
+                            status=status.HTTP_200_OK)
 
 
 # Title : Get table information.
@@ -193,94 +203,110 @@ class SensorAPI(APIView):
 # Method : POST
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
-class TableAPI(APIView):
+class DeskAPI(APIView):
     serializer_class = AuthenticateParticipant
+    permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request):
-        serializer = AuthenticateParticipant(data=request.data)
-        if serializer.is_valid():
-            return Response(DeskSerializer(Desk.objects.all(), many=True).data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, pk):
+        if int(pk) > 0:
+            if Desk.objects.filter(pk=pk).count() > 0:
+                return Response(DeskSerializer(Desk.objects.filter(pk=pk), many=True).data,
+                                status=status.HTTP_200_OK)
+            return Response("Desk "+pk+" not found" , status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(DeskSerializer(Desk.objects.all(), many=True).data,
+                            status=status.HTTP_200_OK)
 
 
 # Title : Get window information.
-# URL : /floorPlan/android_window
+# URL : /API/window
 # Method : POST
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class WindowAPI(APIView):
     serializer_class = AuthenticateParticipant
+    permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request):
-        serializer = AuthenticateParticipant(data=request.data)
-        if serializer.is_valid():
-            return Response(WindowSerializer(Window.objects.all(), many=True).data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, pk):
+        if int(pk) > 0:
+            if Window.objects.filter(pk=pk).count() > 0:
+                return Response(WindowSerializer(Window.objects.filter(pk=pk), many=True).data,
+                                status=status.HTTP_200_OK)
+            return Response("Window "+pk+" not found" , status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(WindowSerializer(Window.objects.all(), many=True).data,
+                            status=status.HTTP_200_OK)
 
 
 # Title : Get room information.
-# URL : /floorPlan/android_room
-# Method : POST
-# Data Params : [{ email : [string], password : [string]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
+# URL : /API/room
+# Method : GET
+# Data Params :
+# Response Codes: Success (200 OK), Internal Server Error (500)
 class RoomAPI(APIView):
     serializer_class = AuthenticateParticipant
+    permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request):
-        serializer = AuthenticateParticipant(data=request.data)
-        if serializer.is_valid():
-            return Response(RoomSerializer(Room.objects.all(), many=True).data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, pk):
+        if int(pk) > 0:
+            if Room.objects.filter(pk=pk).count() > 0:
+                return Response(RoomSerializer(Room.objects.filter(pk=pk), many=True).data,
+                                status=status.HTTP_200_OK)
+            return Response("Room "+pk+" not found" , status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(RoomSerializer(Room.objects.all(), many=True).data,
+                            status=status.HTTP_200_OK)
 
 
 # Title : Get a bundled room plan (with table(with chair), windows and doors) information.
-# URL : /floorPlan/android_room_generator
+# URL : /API/room_generator
 # Method : POST
 # Data Params : [{ email : [string], room_type : [rooms] | [int(1+)]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class RoomGeneratorAPI(APIView):
     serializer_class = ParticipantRequestSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request):
-        serializer = AuthenticateParticipant(data=request.data)
-        if serializer.is_valid():
-            if request.data.get('request_type') == "0":
-                return Response(RoomSerializer(Room.objects.all(), many=True).data, status=status.HTTP_200_OK)
-            else:
-                room = Room.objects.filter(pk=request.data.get('request_type'))
-                return Response(RoomGeneratorSerializer(room, many=True, label="room").data, status=status.HTTP_200_OK)
+    def get(self, request, pk):
+        if int(pk) > 0:
+            if Room.objects.filter(pk=pk).count() > 0:
+                return Response(RoomGeneratorSerializer(Room.objects.filter(pk=pk), many=True, label="room").data,
+                                status=status.HTTP_200_OK)
+            return Response("Room "+pk+" not found", status=status.HTTP_404_NOT_FOUND)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(RoomSerializer(Room.objects.all(), many=True).data, status=status.HTTP_200_OK)
 
 
 # Title : Receive alertness questionnaire answer.
-# URL : /floorPlan/android_alertness_questionnaire
+# URL : /API/alertness_questionnaire
 # Method : POST
 # Data Params : [{ email : [string], time_stamp : [YYYY-MM-DDTHH:MM], answer : int[1-10]}]
 # Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
 class AlertnessQuestionnaireAPI(APIView):
     serializer_class = AlertnessQuestionnairePostSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
         serializer = AuthenticateUser(data=request.data)
         if serializer.is_valid():
             alert_answer = AlertnessQuestionnaire()
-            alert_answer.email = User.objects.get(email=request.data.get("email"))
+            participant = User.objects.get(username=request.data.get("email"))
+            alert_answer.email = participant.participant
             alert_answer.time_stamp = request.data.get('time_stamp')
             alert_answer.answer = request.data.get('answer')
             alert_answer.save()
             return Response(AlertnessQuestionnaireSerializer(alert_answer).data, status=status.HTTP_201_CREATED)
-            # return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Title : Receive alertness questionnaire answer.
-# URL : /floorPlan/android_alertness_questionnaire
+# URL : /API/alertness_questionnaire
 # Method : POST
 # Data Params : [{ email : [string], time_stamp : [YYYY-MM-DDTHH:MM], answer : [comma separated string]]
 # Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
 class DemographicQuestionnaireAPI(APIView):
     serializer_class = DemographicQuestionnairePostSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
         survey = Question.objects.all()
@@ -288,20 +314,22 @@ class DemographicQuestionnaireAPI(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = AuthenticateParticipant(data=request.data)
+        serializer = AuthenticateUser(data=request.data)
         if serializer.is_valid():
             demographic_answer = DemographicQuestionnaire()
-            demographic_answer.email = Participant.objects.get(email=request.data.get("email"))
+            participant = User.objects.get(username=request.data.get("email"))
+            demographic_answer.email = participant.participant
             demographic_answer.time_stamp = request.data.get('time_stamp')
             demographic_answer.answer = request.data.get('answer')
             demographic_answer.save()
-            user = Participant.objects.get(email=request.data.get("email"))
+            user = User.objects.get(username=request.data.get("email"))
+            demographic_answer.email = user.participant
             try:
                 profile_table = ParticipantProfiles.objects.get(answer=request.data.get("answer"))
-                user.profile = profile_table.profile
+                user.participant.profile = profile_table.profile
             except:
                 count = ParticipantProfiles.objects.all().count()
-                user.profile = count+1
+                user.participant.profile = count+1
                 new_profile = ParticipantProfiles()
                 new_profile.answer = request.data.get('answer')
                 new_profile.profile = count+1
@@ -312,12 +340,13 @@ class DemographicQuestionnaireAPI(APIView):
 
 
 # Title : Get a bundled room plan (with table(with chair), windows and doors) information.
-# URL : /floorPlan/android_room_generator
+# URL : /API/room_generator
 # Method : POST
 # Data Params : [{ email : [string], room_type : [rooms] | [int(1+)]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class WorkspaceAPI(APIView):
     serializer_class = ParticipantInWorkSpaceSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
         serializer = ParticipantToggleWorkspaceSerializer(data=request.data)
@@ -328,21 +357,22 @@ class WorkspaceAPI(APIView):
 
 
 # Title : Get a bundled room plan (with table(with chair), windows and doors) information.
-# URL : /floorPlan/android_room_generator
+# URL : /API/questionnaire_check
 # Method : POST
 # Data Params : [{ email : [string], room_type : [rooms] | [int(1+)]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class QuestionnaireCheckAPI(APIView):
-    serializer_class = ParticipantRequestSerializer
+    serializer_class = UserRequestSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
-        serializer = AuthenticateParticipant(data=request.data)
+        serializer = AuthenticateUser(data=request.data)
         if serializer.is_valid():
             if request.data.get('request_type') == "0":
-                participant = Participant.objects.get(email=request.data.get('email'))
+                participant = User.objects.get(username=request.data.get('email')).participant
                 return Response(ParticipantSerializer(participant).data, status=status.HTTP_200_OK)
             if request.data.get('request_type') == "1":
-                participant = Participant.objects.get(email=request.data.get('email'))
+                participant = User.objects.get(username=request.data.get('email')).participant
                 participant.survey_done = True
                 participant.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -357,7 +387,7 @@ class QuestionnaireCheckAPI(APIView):
 
 # API VIEWS
 # Title : Get registered Participants | Register Participants.
-# URL : /floorPlan/android_add_user
+# URL : /API/register
 # Method : GET | POST
 # Data Params : [{ email : [string], password : [string]}]
 # Response Codes: Success (201 CREATED), Bad Request (400),
@@ -372,6 +402,9 @@ class RegisterUserAPI(APIView):
             user = User.objects.create_user(username=username)
             user.set_password(password)
             user.save()
+            participant = Participant()
+            participant.email = User.objects.get(username=username)
+            participant.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

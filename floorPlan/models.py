@@ -72,7 +72,6 @@ class Sensor_Table(models.Model):
         return self.table
 
 
-
 # Model that defines the blueprint of a Window on the Database  # android application names
 class Window(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="window")
@@ -110,9 +109,7 @@ class Door(models.Model):
 
 # Model that defines the blueprint of a Participant on the Database     # Android naming
 class Participant(models.Model):                                        # User object
-    email = models.CharField(max_length=200, unique=True, null=False)   # email
-    password = models.CharField(max_length=200)                         # password
-    logged_in = models.BooleanField(default=False)                      # loggedIn
+    email = models.OneToOneField(User, on_delete=models.CASCADE)   # email                        # password
     survey_done = models.BooleanField(default=False)                    # demographicStatus ; not used
     in_workspace = models.BooleanField(default=False)                   # demographicStatus ; not used
     room = models.IntegerField(blank=True, null=True, default=1)        # roomID
@@ -121,24 +118,7 @@ class Participant(models.Model):                                        # User o
 
     # Defines how a User object is displayed
     def __str__(self):
-        return self.email
-
-
-# Model that defines the blueprint of a Participant on the Database     # Android naming
-class Participant_User(models.Model):                                        # User object
-    email = models.OneToOneField(User, on_delete=models.CASCADE)   # email
-    password = models.CharField(max_length=200)                         # password
-    logged_in = models.BooleanField(default=False)                      # loggedIn
-    survey_done = models.BooleanField(default=False)                    # demographicStatus ; not used
-    in_workspace = models.BooleanField(default=False)                   # demographicStatus ; not used
-    room = models.IntegerField(blank=True, null=True, default=1)        # roomID
-    desk = models.IntegerField(blank=True, null=True, default=1)        # deskID
-    profile = models.IntegerField(blank=True, null=True, default=1)        # deskID
-
-
-    # Defines how a User object is displayed
-    def __str__(self):
-        return self.email
+        return str(self.email)
 
 
 # Model that defines the blueprint of a Sensor on the Database
@@ -181,15 +161,6 @@ class ParticipantProfiles(models.Model):
         return str(self.answer)+" answer is profile : "+str(self.profile)
 
 
-# Model that defines user profile based on answers given to questionnaire
-class ParticipantProfiles(models.Model):
-    answer = models.CharField(max_length=50)
-    profile = models.IntegerField()
-
-    def __str__(self):
-        return str(self.answer)+" answer is profile : "+str(self.profile)
-
-
 # WORK related models | DUMMY MODELS
 # Used to simplify API testing
 class ParticipantRequest(models.Model):
@@ -211,14 +182,12 @@ class ParticipantWorkspace(models.Model):
 
 class PostDemographicRequest(models.Model):
     email = models.CharField(max_length=200)
-    request_type = models.IntegerField()
     answer = models.CharField(max_length=250)
     time_stamp = models.DateTimeField()
 
 
 class PostAlertnessRequest(models.Model):
     email = models.CharField(max_length=200)
-    request_type = models.IntegerField()
     answer = models.IntegerField()
     time_stamp = models.DateTimeField()
 
