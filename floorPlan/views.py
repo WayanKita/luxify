@@ -378,19 +378,17 @@ class QuestionnaireCheckAPI(APIView):
     serializer_class = UserRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request):
-        serializer = AuthenticateUser(data=request.data)
-        if serializer.is_valid():
-            if request.data.get('request_type') == "0":
-                participant = User.objects.get(username=request.data.get('email')).participant
-                return Response(ParticipantSerializer(participant).data, status=status.HTTP_200_OK)
-            if request.data.get('request_type') == "1":
+    def post(self, request, pk):
+        if int(pk) == 0:
+            participant = User.objects.get(username=request.data.get('email')).participant
+            return Response(ParticipantSerializer(participant).data, status=status.HTTP_200_OK)
+        else:
+            if User.objects.get(username=request.data.get('email')).participant.count() > 0:
                 participant = User.objects.get(username=request.data.get('email')).participant
                 participant.survey_done = True
                 participant.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(ParticipantSerializer(participant).data, status=status.HTTP_200_OK)
+            return Response("User not found", status=status.HTTP_400_BAD_REQUEST)
 
 
 # Title : Receive analytics from the application
