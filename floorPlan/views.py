@@ -318,7 +318,6 @@ class AlertnessQuestionnaireAPI(APIView):
 # Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
 class DemographicQuestionnaireAPI(APIView):
     serializer_class = DemographicQuestionnairePostSerializer
-    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
         survey = Question.objects.all()

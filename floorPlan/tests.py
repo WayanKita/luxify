@@ -9,23 +9,39 @@ Run these tests using manage.py test
 """
 
 
-# User tests
+# Partipant tests
 class UserTest(TestCase):
     """
     Model tests
     """
 
     @staticmethod
-    def create_room(name, x_length, y_length):
-        return Room.objects.create(room_name=name, x_length=x_length, y_length=y_length)
+    def create_user(email,
+                    password):
+        return User.objects.create(username=email,
+                                   password=password)
+
+    @staticmethod
+    def create_participant(email,
+                           survey_done,
+                           in_workspace,
+                           room,
+                           desk,
+                           profile):
+        return Participant.objects.create(email=email,
+                                          survey_done=survey_done,
+                                          in_workspace=in_workspace,
+                                          room=room,
+                                          desk=desk,
+                                          profile=profile)
 
     def create_default(self):
-        return RoomTest.create_room("MFXXX", 555, 555)
+        return UserTest.create_user(UserTest.create_participant(), "12345")
 
-    def test_room_creation(self):
-        room = RoomTest.create_default()
-        self.assertTrue(isinstance(room, Room))
-        self.assertEqual(room.__str__(), room.room_name)
+    def test_participant_creation(self):
+        participant = UserTest.create_participant()
+        self.assertTrue(isinstance(participant, Participant))
+        self.assertEqual(participant.__str__(), participant.email)
 
 
 # Room tests
@@ -143,17 +159,4 @@ class WindowTest(TestCase):
         self.assertEqual(window.__str__(), "Window from " + str(window.start_pos) + " to " + str(window.end_pos))
 
 
-# Partipant tests < to be moved to its own app >
-class ParticipantTest(TestCase):
-    """
-    Model tests
-    """
 
-    @staticmethod
-    def create_participant(email="test@test.com", password="12345", logged_in=False, survey_done=False):
-        return Participant.objects.create(email=email, password=password, logged_in=logged_in, survey_done=survey_done)
-
-    def test_participant_creation(self):
-        participant = ParticipantTest.create_participant()
-        self.assertTrue(isinstance(participant, Participant))
-        self.assertEqual(participant.__str__(), participant.email)
