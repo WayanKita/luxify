@@ -292,3 +292,16 @@ class ParticipantInWorkSpaceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class AnalyticsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostAnalyticRequest
+        fields = '__all__'
+
+        # Overwrite default authentication for Participant
+        def validate(self, data):
+            email = data.get("email", None)
+            if not participant_authentication_check(email):
+                raise ValidationError("User: " + email + " does not exist")
+            if not participant_login_check(email):
+                raise ValidationError("User " + email + " is not logged in")
+            return data

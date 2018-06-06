@@ -152,6 +152,7 @@ class DemographicQuestionnaire(models.Model):
         return str(self.email)+" answered: "+str(self.answer)
 
 
+
 # Model that defines user profile based on answers given to questionnaire
 class ParticipantProfiles(models.Model):
     answer = models.CharField(max_length=50)
@@ -160,6 +161,16 @@ class ParticipantProfiles(models.Model):
     def __str__(self):
         return str(self.answer)+" answer is profile : "+str(self.profile)
 
+# Model that defines format for analytics being sent by the mobile application
+class Analytics(models.Model):
+    email = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    # email = models.CharField(max_length=250)
+    event = models.CharField(max_length=250)
+    time_stamp = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.event)+" recorded for : "+str(self.email)
+
 
 # WORK related models | DUMMY MODELS
 # Used to simplify API testing
@@ -167,7 +178,7 @@ class ParticipantRequest(models.Model):
     email = models.CharField(max_length=200)
     request_type = models.IntegerField(blank=True)
 
-
+    
 # Used to simplify API testing
 class UserRequest(models.Model):
     email = models.CharField(max_length=200)
@@ -189,6 +200,12 @@ class PostDemographicRequest(models.Model):
 class PostAlertnessRequest(models.Model):
     email = models.CharField(max_length=200)
     answer = models.IntegerField()
+    time_stamp = models.DateTimeField()
+
+
+class PostAnalyticRequest(models.Model):
+    email = models.CharField(max_length=200)
+    event = models.CharField(max_length=200)
     time_stamp = models.DateTimeField()
 
 
