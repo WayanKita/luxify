@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from rest_framework.exceptions import ValidationError
 
 
-from floorPlan.form import ParticipantForm
+from floorPlan.form import ParticipantForm, UserForm
 from .models import *
 from survey.models import Survey, Question
 
@@ -49,15 +49,30 @@ class RoomSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = ParticipantForm
+        model = User
+        fields = ('username', 'password')
+
+    def validate(self, data):
+        username = data.get("username", None)
+        if User.objects.filter(username=username).exists():
+            raise ValidationError("This email already exists")
+        else:
+            return data
+
+
+# Serializes a Sensor object to/from JSON
+class SensorTableSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Sensor_Table
         fields = '__all__'
 
 
 # Serializes a Sensor object to/from JSON
-class SensorSerializer(serializers.ModelSerializer):
+class SensorUserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Sensor
+        model = Sensor_User
         fields = '__all__'
 
 
@@ -112,22 +127,6 @@ class RoomGeneratorSerializer(serializers.ModelSerializer):
         model = Room
         fields = ("room_name", "x_length", "y_length", "desk", "window", "chair", "door")
 
-# class UserAndroidSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = User
-#         fields = ['username', 'password']
-#         email = serializers.EmailField()
-#
-#     def validate_username(self, email):
-#         username = data.get("username", None)
-#         user = User.objects.filter(username=username)
-#         #if user.exists():
-#         if User.objects.filter(username=username).exists():
-#             raise ValidationError("This email already exists")
-#         else:
-#             return email
-
 
 # Serializes a Participant object to/from JSON
 class ParticipantSerializer(serializers.ModelSerializer):
@@ -159,41 +158,17 @@ class ParticipantRequestSerializer(serializers.ModelSerializer):
         fields = ('email', 'request_type')
 
 
-# Validates a Participant object sent by Android application
-class ParticipantLoginSerializer(serializers.ModelSerializer):
-
-    email = serializers.CharField()
-
+class UserRequestSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Participant
-        fields = "__all__"
-
-    # Overwrites is_valid function from Django
-    def validate(self, data):
-        # get email and password from POST body
-        email = data.get("email", None)
-        password = data.get("password", None)
-        # Try to find a Participant with matching email from POST body else raise ValidationError
-        try:
-            user = Participant.objects.get(email=email)
-        except:
-            raise ValidationError("User: "+email+" does not exist")
-        if not user.email == email:
-            raise ValidationError("User: "+email+" does not exist")
-        # if such user is found; does Participant password match POST body password else raise ValidationError
-        if not user.password == password:
-            raise ValidationError("Password for "+email+" is incorrect")
-
-        user.logged_in = True                                        # changes the log in state of Participant to True
-        user.save()                                                  # saves changes made to Participant on the database
-        return data
+        model = UserRequest
+        fields = '__all__'
 
 
 # Validates a Participant object sent by Android application
-class ParticipantRegisterSerializer(serializers.ModelSerializer):
+class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Participant
+        model = User
         fields = "__all__"
 
     # Overwrites is_valid function from Django
@@ -206,18 +181,10 @@ class ParticipantRegisterSerializer(serializers.ModelSerializer):
             user = Participant.objects.get(email=email)
             raise ValidationError("User: " + email + " already exists")
         except:
-            user = Participant()
+            user = User()
             user.email = email
-            user.email = password
-            user.logged_in = True
-        if not user.email == email:
-            raise ValidationError("User: "+email+" does not exist")
-        # if such user is found; does Participant password match POST body password else raise ValidationError
-        if not user.password == password:
-            raise ValidationError("Password for "+email+" is incorrect")
-
-        user.logged_in = True                                        # changes the log in state of Participant to True
-        user.save()                                                  # saves changes made to Participant on the database
+            user.set_password(password)                              # changes the log in state of Participant to True
+            user.save()  # saves changes made to Participant on the database
         return data
 
 
@@ -232,17 +199,11 @@ class ParticipantToggleWorkspaceSerializer(serializers.ModelSerializer):
     def validate(self, data):
         # get email and password from POST body
         email = data.get("email", None)
-        in_workspace = data.get("in_workspace", None)
-        room = data.get("room", None)
-        # Try to find a Participant with matching email from POST body else raise ValidationError
-        try:
-            user = Participant.objects.get(email=email)
-        except:
-            raise ValidationError("User: " + email + " does not exist")
-            # if such user is found; does Participant password match POST body password else raise ValidationError
-        user.in_workspace = in_workspace
-        user.room = room
-        user.save()
+        participant = User.objects.get(username=email)
+        participant.email = participant.email
+        participant.in_workspace = data.get("in_workspace", None)
+        participant.room = data.get("room", None)
+        participant.save()
         return data
 
 
@@ -261,6 +222,22 @@ class AuthenticateParticipant(serializers.ModelSerializer):
         if not participant_login_check(email):
             raise ValidationError("User "+email+" is not logged in")
         return data
+
+
+# Validate that Participant making a request is logged in
+class AuthenticateUser(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserRequest
+        fields = "__all__"
+
+    # Overwrite default authentication for Participant
+    def validate(self, data):
+        email = data.get("email", None)
+        token = data.get("CSRFTOKEN", None)
+        return data
+
+
 
 
 # Validate that Participant making a request is logged in

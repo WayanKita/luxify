@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.dispatch import receiver
 from django.urls import reverse
 
 # Models in Django represent skeleton (aka blueprints) for databases to create tables on the database
@@ -7,6 +8,9 @@ from django.urls import reverse
 
 
 # Model that defines the blueprint of a Room on the Database
+from rest_framework.authtoken.models import Token
+
+
 class Room(models.Model):
     room_name = models.CharField(max_length=10)                             # code is a string of max length 10
     x_length = models.IntegerField()                                        # x_length is an integer of undefined length
@@ -57,14 +61,15 @@ class Chair(models.Model):
 
 
 # Model that defines the blueprint of a Sensor on the Database
-class Sensor(models.Model):
-    name = models.CharField(max_length=10)
-    date = models.DateTimeField()
-    value = models.FloatField()
+class Sensor_Table(models.Model):
+    table = models.ForeignKey(Desk, on_delete=models.CASCADE)
+    time_stamp = models.DateTimeField()
+    light_value = models.IntegerField()
+    occupancy_value = models.IntegerField()
 
     # Defines how a Sensor object is displayed
     def __str__(self):
-        return self.name
+        return self.table
 
 
 # Model that defines the blueprint of a Window on the Database  # android application names
@@ -104,9 +109,7 @@ class Door(models.Model):
 
 # Model that defines the blueprint of a Participant on the Database     # Android naming
 class Participant(models.Model):                                        # User object
-    email = models.CharField(max_length=200, unique=True, null=False)   # email
-    password = models.CharField(max_length=200)                         # password
-    logged_in = models.BooleanField(default=False)                      # loggedIn
+    email = models.OneToOneField(User, on_delete=models.CASCADE)   # email                        # password
     survey_done = models.BooleanField(default=False)                    # demographicStatus ; not used
     in_workspace = models.BooleanField(default=False)                   # demographicStatus ; not used
     room = models.IntegerField(blank=True, null=True, default=1)        # roomID
@@ -115,7 +118,18 @@ class Participant(models.Model):                                        # User o
 
     # Defines how a User object is displayed
     def __str__(self):
-        return self.email
+        return str(self.email)
+
+
+# Model that defines the blueprint of a Sensor on the Database
+class Sensor_User(models.Model):
+    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    time_stamp = models.DateTimeField()
+    light_value = models.IntegerField()
+
+    # Defines how a Sensor object is displayed
+    def __str__(self):
+        return self.participant
 
 
 # Model that defines format for alertness questionnaire answers storage
@@ -138,6 +152,15 @@ class DemographicQuestionnaire(models.Model):
         return str(self.email)+" answered: "+str(self.answer)
 
 
+
+# Model that defines user profile based on answers given to questionnaire
+class ParticipantProfiles(models.Model):
+    answer = models.CharField(max_length=50)
+    profile = models.IntegerField()
+
+    def __str__(self):
+        return str(self.answer)+" answer is profile : "+str(self.profile)
+
 # Model that defines format for analytics being sent by the mobile application
 class Analytics(models.Model):
     email = models.ForeignKey(Participant, on_delete=models.CASCADE)
@@ -155,6 +178,12 @@ class ParticipantRequest(models.Model):
     email = models.CharField(max_length=200)
     request_type = models.IntegerField(blank=True)
 
+    
+# Used to simplify API testing
+class UserRequest(models.Model):
+    email = models.CharField(max_length=200)
+    request_type = models.IntegerField(blank=True)
+
 
 class ParticipantWorkspace(models.Model):
     email = models.CharField(max_length=200)
@@ -164,14 +193,12 @@ class ParticipantWorkspace(models.Model):
 
 class PostDemographicRequest(models.Model):
     email = models.CharField(max_length=200)
-    request_type = models.IntegerField()
     answer = models.CharField(max_length=250)
     time_stamp = models.DateTimeField()
 
 
 class PostAlertnessRequest(models.Model):
     email = models.CharField(max_length=200)
-    request_type = models.IntegerField()
     answer = models.IntegerField()
     time_stamp = models.DateTimeField()
 
