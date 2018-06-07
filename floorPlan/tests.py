@@ -39,7 +39,7 @@ class UserTest(TestCase):
         return UserTest.create_user("test@test.com", "12345")
 
     def create_default_participant(self):
-        return  UserTest.create_participant(UserTest.create_default(), False, False, 1, 1, )
+        return  UserTest.create_participant(UserTest.create_default(), False, False, 1, 1, 1)
 
     def test_participant_creation(self):
         participant = UserTest.create_participant()

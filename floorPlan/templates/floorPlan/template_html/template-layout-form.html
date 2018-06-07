@@ -3,9 +3,9 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-                    <!-- sets security token -->
                     <input type="hidden" name="next" value="{{ next }}" />
                         {% for field in form %}
+                            {% csrf_token %}
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
                                     <span class="text-danger">{{ field.errors }}</span>
