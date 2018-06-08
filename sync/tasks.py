@@ -53,4 +53,4 @@ def task_number_one():
 							Sensor_Table.objects.create(table=table_4, time_stamp=timezone.now(), light_value=voltage_4, occupancy_value=occ_4)
 							Sensor_Table.objects.create(table=table_5, time_stamp=timezone.now(), light_value=voltage_5, occupancy_value=occ_5)
 							Sensor_Table.objects.create(table=table_6, time_stamp=timezone.now(), light_value=voltage_6, occupancy_value=occ_6)
-				os.remove(path + file)
+					os.rename(path + '/' + file, path + '/archives/' + file)
