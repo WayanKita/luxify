@@ -411,7 +411,7 @@ class QuestionnaireCheckAPI(APIView):
             participant = User.objects.get(username=request.data.get('username')).participant
             return Response(ParticipantSerializer(participant).data, status=status.HTTP_200_OK)
         else:
-            if User.objects.get(username=request.data.get('username')).count() > 0:
+            if User.objects.filter(username=request.data.get('username')).count() > 0:
                 participant = User.objects.get(username=request.data.get('username')).participant
                 participant.survey_done = True
                 participant.save()
