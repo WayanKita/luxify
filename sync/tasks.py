@@ -4,6 +4,7 @@ from django.conf import settings
 from celery import task
 from floorPlan.models import Desk, Sensor_Table
 from .models import Date, SyncTest
+from django.utils import timezone
 
 path = '/home/group10user/luxify/sync/sensors'
 
@@ -46,4 +47,4 @@ def task_number_one():
 							table_5 = Desk.objects.get(pk=5)
 							table_6 = Desk.objects.get(pk=6)
 
-							Sensor_Table.objects.create(table=table_1, light_value=voltage_1, occupancy_value=occ_1)
+							Sensor_Table.objects.create(table=table_1, time_stamp=timezone.now(), light_value=voltage_1, occupancy_value=occ_1)
