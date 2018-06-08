@@ -304,12 +304,11 @@ class RecommendDeskAPI(APIView):
     serializer_class = ParticipantRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request, pk):
+    def get(self, request, pk):
             if Room.objects.filter(pk=pk).count() > 0:
-                desks = Desk.objects.filter(room=Room.objects.filter(pk=pk))
-                for desk in desks:
-                    desk.illuminance
-                return Response(RoomGeneratorSerializer(Room.objects.filter(pk=pk), many=True, label="room").data,
+                # desks = Desk.objects.filter(room=Room.objects.filter(pk=pk)).order_by('-illuminance')
+                # DeskSerializer(desks, many=True).data
+                return Response(RoomSerializer(Room.objects.filter(pk=pk)).data,
                                 status=status.HTTP_200_OK)
             return Response("Room " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
 
@@ -429,17 +428,16 @@ class AnalyticsAPI(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
-        serializer = AuthenticateParticipant(data=request.data)
-        if serializer.is_valid():
+        if User.objects.filter(username=request.data.get("username")).count() > 0:
             analytics = Analytics()
-            analytics.username = Participant.objects.get(username=request.data.get("username"))
+            analytics.username = User.objects.get(username=request.data.get("username")).participant
             analytics.time_stamp = request.data.get('time_stamp')
             analytics.event = request.data.get('event')
             analytics.save()
             serializer = AnalyticsSerializer(analytics)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+            return Response("User not found", status=status.HTTP_400_BAD_REQUEST)
 
 
 # SURVEY MODELS

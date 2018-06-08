@@ -22,7 +22,7 @@ class RoomAdmin(admin.ModelAdmin):
 
 # Allows the admin to edit thee following tables on url [...]/admin
 admin.site.register(Room, RoomAdmin)
-# admin.site.register(Desk)
+admin.site.register(Desk)
 admin.site.register(Participant)
 admin.site.register(Sensor_Table)
 admin.site.register(Sensor_User)
