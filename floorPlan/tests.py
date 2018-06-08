@@ -16,19 +16,19 @@ class UserTest(TestCase):
     """
 
     @staticmethod
-    def create_user(email,
+    def create_user(username,
                     password):
-        return User.objects.create(username=email,
+        return User.objects.create(username=username,
                                    password=password)
 
     @staticmethod
-    def create_participant(email,
+    def create_participant(username,
                            survey_done,
                            in_workspace,
                            room,
                            desk,
                            profile):
-        return Participant.objects.create(email=email,
+        return Participant.objects.create(username=username,
                                           survey_done=survey_done,
                                           in_workspace=in_workspace,
                                           room=room,
@@ -39,12 +39,12 @@ class UserTest(TestCase):
         return UserTest.create_user("test@test.com", "12345")
 
     def create_default_participant(self):
-        return  UserTest.create_participant(UserTest.create_default(), False, False, 1, 1, )
+        return  UserTest.create_participant(UserTest.create_default(), False, False, 1, 1, 1)
 
     def test_participant_creation(self):
         participant = UserTest.create_participant()
         self.assertTrue(isinstance(participant, Participant))
-        self.assertEqual(participant.__str__(), participant.email)
+        self.assertEqual(participant.__str__(), participant.username)
 
 
 # Room tests

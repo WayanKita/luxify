@@ -1,3 +1,6 @@
+import csv
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -14,6 +17,8 @@ from rest_framework.views import APIView
 from .form import *
 from .models import *
 from .serializer import *
+
+
 # from survey.models import *
 
 
@@ -27,6 +32,8 @@ def room_plan(request):
 
 
 # Defines presentation of the index page /API
+@login_required
+@staff_member_required
 def home(request):
     all_rooms = Room.objects.all()
     return render(request,
@@ -121,10 +128,10 @@ class ParticipantFormView(View):
 
         if form.is_valid():
             user = form.save(commit=False)
-            email = form.cleaned_data['email']
+            username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user.save()
-            user = authenticate(username=email, password=password)
+            user = authenticate(username=username, password=password)
             if user is not None:
                 if user.is_active:
                     login(request, user)
@@ -138,7 +145,7 @@ class ParticipantFormView(View):
 # URL : /API/add_user
 # URL : luxify/API/add_user
 # Method : GET | POST
-# Data Params : [{ email : [string], password : [string]}]
+# Data Params : [{ username : [string], password : [string]}]
 # Response Codes: Success (201 CREATED), Bad Request (400),
 class RegisterAPI(APIView):
     form_class = ParticipantForm
@@ -152,7 +159,7 @@ class RegisterAPI(APIView):
         serializer = ParticipantForm(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            participant = Participant.objects.get(email=request.data.get('email'))
+            participant = Participant.objects.get(username=request.data.get('username'))
             participant.logged_in = True
             participant.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -164,7 +171,7 @@ class RegisterAPI(APIView):
 # Title : Log in Participants.
 # URL : luxify/API/login
 # Method : POST
-# Data Params : [{ email : [string], password : [string]}]
+# Data Params : [{ username : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class SensorTableAPI(APIView):
     serializer_class = AuthenticateParticipant
@@ -175,7 +182,7 @@ class SensorTableAPI(APIView):
             if Sensor_Table.objects.filter(pk=pk).count() > 0:
                 return Response(SensorTableSerializer(Sensor_Table.objects.filter(pk=pk), many=True).data,
                                 status=status.HTTP_200_OK)
-            return Response("Sensor table "+pk+" not found", status=status.HTTP_404_NOT_FOUND)
+            return Response("Sensor table " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(SensorTableSerializer(Sensor_Table.objects.all(), many=True).data,
                             status=status.HTTP_200_OK)
@@ -185,7 +192,7 @@ class SensorTableAPI(APIView):
 # URL : /API/sensor
 # URL : luxify/API/sensor
 # Method : POST
-# Data Params : [{ email : [string], password : [string]}]
+# Data Params : [{ username : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class SensorUserAPI(APIView):
     serializer_class = AuthenticateParticipant
@@ -196,7 +203,7 @@ class SensorUserAPI(APIView):
             if Sensor_User.objects.filter(pk=pk).count() > 0:
                 return Response(SensorUserSerializer(Sensor_User.objects.filter(pk=pk), many=True).data,
                                 status=status.HTTP_200_OK)
-            return Response("Sensor user "+pk+" not found" , status=status.HTTP_404_NOT_FOUND)
+            return Response("Sensor user " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(SensorUserSerializer(Sensor_User.objects.all(), many=True).data,
                             status=status.HTTP_200_OK)
@@ -205,7 +212,7 @@ class SensorUserAPI(APIView):
 # Title : Get table information.
 # URL : None
 # Method : POST
-# Data Params : [{ email : [string], password : [string]}]
+# Data Params : [{ username : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class DeskAPI(APIView):
     serializer_class = AuthenticateParticipant
@@ -216,7 +223,7 @@ class DeskAPI(APIView):
             if Desk.objects.filter(pk=pk).count() > 0:
                 return Response(DeskSerializer(Desk.objects.filter(pk=pk), many=True).data,
                                 status=status.HTTP_200_OK)
-            return Response("Desk "+pk+" not found" , status=status.HTTP_404_NOT_FOUND)
+            return Response("Desk " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(DeskSerializer(Desk.objects.all(), many=True).data,
                             status=status.HTTP_200_OK)
@@ -226,7 +233,7 @@ class DeskAPI(APIView):
 # URL : /API/window
 # URL : luxify/API/window
 # Method : POST
-# Data Params : [{ email : [string], password : [string]}]
+# Data Params : [{ username : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class WindowAPI(APIView):
     serializer_class = AuthenticateParticipant
@@ -237,7 +244,7 @@ class WindowAPI(APIView):
             if Window.objects.filter(pk=pk).count() > 0:
                 return Response(WindowSerializer(Window.objects.filter(pk=pk), many=True).data,
                                 status=status.HTTP_200_OK)
-            return Response("Window "+pk+" not found" , status=status.HTTP_404_NOT_FOUND)
+            return Response("Window " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(WindowSerializer(Window.objects.all(), many=True).data,
                             status=status.HTTP_200_OK)
@@ -250,7 +257,7 @@ class WindowAPI(APIView):
 # Response Codes: Success (200 OK), Internal Server Error (500)
 # URL : luxify/API/room
 # Method : POST
-# Data Params : [{ email : [string], password : [string]}]
+# Data Params : [{ username : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class RoomAPI(APIView):
     serializer_class = AuthenticateParticipant
@@ -261,7 +268,7 @@ class RoomAPI(APIView):
             if Room.objects.filter(pk=pk).count() > 0:
                 return Response(RoomSerializer(Room.objects.filter(pk=pk), many=True).data,
                                 status=status.HTTP_200_OK)
-            return Response("Room "+pk+" not found" , status=status.HTTP_404_NOT_FOUND)
+            return Response("Room " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(RoomSerializer(Room.objects.all(), many=True).data,
                             status=status.HTTP_200_OK)
@@ -271,7 +278,7 @@ class RoomAPI(APIView):
 # URL : /API/room_generator
 # URL : luxify/API/room_generator
 # Method : POST
-# Data Params : [{ email : [string], room_type : [rooms] | [int(1+)]}]
+# Data Params : [{ username : [string], room_type : [rooms] | [int(1+)]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class RoomGeneratorAPI(APIView):
     serializer_class = ParticipantRequestSerializer
@@ -282,16 +289,36 @@ class RoomGeneratorAPI(APIView):
             if Room.objects.filter(pk=pk).count() > 0:
                 return Response(RoomGeneratorSerializer(Room.objects.filter(pk=pk), many=True, label="room").data,
                                 status=status.HTTP_200_OK)
-            return Response("Room "+pk+" not found", status=status.HTTP_404_NOT_FOUND)
+            return Response("Room " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(RoomSerializer(Room.objects.all(), many=True).data, status=status.HTTP_200_OK)
+
+
+# Title : Get a bundled room plan (with table(with chair), windows and doors) information.
+# URL : /API/room_generator
+# URL : luxify/API/room_generator
+# Method : POST
+# Data Params : [{ username : [string], room_type : [rooms] | [int(1+)]}]
+# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
+class RecommendDeskAPI(APIView):
+    serializer_class = ParticipantRequestSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, pk):
+            if Room.objects.filter(pk=pk).count() > 0:
+                desks = Desk.objects.filter(room=Room.objects.filter(pk=pk))
+                for desk in desks:
+                    desk.illuminance
+                return Response(RoomGeneratorSerializer(Room.objects.filter(pk=pk), many=True, label="room").data,
+                                status=status.HTTP_200_OK)
+            return Response("Room " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
 
 
 # Title : Receive alertness questionnaire answer.
 # URL : /API/alertness_questionnaire
 # URL : luxify/API/alertness_questionnaire
 # Method : POST
-# Data Params : [{ email : [string], time_stamp : [YYYY-MM-DDTHH:MM], answer : int[1-10]}]
+# Data Params : [{ username : [string], time_stamp : [YYYY-MM-DDTHH:MM], answer : int[1-10]}]
 # Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
 class AlertnessQuestionnaireAPI(APIView):
     serializer_class = AlertnessQuestionnairePostSerializer
@@ -301,8 +328,8 @@ class AlertnessQuestionnaireAPI(APIView):
         serializer = AuthenticateUser(data=request.data)
         if serializer.is_valid():
             alert_answer = AlertnessQuestionnaire()
-            participant = User.objects.get(username=request.data.get("email"))
-            alert_answer.email = participant.participant
+            participant = User.objects.get(username=request.data.get("username"))
+            alert_answer.username = participant.participant
             alert_answer.time_stamp = request.data.get('time_stamp')
             alert_answer.answer = request.data.get('answer')
             alert_answer.save()
@@ -314,10 +341,11 @@ class AlertnessQuestionnaireAPI(APIView):
 # URL : /API/alertness_questionnaire
 # URL : luxify/API/alertness_questionnaire
 # Method : POST
-# Data Params : [{ email : [string], time_stamp : [YYYY-MM-DDTHH:MM], answer : [comma separated string]]
+# Data Params : [{ username : [string], time_stamp : [YYYY-MM-DDTHH:MM], answer : [comma separated string]]
 # Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
 class DemographicQuestionnaireAPI(APIView):
     serializer_class = DemographicQuestionnairePostSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
         survey = Question.objects.all()
@@ -328,22 +356,22 @@ class DemographicQuestionnaireAPI(APIView):
         serializer = AuthenticateUser(data=request.data)
         if serializer.is_valid():
             demographic_answer = DemographicQuestionnaire()
-            participant = User.objects.get(username=request.data.get("email"))
-            demographic_answer.email = participant.participant
+            participant = User.objects.get(username=request.data.get("username"))
+            demographic_answer.username = participant.participant
             demographic_answer.time_stamp = request.data.get('time_stamp')
             demographic_answer.answer = request.data.get('answer')
             demographic_answer.save()
-            user = User.objects.get(username=request.data.get("email"))
-            demographic_answer.email = user.participant
+            user = User.objects.get(username=request.data.get("username"))
+            demographic_answer.username = user.participant
             try:
                 profile_table = ParticipantProfiles.objects.get(answer=request.data.get("answer"))
                 user.participant.profile = profile_table.profile
             except:
                 count = ParticipantProfiles.objects.all().count()
-                user.participant.profile = count+1
+                user.participant.profile = count + 1
                 new_profile = ParticipantProfiles()
                 new_profile.answer = request.data.get('answer')
-                new_profile.profile = count+1
+                new_profile.profile = count + 1
                 user.save()
                 new_profile.save()
             return Response(DemographicQuestionnaireSerializer(demographic_answer).data, status=status.HTTP_201_CREATED)
@@ -351,10 +379,10 @@ class DemographicQuestionnaireAPI(APIView):
 
 
 # Title : Get a bundled room plan (with table(with chair), windows and doors) information.
-# URL : /API/room_generator
+# URL : /API/workspace
 # URL : luxify/API/room_generator
 # Method : POST
-# Data Params : [{ email : [string], room_type : [rooms] | [int(1+)]}]
+# Data Params : [{ username : [string], room_type : [rooms] | [int(1+)]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class WorkspaceAPI(APIView):
     serializer_class = ParticipantInWorkSpaceSerializer
@@ -372,19 +400,19 @@ class WorkspaceAPI(APIView):
 # URL : /API/questionnaire_check
 # URL : luxify/API/room_generator
 # Method : POST
-# Data Params : [{ email : [string], room_type : [rooms] | [int(1+)]}]
+# Data Params : [{ username : [string], room_type : [rooms] | [int(1+)]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class QuestionnaireCheckAPI(APIView):
     serializer_class = UserRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request, pk):
-        if int(pk) == 0:
-            participant = User.objects.get(username=request.data.get('email')).participant
+    def post(self, request, key):
+        if int(key) == 0:
+            participant = User.objects.get(username=request.data.get('username')).participant
             return Response(ParticipantSerializer(participant).data, status=status.HTTP_200_OK)
         else:
-            if User.objects.get(username=request.data.get('email')).participant.count() > 0:
-                participant = User.objects.get(username=request.data.get('email')).participant
+            if User.objects.filter(username=request.data.get('username')).count() > 0:
+                participant = User.objects.get(username=request.data.get('username')).participant
                 participant.survey_done = True
                 participant.save()
                 return Response(ParticipantSerializer(participant).data, status=status.HTTP_200_OK)
@@ -394,16 +422,17 @@ class QuestionnaireCheckAPI(APIView):
 # Title : Receive analytics from the application
 # URL : luxify/API/analytic
 # Method : POST
-# Data Params : [{ email : [string], time_stamp : [datetime], event : [string] }]
+# Data Params : [{ username : [string], time_stamp : [datetime], event : [string] }]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class AnalyticsAPI(APIView):
     serializer_class = AnalyticsSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
         serializer = AuthenticateParticipant(data=request.data)
         if serializer.is_valid():
             analytics = Analytics()
-            analytics.email = Participant.objects.get(email=request.data.get("email"))
+            analytics.username = Participant.objects.get(username=request.data.get("username"))
             analytics.time_stamp = request.data.get('time_stamp')
             analytics.event = request.data.get('event')
             analytics.save()
@@ -423,7 +452,7 @@ class AnalyticsAPI(APIView):
 # Title : Get registered Participants | Register Participants.
 # URL : /API/register
 # Method : GET | POST
-# Data Params : [{ email : [string], password : [string]}]
+# Data Params : [{ username : [string], password : [string]}]
 # Response Codes: Success (201 CREATED), Bad Request (400),
 class RegisterUserAPI(APIView):
     serializer_class = UserSerializer
@@ -437,10 +466,13 @@ class RegisterUserAPI(APIView):
             user.set_password(password)
             user.save()
             participant = Participant()
-            participant.email = User.objects.get(username=username)
+            participant.username = User.objects.get(username=username)
             participant.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+# LOGIN
+class Login(CreateView):
+    model = User
+    fields = ['username', 'password']
