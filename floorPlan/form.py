@@ -12,11 +12,11 @@ class ParticipantForm(forms.ModelForm):
 
     class Meta:
         model = Participant
-        fields = ['email', 'password']
+        fields = ['username', 'password']
         # fields = '__all__'
 
     def validate(self, data):
-        if Participant.objects.filter(email=self.email).exists():
+        if Participant.objects.filter(username=self.username).exists():
             raise ValidationError('Name must be unique per site')
 
 
