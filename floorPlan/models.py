@@ -152,7 +152,6 @@ class DemographicQuestionnaire(models.Model):
         return str(self.email)+" answered: "+str(self.answer)
 
 
-
 # Model that defines user profile based on answers given to questionnaire
 class ParticipantProfiles(models.Model):
     answer = models.CharField(max_length=50)
@@ -160,6 +159,7 @@ class ParticipantProfiles(models.Model):
 
     def __str__(self):
         return str(self.answer)+" answer is profile : "+str(self.profile)
+
 
 # Model that defines format for analytics being sent by the mobile application
 class Analytics(models.Model):

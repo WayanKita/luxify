@@ -1,3 +1,6 @@
+import csv
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -14,6 +17,8 @@ from rest_framework.views import APIView
 from .form import *
 from .models import *
 from .serializer import *
+
+
 # from survey.models import *
 
 
@@ -27,6 +32,8 @@ def room_plan(request):
 
 
 # Defines presentation of the index page /API
+@login_required
+@staff_member_required
 def home(request):
     all_rooms = Room.objects.all()
     return render(request,
@@ -175,7 +182,7 @@ class SensorTableAPI(APIView):
             if Sensor_Table.objects.filter(pk=pk).count() > 0:
                 return Response(SensorTableSerializer(Sensor_Table.objects.filter(pk=pk), many=True).data,
                                 status=status.HTTP_200_OK)
-            return Response("Sensor table "+pk+" not found", status=status.HTTP_404_NOT_FOUND)
+            return Response("Sensor table " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(SensorTableSerializer(Sensor_Table.objects.all(), many=True).data,
                             status=status.HTTP_200_OK)
@@ -196,7 +203,7 @@ class SensorUserAPI(APIView):
             if Sensor_User.objects.filter(pk=pk).count() > 0:
                 return Response(SensorUserSerializer(Sensor_User.objects.filter(pk=pk), many=True).data,
                                 status=status.HTTP_200_OK)
-            return Response("Sensor user "+pk+" not found" , status=status.HTTP_404_NOT_FOUND)
+            return Response("Sensor user " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(SensorUserSerializer(Sensor_User.objects.all(), many=True).data,
                             status=status.HTTP_200_OK)
@@ -216,7 +223,7 @@ class DeskAPI(APIView):
             if Desk.objects.filter(pk=pk).count() > 0:
                 return Response(DeskSerializer(Desk.objects.filter(pk=pk), many=True).data,
                                 status=status.HTTP_200_OK)
-            return Response("Desk "+pk+" not found" , status=status.HTTP_404_NOT_FOUND)
+            return Response("Desk " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(DeskSerializer(Desk.objects.all(), many=True).data,
                             status=status.HTTP_200_OK)
@@ -237,7 +244,7 @@ class WindowAPI(APIView):
             if Window.objects.filter(pk=pk).count() > 0:
                 return Response(WindowSerializer(Window.objects.filter(pk=pk), many=True).data,
                                 status=status.HTTP_200_OK)
-            return Response("Window "+pk+" not found" , status=status.HTTP_404_NOT_FOUND)
+            return Response("Window " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(WindowSerializer(Window.objects.all(), many=True).data,
                             status=status.HTTP_200_OK)
@@ -261,7 +268,7 @@ class RoomAPI(APIView):
             if Room.objects.filter(pk=pk).count() > 0:
                 return Response(RoomSerializer(Room.objects.filter(pk=pk), many=True).data,
                                 status=status.HTTP_200_OK)
-            return Response("Room "+pk+" not found" , status=status.HTTP_404_NOT_FOUND)
+            return Response("Room " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(RoomSerializer(Room.objects.all(), many=True).data,
                             status=status.HTTP_200_OK)
@@ -282,7 +289,7 @@ class RoomGeneratorAPI(APIView):
             if Room.objects.filter(pk=pk).count() > 0:
                 return Response(RoomGeneratorSerializer(Room.objects.filter(pk=pk), many=True, label="room").data,
                                 status=status.HTTP_200_OK)
-            return Response("Room "+pk+" not found", status=status.HTTP_404_NOT_FOUND)
+            return Response("Room " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(RoomSerializer(Room.objects.all(), many=True).data, status=status.HTTP_200_OK)
 
@@ -340,10 +347,10 @@ class DemographicQuestionnaireAPI(APIView):
                 user.participant.profile = profile_table.profile
             except:
                 count = ParticipantProfiles.objects.all().count()
-                user.participant.profile = count+1
+                user.participant.profile = count + 1
                 new_profile = ParticipantProfiles()
                 new_profile.answer = request.data.get('answer')
-                new_profile.profile = count+1
+                new_profile.profile = count + 1
                 user.save()
                 new_profile.save()
             return Response(DemographicQuestionnaireSerializer(demographic_answer).data, status=status.HTTP_201_CREATED)
@@ -378,17 +385,18 @@ class QuestionnaireCheckAPI(APIView):
     serializer_class = UserRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request, pk):
-        if int(pk) == 0:
+    def post(self, request, key):
+        if int(key) < 1:
             participant = User.objects.get(username=request.data.get('email')).participant
             return Response(ParticipantSerializer(participant).data, status=status.HTTP_200_OK)
         else:
-            if User.objects.get(username=request.data.get('email')).participant.count() > 0:
+            if User.objects.get(username=request.data.get('email')).count() > 0:
                 participant = User.objects.get(username=request.data.get('email')).participant
                 participant.survey_done = True
                 participant.save()
                 return Response(ParticipantSerializer(participant).data, status=status.HTTP_200_OK)
             return Response("User not found", status=status.HTTP_400_BAD_REQUEST)
+
 
 
 # Title : Receive analytics from the application
@@ -443,4 +451,7 @@ class RegisterUserAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+# LOGIN
+class Login(CreateView):
+    model = User
+    fields = ['username', 'password']
