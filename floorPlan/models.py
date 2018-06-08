@@ -64,12 +64,12 @@ class Chair(models.Model):
 class Sensor_Table(models.Model):
     table = models.ForeignKey(Desk, on_delete=models.CASCADE)
     time_stamp = models.DateTimeField()
-    light_value = models.IntegerField()
-    occupancy_value = models.IntegerField()
+    light_value = models.FloatField()
+    occupancy_value = models.FloatField()
 
     # Defines how a Sensor object is displayed
     def __str__(self):
-        return self.table
+        return str(self.table)
 
 
 # Model that defines the blueprint of a Window on the Database  # android application names
