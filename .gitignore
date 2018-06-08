@@ -11,3 +11,4 @@ static/*
 /floorPlan/migrations/
 !style.css
 celerybeat-schedule
+/sync/sensors/*
