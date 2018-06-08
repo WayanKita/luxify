@@ -199,8 +199,8 @@ class ParticipantToggleWorkspaceSerializer(serializers.ModelSerializer):
     def validate(self, data):
         # get username and password from POST body
         username = data.get("username", None)
-        participant = User.objects.get(username=username)
-        participant.username = participant.username
+        participant = User.objects.get(username=username).participant
+        participant.username = User.objects.get(username=username)
         participant.in_workspace = data.get("in_workspace", None)
         participant.room = data.get("room", None)
         participant.save()

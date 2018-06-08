@@ -129,7 +129,7 @@ class Sensor_User(models.Model):
 
     # Defines how a Sensor object is displayed
     def __str__(self):
-        return self.participant
+        return str(self.participant)
 
 
 # Model that defines format for alertness questionnaire answers storage
