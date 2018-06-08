@@ -203,6 +203,11 @@ class PostAlertnessRequest(models.Model):
     time_stamp = models.DateTimeField()
 
 
+class SetOccupancyRequest(models.Model):
+    key = models.IntegerField()
+    occupied = models.IntegerField()
+
+
 class PostAnalyticRequest(models.Model):
     username = models.CharField(max_length=200)
     event = models.CharField(max_length=200)

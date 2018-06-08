@@ -280,6 +280,12 @@ class AlertnessQuestionnairePostSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class SetOccupancyPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SetOccupancyRequest
+        fields = '__all__'
+
+
 class DemographicQuestionnairePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostDemographicRequest
