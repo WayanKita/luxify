@@ -306,7 +306,9 @@ class RecommendDeskAPI(APIView):
 
     def post(self, request, pk):
             if Room.objects.filter(pk=pk).count() > 0:
-                Desk.objects.filter(room=Room.objects.filter(pk=pk))
+                desks = Desk.objects.filter(room=Room.objects.filter(pk=pk))
+                for desk in desks:
+                    desk.illuminance
                 return Response(RoomGeneratorSerializer(Room.objects.filter(pk=pk), many=True, label="room").data,
                                 status=status.HTTP_200_OK)
             return Response("Room " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
@@ -403,9 +405,6 @@ class WorkspaceAPI(APIView):
 class QuestionnaireCheckAPI(APIView):
     serializer_class = UserRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
-
-    def get(self):
-        pass
 
     def post(self, request, key):
         if int(key) == 0:
