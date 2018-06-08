@@ -48,3 +48,9 @@ def task_number_one():
 							table_6 = Desk.objects.get(pk=6)
 
 							Sensor_Table.objects.create(table=table_1, time_stamp=timezone.now(), light_value=voltage_1, occupancy_value=occ_1)
+							Sensor_Table.objects.create(table=table_2, time_stamp=timezone.now(), light_value=voltage_2, occupancy_value=occ_2)
+							Sensor_Table.objects.create(table=table_3, time_stamp=timezone.now(), light_value=voltage_3, occupancy_value=occ_3)
+							Sensor_Table.objects.create(table=table_4, time_stamp=timezone.now(), light_value=voltage_4, occupancy_value=occ_4)
+							Sensor_Table.objects.create(table=table_5, time_stamp=timezone.now(), light_value=voltage_5, occupancy_value=occ_5)
+							Sensor_Table.objects.create(table=table_6, time_stamp=timezone.now(), light_value=voltage_6, occupancy_value=occ_6)
+				os.remove(path + file)
