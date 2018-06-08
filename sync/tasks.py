@@ -2,9 +2,10 @@ import os, csv, sys
 
 from django.conf import settings
 from celery import task
-from floorPlan.models import Desk, Sensor_Table, Date
+from floorPlan.models import Desk, Sensor_Table
+from .models import Date, SyncTest
 
-path = 'sensors'
+path = '/home/group10user/luxify/sync/sensors'
 
 @task
 def task_number_one():
@@ -16,6 +17,7 @@ def task_number_one():
 				with open (path + '/' + file) as f:
 					reader = csv.reader(f)
 					for row in reader:
+						SyncTest.objects.create(row=row)
 						if not "Timestamp" in row:
 							voltage_1 = row[4]
 							voltage_2 = row[5]
@@ -44,4 +46,4 @@ def task_number_one():
 							table_5 = Desk.objects.get(pk=5)
 							table_6 = Desk.objects.get(pk=6)
 
-							Sensor_table.objects.create(table=table_1, light_value=voltage_1, occupancy_value=occ_1)
+							Sensor_Table.objects.create(table=table_1, light_value=voltage_1, occupancy_value=occ_1)

@@ -8,3 +8,8 @@ class Date(models.Model):
 	def __str__(self):
 		return str(self.date)
 
+class SyncTest(models.Model):
+	row = models.TextField()
+
+	def __str__(self):
+		return str(self.row)
