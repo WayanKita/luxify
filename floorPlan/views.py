@@ -306,7 +306,9 @@ class RecommendDeskAPI(APIView):
 
     def post(self, request, pk):
             if Room.objects.filter(pk=pk).count() > 0:
-                Desk.objects.filter(room=Room.objects.filter(pk=pk))
+                desks = Desk.objects.filter(room=Room.objects.filter(pk=pk))
+                for desk in desks:
+                    desk.illuminance
                 return Response(RoomGeneratorSerializer(Room.objects.filter(pk=pk), many=True, label="room").data,
                                 status=status.HTTP_200_OK)
             return Response("Room " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
@@ -404,15 +406,12 @@ class QuestionnaireCheckAPI(APIView):
     serializer_class = UserRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    def get(self):
-        pass
-
     def post(self, request, key):
         if int(key) == 0:
             participant = User.objects.get(username=request.data.get('username')).participant
             return Response(ParticipantSerializer(participant).data, status=status.HTTP_200_OK)
         else:
-            if User.objects.get(username=request.data.get('username')).count() > 0:
+            if User.objects.filter(username=request.data.get('username')).count() > 0:
                 participant = User.objects.get(username=request.data.get('username')).participant
                 participant.survey_done = True
                 participant.save()
