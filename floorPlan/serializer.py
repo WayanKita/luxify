@@ -10,22 +10,22 @@ from .models import *
 from survey.models import Survey, Question
 
 
-# Function to check whether a Participant with email matches a Participant in the database
-def participant_authentication_check(email):
+# Function to check whether a Participant with username matches a Participant in the database
+def participant_authentication_check(username):
     try:
-        participant = Participant.objects.get(email=email)
+        participant = Participant.objects.get(username=username)
     except:
         return False
-    if participant.email == email:
+    if participant.username == username:
         return True
     else:
         return False
 
 
-# Function to check whether a Participant with email is logged in
-def participant_login_check(email):
+# Function to check whether a Participant with username is logged in
+def participant_login_check(username):
     try:
-        participant = Participant.objects.get(email=email)
+        participant = Participant.objects.get(username=username)
     except:
         return False
     if participant.logged_in:
@@ -55,7 +55,7 @@ class UserSerializer(serializers.ModelSerializer):
     def validate(self, data):
         username = data.get("username", None)
         if User.objects.filter(username=username).exists():
-            raise ValidationError("This email already exists")
+            raise ValidationError("This username already exists")
         else:
             return data
 
@@ -155,7 +155,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 class ParticipantRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = ParticipantRequest
-        fields = ('email', 'request_type')
+        fields = ('username', 'request_type')
 
 
 class UserRequestSerializer(serializers.ModelSerializer):
@@ -173,16 +173,16 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     # Overwrites is_valid function from Django
     def validate(self, data):
-        # get email and password from POST body
-        email = data.get("email", None)
+        # get username and password from POST body
+        username = data.get("username", None)
         password = data.get("password", None)
         # Try to find a Participant with matching email from POST body else raise ValidationError
         try:
-            user = Participant.objects.get(email=email)
-            raise ValidationError("User: " + email + " already exists")
+            user = Participant.objects.get(username=username)
+            raise ValidationError("User: " + username + " already exists")
         except:
             user = User()
-            user.email = email
+            user.username = username
             user.set_password(password)                              # changes the log in state of Participant to True
             user.save()  # saves changes made to Participant on the database
         return data
@@ -197,10 +197,10 @@ class ParticipantToggleWorkspaceSerializer(serializers.ModelSerializer):
 
     # Overwrites is_valid function from Django
     def validate(self, data):
-        # get email and password from POST body
-        email = data.get("email", None)
-        participant = User.objects.get(username=email)
-        participant.email = participant.email
+        # get username and password from POST body
+        username = data.get("username", None)
+        participant = User.objects.get(username=username)
+        participant.username = participant.username
         participant.in_workspace = data.get("in_workspace", None)
         participant.room = data.get("room", None)
         participant.save()
@@ -216,11 +216,11 @@ class AuthenticateParticipant(serializers.ModelSerializer):
 
     # Overwrite default authentication for Participant
     def validate(self, data):
-        email = data.get("email", None)
-        if not participant_authentication_check(email):
-            raise ValidationError("User: "+email+" does not exist")
-        if not participant_login_check(email):
-            raise ValidationError("User "+email+" is not logged in")
+        username = data.get("username", None)
+        if not participant_authentication_check(username):
+            raise ValidationError("User: "+username+" does not exist")
+        if not participant_login_check(username):
+            raise ValidationError("User "+username+" is not logged in")
         return data
 
 
@@ -233,7 +233,7 @@ class AuthenticateUser(serializers.ModelSerializer):
 
     # Overwrite default authentication for Participant
     def validate(self, data):
-        email = data.get("email", None)
+        username = data.get("username", None)
         token = data.get("CSRFTOKEN", None)
         return data
 
@@ -249,11 +249,11 @@ class AlertnessQuestionnaireSerializer(serializers.ModelSerializer):
 
     # Overwrite default authentication for Participant
     def validate(self, data):
-        email = data.get("email", None)
-        if not participant_authentication_check(email):
-            raise ValidationError("User: " + email + " does not exist")
-        if not participant_login_check(email):
-            raise ValidationError("User " + email + " is not logged in")
+        username = data.get("username", None)
+        if not participant_authentication_check(username):
+            raise ValidationError("User: " + username + " does not exist")
+        if not participant_login_check(username):
+            raise ValidationError("User " + username + " is not logged in")
         return data
 
 
@@ -266,11 +266,11 @@ class DemographicQuestionnaireSerializer(serializers.ModelSerializer):
 
     # Overwrite default authentication for Participant
     def validate(self, data):
-        email = data.get("email", None)
-        if not participant_authentication_check(email):
-            raise ValidationError("User: " + email + " does not exist")
-        if not participant_login_check(email):
-            raise ValidationError("User " + email + " is not logged in")
+        username = data.get("username", None)
+        if not participant_authentication_check(username):
+            raise ValidationError("User: " + username + " does not exist")
+        if not participant_login_check(username):
+            raise ValidationError("User " + username + " is not logged in")
         return data
 
 
@@ -299,9 +299,9 @@ class AnalyticsSerializer(serializers.ModelSerializer):
 
         # Overwrite default authentication for Participant
         def validate(self, data):
-            email = data.get("email", None)
-            if not participant_authentication_check(email):
-                raise ValidationError("User: " + email + " does not exist")
-            if not participant_login_check(email):
-                raise ValidationError("User " + email + " is not logged in")
+            username = data.get("username", None)
+            if not participant_authentication_check(username):
+                raise ValidationError("User: " + username + " does not exist")
+            if not participant_login_check(username):
+                raise ValidationError("User " + username + " is not logged in")
             return data

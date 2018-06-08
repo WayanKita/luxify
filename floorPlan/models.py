@@ -109,7 +109,7 @@ class Door(models.Model):
 
 # Model that defines the blueprint of a Participant on the Database     # Android naming
 class Participant(models.Model):                                        # User object
-    email = models.OneToOneField(User, on_delete=models.CASCADE)   # email                        # password
+    username = models.OneToOneField(User, on_delete=models.CASCADE)   # username                        # password
     survey_done = models.BooleanField(default=False)                    # demographicStatus ; not used
     in_workspace = models.BooleanField(default=False)                   # demographicStatus ; not used
     room = models.IntegerField(blank=True, null=True, default=1)        # roomID
@@ -118,7 +118,7 @@ class Participant(models.Model):                                        # User o
 
     # Defines how a User object is displayed
     def __str__(self):
-        return str(self.email)
+        return str(self.username)
 
 
 # Model that defines the blueprint of a Sensor on the Database
@@ -134,22 +134,22 @@ class Sensor_User(models.Model):
 
 # Model that defines format for alertness questionnaire answers storage
 class AlertnessQuestionnaire(models.Model):
-    email = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    username = models.ForeignKey(Participant, on_delete=models.CASCADE)
     answer = models.IntegerField()
     time_stamp = models.DateTimeField()
 
     def __str__(self):
-        return str(self.email)+" answered: "+str(self.answer)
+        return str(self.username) + " answered: " + str(self.answer)
 
 
 # Model that defines format for alertness questionnaire answers storage
 class DemographicQuestionnaire(models.Model):
-    email = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    username = models.ForeignKey(Participant, on_delete=models.CASCADE)
     answer = models.CharField(max_length=250)
     time_stamp = models.DateTimeField()
 
     def __str__(self):
-        return str(self.email)+" answered: "+str(self.answer)
+        return str(self.username) + " answered: " + str(self.answer)
 
 
 # Model that defines user profile based on answers given to questionnaire
@@ -163,48 +163,48 @@ class ParticipantProfiles(models.Model):
 
 # Model that defines format for analytics being sent by the mobile application
 class Analytics(models.Model):
-    email = models.ForeignKey(Participant, on_delete=models.CASCADE)
-    # email = models.CharField(max_length=250)
+    username = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    # username = models.CharField(max_length=250)
     event = models.CharField(max_length=250)
     time_stamp = models.DateTimeField()
 
     def __str__(self):
-        return str(self.event)+" recorded for : "+str(self.email)
+        return str(self.event)+" recorded for : "+str(self.username)
 
 
 # WORK related models | DUMMY MODELS
 # Used to simplify API testing
 class ParticipantRequest(models.Model):
-    email = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
     request_type = models.IntegerField(blank=True)
 
     
 # Used to simplify API testing
 class UserRequest(models.Model):
-    email = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
     request_type = models.IntegerField(blank=True)
 
 
 class ParticipantWorkspace(models.Model):
-    email = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
     in_workspace = models.BooleanField(default=False)
     room = models.IntegerField()
 
 
 class PostDemographicRequest(models.Model):
-    email = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
     answer = models.CharField(max_length=250)
     time_stamp = models.DateTimeField()
 
 
 class PostAlertnessRequest(models.Model):
-    email = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
     answer = models.IntegerField()
     time_stamp = models.DateTimeField()
 
 
 class PostAnalyticRequest(models.Model):
-    email = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
     event = models.CharField(max_length=200)
     time_stamp = models.DateTimeField()
 
