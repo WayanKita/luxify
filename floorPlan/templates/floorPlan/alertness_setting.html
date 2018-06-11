@@ -1,0 +1,36 @@
+{% extends 'floorPlan/template_html/template_navbar_settings.html' %}
+<!-- Sets title to page -->
+{% block title %}
+    Settings
+{% endblock %}
+
+<!-- Set "alertness" button to active in nav -->
+{% block setting_active %}
+    active
+{% endblock %}
+
+<!-- Beginning of black from Templates/template-navbar.html-->
+{% block body_setting %}
+
+<table style="width:66%" class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>User Category</th>
+            <th>Visualization</th>
+            <th>Recommendation</th>
+            <th>Guidance</th>
+        </tr>
+    </thead>
+    {% for user_category in all_user_category %}
+        <tr>
+            <td>{{ user_category.user_category }}</td>
+            <td>{{ user_category.visualization }}</td>
+            <td>{{ user_category.recommendation }}</td>
+            <td>{{ user_category.guidance }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+
+
+{% endblock %}

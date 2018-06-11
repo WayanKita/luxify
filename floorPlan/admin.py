@@ -33,4 +33,5 @@ admin.site.register(AlertnessQuestionnaire)
 admin.site.register(DemographicQuestionnaire)
 admin.site.register(ParticipantProfiles)
 admin.site.register(Analytics)
+admin.site.register(UserCategory)
 

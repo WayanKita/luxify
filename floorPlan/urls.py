@@ -3,6 +3,7 @@ from django.urls import path, re_path
 from django.contrib.auth import views as auth_views
 
 from . import views
+from survey import views as survey_views
 
 app_name = "floorPlan"
 
@@ -27,6 +28,7 @@ urlpatterns = [
     re_path(r'^API/room_generator/(?P<pk>[0-9]+)/$', views.RoomGeneratorAPI.as_view(), name='android-window'),
     re_path(r'^API/recommend_desk/$', views.RecommendDeskAPI.as_view(), name='android-window'),
     re_path(r'^API/set_occupancy/$', views.SetOccupancyAPI.as_view(), name='android-window'),
+    re_path(r'^API/user_category/(?P<user>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$', views.UserCategoryAPI.as_view(), name='android-window'),
 
     # Create URLs
     re_path(r'^room_plan/$', login_required(views.room_plan), name='room-plan'),
@@ -45,6 +47,10 @@ urlpatterns = [
     re_path(r'^data/alertness_questionnaire/$', login_required(views.alertness_questionnaire), name='alertness-detail'),
     re_path(r'^data/demographic_questionnaire/$', login_required(views.demographic_questionnaire), name='demographic-detail'),
     re_path(r'^data/user/$', login_required(views.user), name='user-detail'),
+    re_path(r'^data/analytics/$', login_required(views.analytics), name='analytics-detail'),
+    re_path(r'^data/questionnaire/$', login_required(survey_views.SurveyDetail.as_view()), name='questionnaire-detail'),
+    re_path(r'^data/question/$', login_required(views.QuestionCreate.as_view()), name='question-detail'),
+    re_path(r'^data/download/$', login_required(views.download), name='download'),
 
     # Login URL
     re_path(r'^login/$', auth_views.LoginView.as_view(
@@ -53,5 +59,9 @@ urlpatterns = [
 
     # Download link
     # re_path(r'^static/example.txt', download_csv),
+
+    # Settings URL
+    re_path(r'^settings/user_category/$', login_required(views.user_category), name='user-cat-setting'),
+    re_path(r'^settings/alertness/$', login_required(views.alertness), name='alertness-setting'),
 
 ]

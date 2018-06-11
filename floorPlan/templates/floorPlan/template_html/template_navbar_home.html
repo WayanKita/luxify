@@ -26,6 +26,16 @@
                             <span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>&nbsp; Data
                         </a>
                     </li>
+                    <li class="{% block questionnaire_active %} {% endblock %}">
+                        <a href="{% url 'floorPlan:questionnaire-detail' %}">
+                            <span class="glyphicon glyphicon-book" aria-hidden="true"></span>&nbsp; Questionnaire
+                        </a>
+                    </li>
+                    <li class="{% block setting_active %} {% endblock %}">
+                        <a href="{% url 'floorPlan:setting-detail' %}">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>&nbsp; Application Settings
+                        </a>
+                    </li>
 
                 </ul>
                 <ul class="nav navbar-nav navbar-right">

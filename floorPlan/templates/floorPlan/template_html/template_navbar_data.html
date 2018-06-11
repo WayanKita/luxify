@@ -32,10 +32,15 @@
                         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; User
                     </a>
                 </li>
+                <li class="{% block analytics_active %} {% endblock %}">
+                    <a href="{% url 'floorPlan:analytics-detail' %}">
+                        <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp; Analytics
+                    </a>
+                </li>
            </ul>
         <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-                        <a href="{% static 'floorPlan/example.csv' %}">Download CSV</a>
+                        <a href="{% url download column_3_item.pk %}">Download CSV</a>
                     </li>
                 </ul>
         </div>

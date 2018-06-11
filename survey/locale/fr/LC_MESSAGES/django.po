@@ -18,11 +18,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Translated-Using: django-rosetta 0.7.13\n"
 
-#: .\dev\templates\base.html:3
+#: .\dev\templates\foundation.html:3
 msgid "en"
 msgstr "fr"
 
-#: .\dev\templates\base.html:5
+#: .\dev\templates\foundation.html:5
 msgid "DEVELOPMENT django-Survey"
 msgstr "DÉVELOPPEMENT django-Survey"
 

@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # redirects floorPlan/* to the floorPlan app's urls.py file (floorPlan/urls.py)
     path('luxify/', include('floorPlan.urls')),
+    path('survey/', include('survey.urls')),
     path('rest-auth/', include('rest_auth.urls')),
 ]
 

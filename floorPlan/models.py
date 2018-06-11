@@ -115,6 +115,7 @@ class Participant(models.Model):                                        # User o
     room = models.IntegerField(blank=True, null=True, default=1)        # roomID
     desk = models.IntegerField(blank=True, null=True, default=1)        # deskID
     profile = models.IntegerField(blank=True, null=True, default=1)        # deskID
+    user_category = models.IntegerField(blank=True, null=True, default=0)
 
     # Defines how a User object is displayed
     def __str__(self):
@@ -213,6 +214,25 @@ class PostAnalyticRequest(models.Model):
     event = models.CharField(max_length=200)
     time_stamp = models.DateTimeField()
 
+
+class UserCategory(models.Model):
+
+    USER_CATEGORY = (
+        (1, "1"),
+        (2, "2"),
+        (3, "3"),
+    )
+
+    user_category = models.IntegerField(choices=USER_CATEGORY, unique=True)
+    recommendation = models.BooleanField(default=False)
+    visualisation = models.BooleanField(default=False)
+    guidance = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.user_category)+" : " + \
+               str(self.recommendation)+", " + \
+               str(self.visualisation)+", " + \
+               str(self.guidance)
 
 
 

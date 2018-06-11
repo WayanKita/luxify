@@ -14,6 +14,8 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.core import management
+from django.core.exceptions import ObjectDoesNotExist
 from .form import *
 from .models import *
 from .serializer import *
@@ -62,6 +64,44 @@ def user(request):
                   'floorPlan/user.html',
                   {'all_participant': all_participant,
                    'all_room:': all_room})
+
+
+def analytics(request):
+    all_analytics = Analytics.objects.all()
+    return render(request,
+                  'floorPlan/analytics.html',
+                  {'all_participant': all_analytics})
+
+
+def user_category(request):
+    all_user_category = UserCategory.objects.all()
+    return render(request,
+                  'floorPlan/user_category_setting.html',
+                  {'all_user_category': all_user_category})
+
+
+def alertness(request):
+    all_user_category = UserCategory.objects.all()
+    return render(request,
+                  'floorPlan/user_category_setting.html',
+                  {'all_user_category': all_user_category})
+
+
+def download(request):
+    management.call_command('dumpdata')
+    pass
+
+
+# Defines the fields for the Questionnaire form
+class QuestionnaireCreate(CreateView):
+    model = Survey
+    fields = ['name', 'description']
+
+
+# Defines the fields for the Question form
+class QuestionCreate(CreateView):
+    model = Survey
+    fields = ['text', 'order', 'survey', 'type', 'choices']
 
 
 # CREATE VIEWS
@@ -158,9 +198,14 @@ class RegisterAPI(APIView):
     def post(self, request):
         serializer = ParticipantForm(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            # serializer.save()
             participant = Participant.objects.get(username=request.data.get('username'))
-            participant.logged_in = True
+            if Participant.objects.latest('user_category').user_category() == 0:
+                participant.user_category = 1
+            else:
+                # user_category = Participant.objects.latest('user_category').user_category
+                # participant.user_category = (user_category % 3)+1
+                participant.user_category = 2
             participant.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -361,6 +406,30 @@ class SetOccupancyAPI(APIView):
         return Response("Chair "+request.data.get("key")+" not found", status=status.HTTP_404_NOT_FOUND)
 
 
+# Title : Get user absed on user category chair.
+# URL : /API/room_generator
+# URL : luxify/API/room_generator
+# Method : POST
+# Data Params : [{ username : [string], room_type : [rooms] | [int(1+)]}]
+# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
+class UserCategoryAPI(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, user):
+        parsed_user = str(user)
+        try:
+            if User.objects.filter(username=parsed_user).count() > 0:
+                parsed_user = User.objects.get(username=parsed_user).participant
+                user_category = UserCategory.objects.get(user_category=parsed_user.user_category)
+                return Response(UserCategorySerializer(user_category).data,
+                                status=status.HTTP_200_OK)
+            else:
+                return Response(ParticipantSerializer(Participant.objects.all()).data,
+                                status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response("User category for "+str(parsed_user)+" not found", status=status.HTTP_404_NOT_FOUND)
+
+
 # Title : Receive alertness questionnaire answer.
 # URL : /API/alertness_questionnaire
 # URL : luxify/API/alertness_questionnaire
@@ -513,6 +582,11 @@ class RegisterUserAPI(APIView):
             user.save()
             participant = Participant()
             participant.username = User.objects.get(username=username)
+            try:
+                user_category = Participant.objects.latest('user_category').user_category
+                participant.user_category = (user_category % 3) + 1
+            except ObjectDoesNotExist:
+                participant.user_category = 1
             participant.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

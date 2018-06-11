@@ -1,0 +1,36 @@
+{% extends 'floorPlan/template_html/base_template.html' %}
+{% load staticfiles%}
+{% block body %}
+<nav class="navbar navbar">
+    <div class="container-fluid">
+
+        <!-- Header -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'floorPlan:home' %}">Luxify</a>
+        </div>
+
+        <!-- Items -->
+        <div class="collapse navbar-collapse" id="topNavBar">
+            <ul class="nav navbar-nav">
+                <li class="{% block questionnaire_active %} {% endblock %}">
+                    <a href="{% url 'floorPlan:questionnaire-detail' %}">
+                        <span class="glyphicon glyphicon-list-plus" aria-hidden="true"></span>&nbsp; Add Questionnaire
+                    </a>
+                </li>
+                <li class="{% block alertness_active %} {% endblock %}">
+                    <a href="{% url 'floorPlan:question-detail' %}">
+                        <span class="glyphicon glyphicon-list-plus" aria-hidden="true"></span>&nbsp; Add Question
+                    </a>
+                </li>
+           </ul>
+        </div>
+    </div>
+</nav>
+    {% block body_nav_questionnaire %}
+    {% endblock %}
+{% endblock %}
