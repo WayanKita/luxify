@@ -26,11 +26,6 @@
                             <span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>&nbsp; Data
                         </a>
                     </li>
-                    <li class="{% block questionnaire_active %} {% endblock %}">
-                        <a href="{% url 'floorPlan:questionnaire-detail' %}">
-                            <span class="glyphicon glyphicon-book" aria-hidden="true"></span>&nbsp; Questionnaire
-                        </a>
-                    </li>
                     <li class="{% block setting_active %} {% endblock %}">
                         <a href="{% url 'floorPlan:user-cat-setting' %}">
                             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>&nbsp; Application Settings
@@ -43,7 +38,6 @@
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                             <span class="glyphicon glyphicon-user"></span>&nbsp; {{request.user.username}} <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-{#                            <li><a href="#">Change password</a></li>#}
                             <li><a href="{% url 'floorPlan:logout' %}">Logout</a></li>
                         </ul>
                     </li>

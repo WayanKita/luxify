@@ -17,11 +17,6 @@
         <!-- Items -->
         <div class="collapse navbar-collapse" id="topNavBar">
             <ul class="nav navbar-nav">
-                <li class="{% block questionnaire_active %} {% endblock %}">
-                    <a href="{% url 'floorPlan:questionnaire-detail' %}">
-                        <span class="glyphicon glyphicon-list-plus" aria-hidden="true"></span>&nbsp; Add Questionnaire
-                    </a>
-                </li>
                 <li class="{% block alertness_active %} {% endblock %}">
                     <a href="{% url 'floorPlan:question-detail' %}">
                         <span class="glyphicon glyphicon-list-plus" aria-hidden="true"></span>&nbsp; Add Question
