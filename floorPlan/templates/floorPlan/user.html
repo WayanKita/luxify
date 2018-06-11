@@ -12,11 +12,10 @@
 <!-- Beginning of black from Templates/template-navbar.html-->
 {% block body_nav_data %}
 
-<table style="width:66%" class="table table-striped">
-    <thead class="thead-dark">
+<table style="width:66%" class="table table-bordered table table-hover">
+    <thead class="">
         <tr>
             <th>Participant</th>
-            <th>Logged in?</th>
             <th>At workspace?</th>
             <th>Work room</th>
             <th>Profile</th>
@@ -25,7 +24,6 @@
     {% for participant in all_participant %}
         <tr>
             <td>{{ participant.username }}</td>
-            <td>{{ participant.logged_in }}</td>
             <td>{{ participant.in_workspace }}</td>
             <td>{{ participant.room }}</td>
             <td>{{ participant.room }}</td>
