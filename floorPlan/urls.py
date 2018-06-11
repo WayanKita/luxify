@@ -3,7 +3,6 @@ from django.urls import path, re_path
 from django.contrib.auth import views as auth_views
 
 from . import views
-from survey import views as survey_views
 
 app_name = "floorPlan"
 
@@ -48,9 +47,8 @@ urlpatterns = [
     re_path(r'^data/demographic_questionnaire/$', login_required(views.demographic_questionnaire), name='demographic-detail'),
     re_path(r'^data/user/$', login_required(views.user), name='user-detail'),
     re_path(r'^data/analytics/$', login_required(views.analytics), name='analytics-detail'),
-   # re_path(r'^data/questionnaire/$', login_required(survey_views.SurveyDetail.as_view()), name='questionnaire-detail'),
     re_path(r'^data/question/$', login_required(views.QuestionCreate.as_view()), name='question-detail'),
-    re_path(r'^data/download/$', login_required(views.download), name='download'),
+    re_path(r'^data/download/$', login_required(views.send_file), name='download'),
 
     # Login URL
     re_path(r'^login/$', auth_views.LoginView.as_view(

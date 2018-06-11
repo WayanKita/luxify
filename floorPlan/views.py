@@ -1,4 +1,6 @@
 import csv
+import time
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -88,8 +90,23 @@ def alertness(request):
 
 
 def download(request):
-    management.call_command('dumpdata')
-    pass
+    management.call_command('dumpdata', '-o data.json',)
+    return render(request, 'floorPlan/home.html')
+
+
+def send_file(request):
+    import os, tempfile, zipfile
+    from wsgiref.util import FileWrapper
+    from django.conf import settings
+    import mimetypes
+
+    management.call_command('dumpdata', '-o', 'data.json')
+    filename = "data.json"  # this is the file people must download
+    with open(filename, 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename=' + filename
+        response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-16'
+        return response
 
 
 # Defines the fields for the Questionnaire form
@@ -140,12 +157,6 @@ class SensorCreate(CreateView):
 class DetailView(generic.DetailView):
     model = Room
     template_name = 'floorPlan/room_detail.html'
-
-
-# Defines the detailed view of a Room on room_detail.html
-# class AlertnessQuestionnaireView(generic.DetailView):
-#     model = AlertnessQuestionnaire
-#     template_name = 'floorPlan/alertness_questionnaire.html'
 
 
 # DELETE VIEWS
@@ -374,13 +385,13 @@ class RecommendDeskAPI(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
-            if User.objects.filter(username=request.data.get("username")).count() > 0:
-                user_room = User.objects.get(username=request.data.get("username")).participant.room
-                room = Room.objects.get(pk=user_room)
-                desks = Desk.objects.filter(room=room).order_by('-illuminance')
-                return Response(DeskSerializer(desks, many=True).data,
-                                status=status.HTTP_200_OK)
-            return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+        if User.objects.filter(username=request.data.get("username")).count() > 0:
+            user_room = User.objects.get(username=request.data.get("username")).participant.room
+            room = Room.objects.get(pk=user_room)
+            desks = Desk.objects.filter(room=room).order_by('-illuminance')
+            return Response(DeskSerializer(desks, many=True).data,
+                            status=status.HTTP_200_OK)
+        return Response("User not found", status=status.HTTP_404_NOT_FOUND)
 
 
 # Title : Set Occupancy chair.
@@ -403,7 +414,7 @@ class SetOccupancyAPI(APIView):
             chair.save()
             return Response(ChairSerializer(chair).data,
                             status=status.HTTP_200_OK)
-        return Response("Chair "+request.data.get("key")+" not found", status=status.HTTP_404_NOT_FOUND)
+        return Response("Chair " + request.data.get("key") + " not found", status=status.HTTP_404_NOT_FOUND)
 
 
 # Title : Get user absed on user category chair.
@@ -427,7 +438,7 @@ class UserCategoryAPI(APIView):
                 return Response(ParticipantSerializer(Participant.objects.all()).data,
                                 status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
-            return Response("User category for "+str(parsed_user)+" not found", status=status.HTTP_404_NOT_FOUND)
+            return Response("User category for " + str(parsed_user) + " not found", status=status.HTTP_404_NOT_FOUND)
 
 
 # Title : Receive alertness questionnaire answer.
