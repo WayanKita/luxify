@@ -74,7 +74,7 @@ def analytics(request):
     all_analytics = Analytics.objects.all()
     return render(request,
                   'floorPlan/analytics.html',
-                  {'all_participant': all_analytics})
+                  {'all_analytics': all_analytics})
 
 
 def user_category(request):
@@ -460,18 +460,13 @@ class UserCategoryAPI(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, user):
-        parsed_user = str(user)
         try:
-            if User.objects.filter(username=parsed_user).count() > 0:
-                parsed_user = User.objects.get(username=parsed_user).participant
-                user_category = UserCategory.objects.get(user_category=parsed_user.user_category)
-                return Response(UserCategorySerializer(user_category).data,
-                                status=status.HTTP_200_OK)
-            else:
-                return Response(ParticipantSerializer(Participant.objects.all()).data,
-                                status=status.HTTP_200_OK)
+            participant = User.objects.get(username=user).participant
+            user_category = UserCategory.objects.get(user_category=participant.user_category)
+            return Response(UserCategorySerializer(user_category).data,
+                            status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
-            return Response("User category for " + str(parsed_user) + " not found", status=status.HTTP_404_NOT_FOUND)
+            return Response("User category for " + user + " not found", status=status.HTTP_404_NOT_FOUND)
 
 
 # Title : Receive alertness questionnaire answer.
