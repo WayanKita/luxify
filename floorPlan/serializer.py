@@ -304,6 +304,12 @@ class ParticipantInWorkSpaceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ChairTestPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChairPostTest
+        fields = '__all__'
+
+
 class AnalyticsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostAnalyticRequest

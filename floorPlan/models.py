@@ -40,7 +40,7 @@ class Desk(models.Model):
 
     # Defines how a Table object is displayed
     def __str__(self):
-        return 'Table ' + str(self.number)
+        return 'Desk ' + str(self.pk)
 
     # def __unicode__(self):
     #     return '%d: %s' % (self.number, self.illuminance)
@@ -48,7 +48,7 @@ class Desk(models.Model):
 
 # Model that defines the blueprint of a Chair on the Database
 class Chair(models.Model):
-    desk = models.ForeignKey(Desk, on_delete=models.CASCADE, related_name="chair")
+    desk = models.OneToOneField(Desk, on_delete=models.CASCADE, related_name="chair")
     side = models.IntegerField()
     occupied = models.BooleanField(default=False)                        # occupied is a boolean, False when created
 
@@ -113,7 +113,7 @@ class Participant(models.Model):                                        # User o
     survey_done = models.BooleanField(default=False)                    # demographicStatus ; not used
     in_workspace = models.BooleanField(default=False)                   # demographicStatus ; not used
     room = models.IntegerField(blank=True, null=True, default=1)        # roomID
-    desk = models.IntegerField(blank=True, null=True, default=1)        # deskID
+    chair = models.IntegerField(blank=True, null=True, default=1)        # deskID
     profile = models.IntegerField(blank=True, null=True, default=1)        # deskID
     user_category = models.IntegerField(blank=True, null=True, default=0)
 
@@ -190,6 +190,10 @@ class ParticipantWorkspace(models.Model):
     username = models.CharField(max_length=200)
     in_workspace = models.BooleanField(default=False)
     room = models.IntegerField()
+
+
+class ChairPostTest(models.Model):
+    chair = models.IntegerField()
 
 
 class PostDemographicRequest(models.Model):

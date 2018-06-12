@@ -5,11 +5,21 @@ html{
 
 body{
     font-family: 'Roboto', sans-serif;
-    background: white url("images/background.png");
-    background-size:cover;
     margin: 0;
     height: 100%;
 }
+
+.background-image {
+    background: white url("images/background.png");
+    background-size: cover;
+    display: block;
+    height: 800px;
+    left: 0;
+    position: fixed;
+    right: 0;
+    z-index: -1;
+}
+
 
 .navbar{
     border-radius: 0;

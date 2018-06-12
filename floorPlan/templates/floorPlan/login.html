@@ -15,14 +15,41 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'floorPlan/style.css' %}" />﻿
-
-{#    <link rel="shortcut icon" type="image/png" href="{{STATIC_URL}}floorPlan/bulb.ico"/>#}
+    <link rel="stylesheet" type="text/css" href="{% static 'floorPlan/login.css' %}" />﻿
 
 
 </head>
+
 <body>
-
-    {% include 'floorPlan/template_html/template-layout-form.html' %}
-
+<div class="background-image"></div>
+    <div class="row">
+        <div  class="main-login main-center">
+            <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="next" value="{{ next }}" />
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="email" class="cols-sm-2 control-label">Email</label>
+                        <div class="cols-sm-10">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
+                                <input type="text" class="form-control" name="username" id="username"  placeholder="Enter your Email"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="cols-sm-2 control-label">Password</label>
+                        <div class="cols-sm-10">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+                                <input type="password" class="form-control" name="password" id="password"  placeholder="Enter your Password"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block login-button">Log In</button>
+                    </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

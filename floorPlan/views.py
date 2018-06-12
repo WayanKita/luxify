@@ -18,11 +18,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core import management
 from django.core.exceptions import ObjectDoesNotExist
+import logging
 from .form import *
 from .models import *
 from .serializer import *
 
 
+logger = logging.getLogger(__name__)
 # from survey.models import *
 
 
@@ -306,6 +308,34 @@ class WindowAPI(APIView):
                             status=status.HTTP_200_OK)
 
 
+# Title : Get/Set User information.
+# URL : /API/user/<email>
+# URL : luxify/API/window
+# Method : POST
+# Data Params : [{ username : [string], password : [string]}]
+# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
+class UserAPI(APIView):
+    serializer_class = ChairTestPostSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, user):
+        try:
+            return Response(ParticipantSerializer(Participant.objects.filter(username=User.objects.get(username=user)), many=True).data,
+                            status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request, user):
+        try:
+            participant = Participant.objects.get(username=User.objects.get(username=user))
+            participant.chair = request.data.get("chair")
+            participant.save()
+            return Response("Chair"+request.data.get("chair")+" has been set",
+                            status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+
+
 # Title : Get room information.
 # URL : /API/room
 # Method : GET
@@ -384,11 +414,14 @@ class RecommendDeskAPI(APIView):
     serializer_class = ParticipantRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request):
-        if User.objects.filter(username=request.data.get("username")).count() > 0:
-            user_room = User.objects.get(username=request.data.get("username")).participant.room
+    def get(self, request, user):
+        if User.objects.filter(username=user).count() > 0:
+            user_room = User.objects.get(username=user).participant.room
             room = Room.objects.get(pk=user_room)
             desks = Desk.objects.filter(room=room).order_by('-illuminance')
+            for desk in desks:
+                if desk.chair.occupied:
+                    desks = desks.exclude(pk=desk.pk)
             return Response(DeskSerializer(desks, many=True).data,
                             status=status.HTTP_200_OK)
         return Response("User not found", status=status.HTTP_404_NOT_FOUND)
