@@ -109,7 +109,7 @@ class ChairSerializer(serializers.ModelSerializer):
 
 
 class TableSerializer(serializers.ModelSerializer):
-    chair = ChairSerializer(many=True, read_only=True)
+    chair = ChairSerializer(read_only=True)
 
     class Meta:
         model = Desk
@@ -117,15 +117,13 @@ class TableSerializer(serializers.ModelSerializer):
 
 
 class RoomGeneratorSerializer(serializers.ModelSerializer):
-    # room = RoomSerializer(many=True, read_only=True)
     desk = TableSerializer(many=True, read_only=True)
     window = WindowSerializer(many=True, read_only=True)
-    chair = ChairSerializer(many=True, read_only=True)
     door = DoorSerializer(many=True, read_only=True)
 
     class Meta:
         model = Room
-        fields = ("room_name", "x_length", "y_length", "desk", "window", "chair", "door")
+        fields = ("room_name", "x_length", "y_length", "desk", "window", "door")
 
 
 # Serializes a Participant object to/from JSON
@@ -236,8 +234,6 @@ class AuthenticateUser(serializers.ModelSerializer):
         username = data.get("username", None)
         token = data.get("CSRFTOKEN", None)
         return data
-
-
 
 
 # Validate that Participant making a request is logged in
