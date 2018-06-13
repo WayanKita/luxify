@@ -12,3 +12,5 @@ static/*
 !style.css
 celerybeat-schedule
 /sync/sensors/*
+/sync/sensor_values/*
+/sync/sensor_values/archives/*

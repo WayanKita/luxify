@@ -161,6 +161,9 @@ class ParticipantProfiles(models.Model):
     def __str__(self):
         return str(self.answer)+" answer is profile : "+str(self.profile)
 
+    class Meta:
+        verbose_name_plural = "participant profiles"
+
 
 # Model that defines format for analytics being sent by the mobile application
 class Analytics(models.Model):
@@ -171,6 +174,9 @@ class Analytics(models.Model):
 
     def __str__(self):
         return str(self.event)+" recorded for : "+str(self.username)
+
+    class Meta:
+        verbose_name_plural = "analytics"
 
 
 # WORK related models | DUMMY MODELS
@@ -237,6 +243,13 @@ class UserCategory(models.Model):
                str(self.recommendation)+", " + \
                str(self.visualisation)+", " + \
                str(self.guidance)
+
+    class Meta:
+        verbose_name_plural = "user categories"
+
+class Sensor(models.Model):
+    column_number = models.IntegerField()
+    sensor_name = models.CharField(max_length=200)
 
 
 

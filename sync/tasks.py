@@ -6,7 +6,7 @@ from floorPlan.models import Desk, Sensor_Table
 from .models import Date, SyncTest
 from django.utils import timezone
 
-path = '/home/group10user/luxify/sync/sensors'
+path = settings.SYNC_PATH
 
 @task
 def task_number_one():
