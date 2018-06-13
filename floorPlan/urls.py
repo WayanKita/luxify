@@ -48,7 +48,6 @@ urlpatterns = [
     re_path(r'^data/demographic_questionnaire/$', login_required(views.demographic_questionnaire), name='demographic-detail'),
     re_path(r'^data/user/$', login_required(views.user), name='user-detail'),
     re_path(r'^data/analytics/$', login_required(views.analytics), name='analytics-detail'),
-    re_path(r'^data/question/$', login_required(views.QuestionCreate.as_view()), name='question-detail'),
     re_path(r'^data/download/$', login_required(views.send_file), name='download'),
 
     # Login URL
@@ -62,5 +61,6 @@ urlpatterns = [
     # Settings URL
     re_path(r'^settings/user_category/$', login_required(views.user_category), name='user-cat-setting'),
     re_path(r'^settings/alertness/$', login_required(views.alertness), name='alertness-setting'),
+    re_path(r'^settings/demographic/$', login_required(views.DemographicCreate.as_view()), name='demographic-setting'),
 
 ]

@@ -1,34 +1,18 @@
-{% extends 'floorPlan/template_html/template_navbar_data.html' %}
+{% extends 'floorPlan/template_html/template_navbar_settings.html' %}
+
 <!-- Sets title to page -->
 {% block title %}
-    Demographic Questionnaire
+    Demographic
 {% endblock %}
 
-<!-- Set "alertness" button to active in nav -->
+<!-- Set "add chair" button to active in nav -->
 {% block demographic_active %}
     active
 {% endblock %}
 
 <!-- Beginning of black from Templates/template-navbar.html-->
-{% block body_nav_data %}
+{% block body_setting %}
 
-<table align="center" style="width:66%" class="table table-bordered table-inverse">
-    <thead class="thead-dark">
-        <tr>
-            <th>Participant</th>
-            <th>Answer</th>
-            <th>Timestamp</th>
-        </tr>
-    </thead>
-    {% for questionnaire in all_questionnaire %}
-        <tr>
-            <td>{{ questionnaire.username }}</td>
-            <td>{{ questionnaire.answer }}</td>
-            <td>{{ questionnaire.time_stamp }}</td>
-        </tr>
-    {% endfor %}
-</table>
-
-
+    {% include 'floorPlan/template_html/template-layout-form.html' %}
 
 {% endblock %}

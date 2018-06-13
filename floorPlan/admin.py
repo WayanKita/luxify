@@ -34,4 +34,5 @@ admin.site.register(DemographicQuestionnaire)
 admin.site.register(ParticipantProfiles)
 admin.site.register(Analytics)
 admin.site.register(UserCategory)
+admin.site.register(Layout)
 

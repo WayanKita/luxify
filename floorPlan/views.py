@@ -22,6 +22,7 @@ import logging
 from .form import *
 from .models import *
 from .serializer import *
+from survey.models import question
 
 
 logger = logging.getLogger(__name__)
@@ -79,9 +80,11 @@ def analytics(request):
 
 def user_category(request):
     all_user_category = UserCategory.objects.all()
+    all_layout = Layout.objects.all()
     return render(request,
                   'floorPlan/user_category_setting.html',
-                  {'all_user_category': all_user_category})
+                  {'all_user_category': all_user_category,
+                   'all_layout': all_layout})
 
 
 def alertness(request):
@@ -91,17 +94,7 @@ def alertness(request):
                   {'all_user_category': all_user_category})
 
 
-def download(request):
-    management.call_command('dumpdata', '-o data.json',)
-    return render(request, 'floorPlan/home.html')
-
-
 def send_file(request):
-    import os, tempfile, zipfile
-    from wsgiref.util import FileWrapper
-    from django.conf import settings
-    import mimetypes
-
     management.call_command('dumpdata', '-o', 'data.json')
     filename = "data.json"  # this is the file people must download
     with open(filename, 'rb') as fh:
@@ -118,8 +111,8 @@ class QuestionnaireCreate(CreateView):
 
 
 # Defines the fields for the Question form
-class QuestionCreate(CreateView):
-    model = Survey
+class DemographicCreate(CreateView):
+    model = Question
     fields = ['text', 'order', 'survey', 'type', 'choices']
 
 
@@ -622,8 +615,8 @@ class RegisterUserAPI(APIView):
             participant = Participant()
             participant.username = User.objects.get(username=username)
             try:
-                user_category = Participant.objects.latest('user_category').user_category
-                participant.user_category = (user_category % 3) + 1
+                cat = Participant.objects.filter(user_category__gt=0).latest('user_category')
+                participant.user_category = (cat.user_category % 3) + 1
             except ObjectDoesNotExist:
                 participant.user_category = 1
             participant.save()
