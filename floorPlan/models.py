@@ -10,6 +10,13 @@ from django.urls import reverse
 # Model that defines the blueprint of a Room on the Database
 from rest_framework.authtoken.models import Token
 
+class Sensor(models.Model):
+    column_number = models.IntegerField()
+    sensor_name = models.CharField(max_length=200, unique=True)
+
+    def __str__(self):
+        return self.sensor_name + ' (column ' + str(self.column_number) + ')'
+
 
 class Room(models.Model):
     room_name = models.CharField(max_length=10)                             # code is a string of max length 10
@@ -34,6 +41,8 @@ class Desk(models.Model):
     length_y = models.IntegerField()                            # lengthY
     illuminance = models.IntegerField()                         # illuminance
     # extra field chair on android app
+    illuminance_sensor = models.ForeignKey(Sensor, on_delete=models.SET_NULL, related_name="illuminance_sensor", null=True)
+    occupancy_sensor = models.ForeignKey(Sensor, on_delete=models.SET_NULL, related_name="occupancy_sensor", null=True)
 
     def get_absolute_url(self):
         return reverse('floorPlan:room-plan')
@@ -246,13 +255,6 @@ class UserCategory(models.Model):
 
     class Meta:
         verbose_name_plural = "user categories"
-
-class Sensor(models.Model):
-    column_number = models.IntegerField()
-    sensor_name = models.CharField(max_length=200, unique=True)
-
-    def __str__(self):
-        return self.sensor_name + ' (column ' + str(self.column_number) + ')'
 
 
 class Layout(models.Model):
