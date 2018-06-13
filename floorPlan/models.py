@@ -69,7 +69,7 @@ class Sensor_Table(models.Model):
 
     # Defines how a Sensor object is displayed
     def __str__(self):
-        return str(self.table)
+        return str(self.table) + ': ' + str(self.light_value)
 
 
 # Model that defines the blueprint of a Window on the Database  # android application names
@@ -249,7 +249,10 @@ class UserCategory(models.Model):
 
 class Sensor(models.Model):
     column_number = models.IntegerField()
-    sensor_name = models.CharField(max_length=200)
+    sensor_name = models.CharField(max_length=200, unique=True)
+
+    def __str__(self):
+        return self.sensor_name + ' (column ' + str(self.column_number) + ')'
 
 
 class Layout(models.Model):
