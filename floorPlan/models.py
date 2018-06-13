@@ -235,13 +235,13 @@ class UserCategory(models.Model):
 
     user_category = models.IntegerField(choices=USER_CATEGORY, unique=True)
     recommendation = models.BooleanField(default=False)
-    visualisation = models.BooleanField(default=False)
+    visualization = models.BooleanField(default=False)
     guidance = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.user_category)+" : " + \
                str(self.recommendation)+", " + \
-               str(self.visualisation)+", " + \
+               str(self.visualization)+", " + \
                str(self.guidance)
 
     class Meta:
@@ -250,6 +250,26 @@ class UserCategory(models.Model):
 class Sensor(models.Model):
     column_number = models.IntegerField()
     sensor_name = models.CharField(max_length=200)
+
+
+class Layout(models.Model):
+    LAYOUT = (
+        (1, "1"),
+        (2, "2"),
+        (3, "3"),
+    )
+    layout = models.IntegerField(choices=LAYOUT, unique=True)
+    recommendation = models.BooleanField(default=False)
+    visualization = models.BooleanField(default=False)
+    guidance = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "Layout "+str(self.layout)+" : " + \
+               str(self.recommendation)+", " + \
+               str(self.visualization)+", " + \
+               str(self.guidance)
+
+
 
 
 

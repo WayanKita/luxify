@@ -25,6 +25,11 @@
                         <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>&nbsp; Alertness
                     </a>
                 </li>
+                <li class="{% block demographic_setting_active %} {% endblock %}">
+                    <a href="{% url 'floorPlan:demographic-setting' %}">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Demographic
+                    </a>
+                </li>
            </ul>
         </div>
     </div>
