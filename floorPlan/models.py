@@ -121,8 +121,8 @@ class Participant(models.Model):                                        # User o
     in_workspace = models.BooleanField(default=False)                   # demographicStatus ; not used
     room = models.IntegerField(blank=True, null=True, default=None)        # roomID
     chair = models.IntegerField(blank=True, null=True, default=None)        # deskID
-    profile = models.IntegerField(blank=True, null=True, default=1)        # deskID
-    user_category = models.IntegerField(blank=True, null=True, default=0)
+    profile = models.IntegerField(blank=True, null=True, default=None)        # deskID
+    user_category = models.IntegerField(blank=True, null=True, default=None)
 
     # Defines how a User object is displayed
     def __str__(self):
