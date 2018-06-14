@@ -3,7 +3,6 @@ import os, csv, sys
 from django.conf import settings
 from celery import task
 from floorPlan.models import Desk, Sensor_Table, Sensor
-from .models import Date, SyncTest
 from django.utils import timezone
 
 path = settings.SYNC_PATH
@@ -13,13 +12,11 @@ def task_number_one():
 	if settings.SYNC_ENABLED:
 		desks = Desk.objects.exclude(illuminance_sensor__isnull=True).exclude(occupancy_sensor__isnull=True)
 		files = os.listdir(path)
-		Date.objects.create()
 		for file in files:
 			if file.endswith('.csv'):
 				with open (path + '/' + file) as f:
 					reader = csv.reader(f)
 					for row in reader:
-						SyncTest.objects.create(row=row)
 						if "Timestamp" in row:
 							for idx, field in enumerate(row):
 								if Sensor.objects.filter(sensor_name=field).exists():
