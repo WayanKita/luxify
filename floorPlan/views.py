@@ -95,13 +95,30 @@ def alertness(request):
 
 
 def send_file(request):
-    management.call_command('dumpdata', '-o', 'data.json')
-    filename = "data.json"  # this is the file people must download
-    with open(filename, 'rb') as fh:
-        response = HttpResponse(fh.read(), content_type='application/vnd.ms-excel')
-        response['Content-Disposition'] = 'attachment; filename=' + filename
-        response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-16'
-        return response
+    # management.call_command('dumpdata', '-o', 'data.json')
+    # filename = "data.json"  # this is the file people must download
+    # with open(filename, 'rb') as fh:
+    #     response = HttpResponse(content_type='text/csv')
+    #     response['Content-Disposition'] = 'attachment; filename=' + filename
+    #     response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-16'
+    #     return response
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename={}.csv'.format('test')
+    writer = csv.writer(response)
+    model = Desk._meta
+
+    fields = [field for field in model.get_fields() if not field.many_to_many and not field.one_to_many and not field.is_relation]
+   
+    writer.writerow([field.name for field in fields])
+   
+    for desk in Desk.objects.all():
+        row = []
+        for field in fields:
+            field_value = getattr(desk, field.name)
+            row.append(field_value)
+
+        writer.writerow(row)
+    return response
 
 
 # Defines the fields for the Questionnaire form
