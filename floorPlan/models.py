@@ -121,8 +121,8 @@ class Participant(models.Model):                                        # User o
     username = models.OneToOneField(User, on_delete=models.CASCADE)   # username                        # password
     survey_done = models.BooleanField(default=False)                    # demographicStatus ; not used
     in_workspace = models.BooleanField(default=False)                   # demographicStatus ; not used
-    room = models.IntegerField(blank=True, null=True, default=1)        # roomID
-    chair = models.IntegerField(blank=True, null=True, default=1)        # deskID
+    room = models.IntegerField(blank=True, null=True, default=null)        # roomID
+    chair = models.IntegerField(blank=True, null=True, default=null)        # deskID
     profile = models.IntegerField(blank=True, null=True, default=1)        # deskID
     user_category = models.IntegerField(blank=True, null=True, default=0)
 
