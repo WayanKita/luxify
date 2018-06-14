@@ -35,8 +35,8 @@ class Desk(models.Model):
     number = models.IntegerField()                              # deskNumber
     pos_x = models.IntegerField()                               # posX
     pos_y = models.IntegerField()                               # posY
-    length_x = models.IntegerField(default=1)                   # lengthX
-    length_y = models.IntegerField(default=1)                   # lengthY
+    length_x = models.IntegerField()                            # lengthX
+    length_y = models.IntegerField()                            # lengthY
     illuminance = models.IntegerField()                         # illuminance
     # extra field chair on android app
     illuminance_sensor = models.ForeignKey(Sensor, on_delete=models.SET_NULL, related_name="illuminance_sensor", null=True, blank=True)
