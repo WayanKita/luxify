@@ -20,8 +20,6 @@ class Sensor(models.Model):
 
 class Room(models.Model):
     room_name = models.CharField(max_length=10)                             # code is a string of max length 10
-    x_length = models.IntegerField()                                        # x_length is an integer of undefined length
-    y_length = models.IntegerField()
 
     def get_absolute_url(self):
         return reverse('floorPlan:room-plan')
@@ -37,6 +35,8 @@ class Desk(models.Model):
     number = models.IntegerField()                              # deskNumber
     pos_x = models.IntegerField()                               # posX
     pos_y = models.IntegerField()                               # posY
+    length_x = models.IntegerField()                            # lengthX
+    length_y = models.IntegerField()                            # lengthY
     illuminance = models.IntegerField()                         # illuminance
     # extra field chair on android app
     illuminance_sensor = models.ForeignKey(Sensor, on_delete=models.SET_NULL, related_name="illuminance_sensor", null=True, blank=True)
