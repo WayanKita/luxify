@@ -14,12 +14,11 @@ standard_library.install_aliases()
 
 
 class Survey(models.Model):
-
     name = models.CharField(_("Name"), max_length=400)
     description = models.TextField(_("Description"), )
-    is_published = models.BooleanField(_("Users can see it and answer it"),)
-    need_logged_user = models.BooleanField(_("Only authenticated users can see it and answer it"),)
-    display_by_question = models.BooleanField(_("Display by question"),)
+    is_published = models.BooleanField(_("Users can see it and answer it"), )
+    need_logged_user = models.BooleanField(_("Only authenticated users can see it and answer it"), )
+    display_by_question = models.BooleanField(_("Display by question"), )
     template = models.CharField(_("Template"), max_length=255, null=True, blank=True)
 
     class Meta(object):

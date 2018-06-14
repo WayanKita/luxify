@@ -1,0 +1,45 @@
+{% extends 'floorPlan/template_html/template_navbar_setting.html' %}
+
+<!-- Sets title to page -->
+{% block title %}
+    Create a new Question
+{% endblock %}
+
+<!-- Set "add chair" button to active in nav -->
+{% block demographic_active %}
+    active
+{% endblock %}
+
+<!-- Beginning of black from Templates/template-navbar.html-->
+{% block body_setting %}
+
+<table align="center" style="width:66%" class="table table-bordered table-inverse">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Question</th>
+            <th scope="col">Order</th>
+            <th scope="col">Survey</th>
+            <th scope="col">Type</th>
+            <th scope="col">Choices</th>
+            <th scope="col" colspan="2"></th>
+        </tr>
+    </thead>
+
+    {% for question in all_question %}
+        <tr>
+            <td>{{ question.text }}</td>
+            <td>{{ question.order }}</td>
+            <td>{{ question.survey}}</td>
+            <td>{{ question.type}}</td>
+            <td>{{ question.choices}}</td>
+            <td><a href="{% url 'floorPlan:demographic-edit' question.id %}">Edit</a></td>
+            <td><a href="{% url 'floorPlan:demographic-delete' question.id %}">Delete</a></td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td align="center" colspan="7"><a href="{% url 'floorPlan:demographic-create' %}">Create new</a></td>
+        </tr>
+
+</table>
+
+{% endblock %}

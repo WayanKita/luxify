@@ -116,6 +116,7 @@ class Participant(models.Model):                                        # User o
     chair = models.IntegerField(blank=True, null=True, default=1)        # deskID
     profile = models.IntegerField(blank=True, null=True, default=1)        # deskID
     user_category = models.IntegerField(blank=True, null=True, default=0)
+    name = models.CharField(max_length=50)
 
     # Defines how a User object is displayed
     def __str__(self):
@@ -165,7 +166,6 @@ class ParticipantProfiles(models.Model):
 # Model that defines format for analytics being sent by the mobile application
 class Analytics(models.Model):
     username = models.ForeignKey(Participant, on_delete=models.CASCADE)
-    # username = models.CharField(max_length=250)
     event = models.CharField(max_length=250)
     time_stamp = models.DateTimeField()
 
@@ -255,6 +255,12 @@ class Layout(models.Model):
                str(self.recommendation)+", " + \
                str(self.visualization)+", " + \
                str(self.guidance)
+
+
+class Recommendation(models.Model):
+    profile = models.OneToOneField(ParticipantProfiles, on_delete=models.CASCADE)
+    formula = models.CharField(max_length=300)
+
 
 
 

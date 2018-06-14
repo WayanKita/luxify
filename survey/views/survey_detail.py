@@ -15,7 +15,6 @@ from survey.models import Category, Survey
 standard_library.install_aliases()
 
 
-
 class SurveyDetail(View):
     def get(self, request, *args, **kwargs):
         # survey = get_object_or_404(Survey, is_published=True, id=kwargs['id'])

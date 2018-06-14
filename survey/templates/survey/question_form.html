@@ -1,17 +1,17 @@
-{% extends 'floorPlan/template_html/template_navbar_room_plan.html' %}
+{% extends 'floorPlan/template_html/template_navbar_setting.html' %}
 
 <!-- Sets title to page -->
 {% block title %}
-    Create a new Room
+    Create a new Question
 {% endblock %}
 
 <!-- Set "add chair" button to active in nav -->
-{% block chair_active %}
+{% block demographic_active %}
     active
 {% endblock %}
 
 <!-- Beginning of black from Templates/template-navbar.html-->
-{% block body_nav_rp %}
+{% block body_setting %}
 
     <div class="row">
     <div style="margin: 0 auto !important; width:500px; " class="">
@@ -57,7 +57,7 @@
                             </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-success">Submit</button>
+                            <button type="submit" class="btn btn-success" name="_save" value="Save">Submit</button>
                         </div>
                     </div>
                 </form>

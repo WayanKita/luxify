@@ -61,6 +61,13 @@ urlpatterns = [
     # Settings URL
     re_path(r'^settings/user_category/$', login_required(views.user_category), name='user-cat-setting'),
     re_path(r'^settings/alertness/$', login_required(views.alertness), name='alertness-setting'),
-    re_path(r'^settings/demographic/$', login_required(views.DemographicCreate.as_view()), name='demographic-setting'),
+    re_path(r'^settings/demographic/$', login_required(views.question_list), name='demographic-setting'),
+    re_path(r'^settings/demographic/create$', login_required(views.DemographicCreate.as_view()), name='demographic-create'),
+    re_path(r'^settings/demographic/delete/(?P<pk>[0-9]+)/$', login_required(views.DemographicDelete.as_view()), name='demographic-delete'),
+    re_path(r'^settings/demographic/edit/(?P<pk>[0-9]+)/$', login_required(views.DemographicEdit.as_view()), name='demographic-edit'),
+    re_path(r'^settings/profile/$', login_required(views.profile), name='profile-setting'),
+    re_path(r'^settings/profile/create$', login_required(views.ProfileCreate.as_view()), name='profile-create'),
+    re_path(r'^settings/profile/delete/(?P<pk>[0-9]+)/$', login_required(views.ProfileDelete.as_view()), name='profile-delete'),
+    re_path(r'^settings/profile/edit/(?P<pk>[0-9]+)/$', login_required(views.ProfileEdit.as_view()), name='profile-edit'),
 
 ]

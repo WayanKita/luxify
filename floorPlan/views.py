@@ -4,7 +4,7 @@ import time
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.template import loader
 from django.views import generic
@@ -94,6 +94,20 @@ def alertness(request):
                   {'all_user_category': all_user_category})
 
 
+def question_list(request):
+    all_question = Question.objects.all()
+    return render(request,
+                  'floorPlan/demographic/question_form.html',
+                  {'all_question': all_question})
+
+
+def profile(request):
+    all_recommendation = Recommendation.objects.all()
+    return render(request,
+                  'floorPlan/recommendation.html',
+                  {'all_recommendation': all_recommendation})
+
+
 def send_file(request):
     management.call_command('dumpdata', '-o', 'data.json')
     filename = "data.json"  # this is the file people must download
@@ -114,6 +128,61 @@ class QuestionnaireCreate(CreateView):
 class DemographicCreate(CreateView):
     model = Question
     fields = ['text', 'order', 'survey', 'type', 'choices']
+
+    def form_valid(self, form):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        question = Question()
+        question.text = form['text'].value()
+        question.order = form['order'].value()
+        # question.survey = Survey.objects.get(name=form['survey'].value())
+        question.survey = Survey.objects.get(name="Demographic questionaire")
+        question.type = form['type'].value()
+        question.choices = form['choices'].value()
+        # choices = form.data['choices']
+        # choices_list = []
+        # for choice in choices.split(','):
+        #     choice = choice.strip()
+        #     if choice:
+        #         choices_list.append(choice)
+        # question.choices = choices_list
+        question.save(force_insert=True)
+        pass
+
+
+# Defines the fields for the Question form
+class DemographicDelete(DeleteView):
+    model = Question
+    success_url = reverse_lazy('floorPlan:demographic-setting')
+
+
+# Defines the fields for the Question form
+class DemographicEdit(UpdateView):
+    model = Question
+    fields = ['text', 'order', 'survey', 'type', 'choices']
+    success_url = reverse_lazy('floorPlan:demographic-setting')
+
+
+# Defines the fields for the Question form
+class ProfileCreate(CreateView):
+    model = Recommendation
+    fields = ['profile', 'formula']
+    success_url = reverse_lazy('floorPlan:profile-setting')
+
+
+# Defines the fields for the Question form
+class ProfileDelete(DeleteView):
+    model = Recommendation
+    success_url = reverse_lazy('floorPlan:profile-setting')
+
+
+# Defines the fields for the Question form
+class ProfileEdit(UpdateView):
+    model = Recommendation
+    fields = ['profile', 'formula']
+    success_url = reverse_lazy('floorPlan:profile-setting')
 
 
 # CREATE VIEWS
