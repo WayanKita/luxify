@@ -137,7 +137,7 @@ class DemographicCreate(CreateView):
 # Defines the fields for the Room form on room_form.html
 class RoomCreate(CreateView):
     model = Room
-    fields = ["room_name", "x_length", "y_length"]
+    fields = ["room_name"]
 
 
 # Defines the fields for the Table form on desk_form.html

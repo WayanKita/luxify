@@ -123,7 +123,7 @@ class RoomGeneratorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = ("room_name", "x_length", "y_length", "desk", "window", "door")
+        fields = ("room_name", "desk", "window", "door")
 
 
 # Serializes a Participant object to/from JSON

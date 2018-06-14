@@ -54,11 +54,11 @@ class RoomTest(TestCase):
     """
 
     @staticmethod
-    def create_room(name, x_length, y_length):
-        return Room.objects.create(room_name=name, x_length=x_length, y_length=y_length)
+    def create_room(name):
+        return Room.objects.create(room_name=name)
 
     def create_default(self):
-        return RoomTest.create_room("MFXXX", 555, 555)
+        return RoomTest.create_room("MFXXX")
 
     def test_room_creation(self):
         room = RoomTest.create_default()
