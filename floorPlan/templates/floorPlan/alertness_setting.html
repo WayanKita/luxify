@@ -5,31 +5,28 @@
 {% endblock %}
 
 <!-- Set "alertness" button to active in nav -->
-{% block setting_active %}
+{% block alertness_setting_active %}
     active
 {% endblock %}
 
 <!-- Beginning of black from Templates/template-navbar.html-->
 {% block body_setting %}
 
-<table style="width:66%" class="table table-striped">
-    <thead class="thead-dark">
+<div class="row">
+<table align="center" style="width:15%; text-align: center" class="table table-inverse">
+    <thead class="" >
         <tr>
-            <th>User Category</th>
-            <th>Visualization</th>
-            <th>Recommendation</th>
-            <th>Guidance</th>
+            <th style="text-align: center">Alert Time Interval</th>
         </tr>
     </thead>
-    {% for user_category in all_user_category %}
+    {% for alertness in all_alertness %}
         <tr>
-            <td>{{ user_category.user_category }}</td>
-            <td>{{ user_category.visualization }}</td>
-            <td>{{ user_category.recommendation }}</td>
-            <td>{{ user_category.guidance }}</td>
+            <td>{{ alertness.interval }}</td>
+            <td><a href="{% url 'floorPlan:alertness-edit-setting' alertness.id %}">Edit</a></td>
         </tr>
     {% endfor %}
 </table>
+</div>
 
 
 

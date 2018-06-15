@@ -142,6 +142,14 @@ class SurveySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+# Serializes a Survey object to/from JSON
+class AlertnessTimeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AlertnessTime
+        fields = "__all__"
+
+
 # Serializes a Question object to/from JSON
 class QuestionSerializer(serializers.ModelSerializer):
 

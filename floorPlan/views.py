@@ -88,10 +88,10 @@ def user_category(request):
 
 
 def alertness(request):
-    all_user_category = UserCategory.objects.all()
+    all_alertness = AlertnessTime.objects.all()
     return render(request,
-                  'floorPlan/user_category_setting.html',
-                  {'all_user_category': all_user_category})
+                  'floorPlan/alertness_setting.html',
+                  {'all_alertness': all_alertness})
 
 
 def question_list(request):
@@ -141,15 +141,9 @@ class DemographicCreate(CreateView):
         question.survey = Survey.objects.get(name="Demographic questionaire")
         question.type = form['type'].value()
         question.choices = form['choices'].value()
-        # choices = form.data['choices']
-        # choices_list = []
-        # for choice in choices.split(','):
-        #     choice = choice.strip()
-        #     if choice:
-        #         choices_list.append(choice)
-        # question.choices = choices_list
-        question.save(force_insert=True)
-        pass
+        question.required = False
+        question.save()
+        return HttpResponseRedirect(reverse_lazy('floorPlan:demographic-setting'))
 
 
 # Defines the fields for the Question form
@@ -185,6 +179,13 @@ class ProfileEdit(UpdateView):
     success_url = reverse_lazy('floorPlan:profile-setting')
 
 
+# Defines the fields for the Question form
+class AlertnessTimeEdit(UpdateView):
+    model = AlertnessTime
+    fields = ['interval']
+    success_url = reverse_lazy('floorPlan:alertness-setting')
+
+
 # CREATE VIEWS
 # Defines the fields for the Room form on room_form.html
 class RoomCreate(CreateView):
@@ -214,6 +215,13 @@ class WindowCreate(CreateView):
 class SensorCreate(CreateView):
     model = Sensor_Table
     fields = ['desk', 'time_stamp', 'light_value', 'occupancy_value']
+
+
+# Defines the fields for the Sensor form on sensor_form.html
+class UserCategoryEdit(UpdateView):
+    model = UserCategory
+    fields = ['user_category']
+    success_url = reverse_lazy('floorPlan:user-cat-setting')
 
 
 # DETAILED VIEWS
@@ -368,6 +376,27 @@ class WindowAPI(APIView):
         else:
             return Response(WindowSerializer(Window.objects.all(), many=True).data,
                             status=status.HTTP_200_OK)
+
+
+# Title : Get/Set User information.
+# URL : /API/user/<email>
+# URL : luxify/API/window
+# Method : POST
+# Data Params : [{ username : [string], password : [string]}]
+# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
+class UserNameAPI(APIView):
+    serializer_class = ParticipantSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, user):
+        try:
+            participant = Participant.objects.get(username=User.objects.get(username=user))
+            participant.name = request.data.get("name")
+            participant.save()
+            return Response("Name"+request.data.get("name")+" has been set",
+                            status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response("User not found", status=status.HTTP_404_NOT_FOUND)
 
 
 # Title : Get/Set User information.
@@ -593,6 +622,22 @@ class DemographicQuestionnaireAPI(APIView):
                 new_profile.save()
             return Response(DemographicQuestionnaireSerializer(demographic_answer).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Title : Receive alertness questionnaire answer.
+# URL : /API/alertness_questionnaire
+# URL : luxify/API/alertness_questionnaire
+# Method : POST
+# Data Params : [{ username : [string], time_stamp : [YYYY-MM-DDTHH:MM], answer : [comma separated string]]
+# Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
+class AlertnessIntervalAPI(APIView):
+    serializer_class = AlertnessTimeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        alertness = AlertnessTime.objects.all()
+        serializer = AlertnessTimeSerializer(alertness,  many=True)
+        return Response(serializer.data)
 
 
 # Title : Get a bundled room plan (with table(with chair), windows and doors) information.

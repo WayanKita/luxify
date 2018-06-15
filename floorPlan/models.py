@@ -145,6 +145,14 @@ class AlertnessQuestionnaire(models.Model):
 
 
 # Model that defines format for alertness questionnaire answers storage
+class AlertnessTime(models.Model):
+    interval = models.IntegerField()
+
+    def __str__(self):
+        return str(self.interval)
+
+
+# Model that defines format for alertness questionnaire answers storage
 class DemographicQuestionnaire(models.Model):
     username = models.ForeignKey(Participant, on_delete=models.CASCADE)
     answer = models.CharField(max_length=250)
@@ -219,26 +227,6 @@ class PostAnalyticRequest(models.Model):
     time_stamp = models.DateTimeField()
 
 
-class UserCategory(models.Model):
-
-    USER_CATEGORY = (
-        (1, "1"),
-        (2, "2"),
-        (3, "3"),
-    )
-
-    user_category = models.IntegerField(choices=USER_CATEGORY, unique=True)
-    recommendation = models.BooleanField(default=False)
-    visualization = models.BooleanField(default=False)
-    guidance = models.BooleanField(default=False)
-
-    def __str__(self):
-        return str(self.user_category)+" : " + \
-               str(self.recommendation)+", " + \
-               str(self.visualization)+", " + \
-               str(self.guidance)
-
-
 class Layout(models.Model):
     LAYOUT = (
         (1, "1"),
@@ -255,6 +243,14 @@ class Layout(models.Model):
                str(self.recommendation)+", " + \
                str(self.visualization)+", " + \
                str(self.guidance)
+
+
+class UserCategory(models.Model):
+
+    user_category = models.ForeignKey(Layout, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.user_category)
 
 
 class Recommendation(models.Model):

@@ -1,0 +1,18 @@
+{% extends 'floorPlan/template_html/template_navbar_setting.html' %}
+
+<!-- Sets title to page -->
+{% block title %}
+    Edit Alertness Time Interval
+{% endblock %}
+
+<!-- Set "add chair" button to active in nav -->
+{% block alertness_setting_active %}
+    active
+{% endblock %}
+
+<!-- Beginning of black from Templates/template-navbar.html-->
+{% block body_setting %}
+
+    {% include 'floorPlan/template_html/template-layout-form.html' %}
+
+{% endblock %}

@@ -24,11 +24,13 @@ urlpatterns = [
     re_path(r'^API/desk/(?P<pk>[0-9]+)/$', views.DeskAPI.as_view(), name='android-desk'),
     re_path(r'^API/window/(?P<pk>[0-9]+)/$', views.WindowAPI.as_view(), name='android-window'),
     re_path(r'^API/user/(?P<user>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$', views.UserAPI.as_view(), name='user'),
+    re_path(r'^API/user/(?P<user>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/name', views.UserNameAPI.as_view(), name='name'),
     re_path(r'^API/workspace/$', views.WorkspaceAPI.as_view(), name='android-workspace'),
     re_path(r'^API/room_generator/(?P<pk>[0-9]+)/$', views.RoomGeneratorAPI.as_view(), name='android-window'),
     re_path(r'^API/recommend_desk/(?P<user>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$', views.RecommendDeskAPI.as_view(), name='android-window'),
     re_path(r'^API/set_occupancy/$', views.SetOccupancyAPI.as_view(), name='android-window'),
     re_path(r'^API/user_category/(?P<user>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$', views.UserCategoryAPI.as_view(), name='android-window'),
+    re_path(r'^API/alertness_interval/$', views.AlertnessIntervalAPI.as_view(), name='alertness-interval'),
 
     # Create URLs
     re_path(r'^room_plan/$', login_required(views.room_plan), name='room-plan'),
@@ -61,6 +63,7 @@ urlpatterns = [
     # Settings URL
     re_path(r'^settings/user_category/$', login_required(views.user_category), name='user-cat-setting'),
     re_path(r'^settings/alertness/$', login_required(views.alertness), name='alertness-setting'),
+    re_path(r'^settings/alertness/edit/(?P<pk>[0-9]+)/$', login_required(views.AlertnessTimeEdit.as_view()), name='alertness-edit-setting'),
     re_path(r'^settings/demographic/$', login_required(views.question_list), name='demographic-setting'),
     re_path(r'^settings/demographic/create$', login_required(views.DemographicCreate.as_view()), name='demographic-create'),
     re_path(r'^settings/demographic/delete/(?P<pk>[0-9]+)/$', login_required(views.DemographicDelete.as_view()), name='demographic-delete'),
@@ -69,5 +72,6 @@ urlpatterns = [
     re_path(r'^settings/profile/create$', login_required(views.ProfileCreate.as_view()), name='profile-create'),
     re_path(r'^settings/profile/delete/(?P<pk>[0-9]+)/$', login_required(views.ProfileDelete.as_view()), name='profile-delete'),
     re_path(r'^settings/profile/edit/(?P<pk>[0-9]+)/$', login_required(views.ProfileEdit.as_view()), name='profile-edit'),
+    re_path(r'^settings/user_category/edit/(?P<pk>[0-9]+)/$', login_required(views.UserCategoryEdit.as_view()), name='user-cat-edit'),
 
 ]

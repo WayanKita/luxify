@@ -36,4 +36,5 @@ admin.site.register(Analytics)
 admin.site.register(UserCategory)
 admin.site.register(Layout)
 admin.site.register(Recommendation)
+admin.site.register(AlertnessTime)
 
