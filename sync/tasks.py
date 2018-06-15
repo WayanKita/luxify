@@ -29,7 +29,7 @@ def task_number_one():
 								occupancy_column = desk.occupancy_sensor.column_number
 								if row[illuminance_column].isdigit() and row[occupancy_column].isdigit():
 									desk.illuminance = float(row[desk.illuminance_sensor.column_number])
-									desk.occupied = int(row[desk.occupancy_sensor.column_number])
+									desk.occupied = int(row[desk.illuminance_sensor.column_number])
 									desk.save()
-									Sensor_History.objects.create(desk=desk, time_stamp=timezone.now(), light_value=desk.illuminance, occupancy_value=desk.occupied)
+									Sensor_History.objects.create(desk=desk, time_stamp=timezone.now(), light_value=float(row[desk.illuminance_sensor.column_number]), occupancy_value=int(row[desk.occupancy_sensor.column_number]))
 					os.rename(path + '/' + file, path + '/archives/' + file)
