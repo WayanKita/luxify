@@ -50,6 +50,9 @@ urlpatterns = [
     re_path(r'^data/analytics/$', login_required(views.analytics), name='analytics-detail'),
     re_path(r'^data/download/$', login_required(views.send_file), name='download'),
 
+    # downloads
+    re_path(r'^data/download_alertness_questionnaire/$', login_required(views.download_alertness_questionnaire), name='download-alertness-questionnaire'),
+
     # Login URL
     re_path(r'^login/$', auth_views.LoginView.as_view(
         template_name='floorPlan/login.html'), name='login'),

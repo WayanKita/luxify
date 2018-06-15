@@ -28,6 +28,23 @@ from survey.models import question
 logger = logging.getLogger(__name__)
 # from survey.models import *
 
+def do_download(model, all_objects):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename={}.csv'.format('test')
+    writer = csv.writer(response)
+
+    fields = [field for field in model.get_fields() if not field.many_to_many and not field.one_to_many and not field.is_relation]
+   
+    writer.writerow([field.name for field in fields])
+   
+    for desk in all_objects:
+        row = []
+        for field in fields:
+            field_value = getattr(desk, field.name)
+            row.append(field_value)
+
+        writer.writerow(row)
+    return response
 
 # INDEX PAGE
 # Defines presentation of the index page /floorPlan
@@ -95,13 +112,6 @@ def alertness(request):
 
 
 def send_file(request):
-    # management.call_command('dumpdata', '-o', 'data.json')
-    # filename = "data.json"  # this is the file people must download
-    # with open(filename, 'rb') as fh:
-    #     response = HttpResponse(content_type='text/csv')
-    #     response['Content-Disposition'] = 'attachment; filename=' + filename
-    #     response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-16'
-    #     return response
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename={}.csv'.format('test')
     writer = csv.writer(response)
@@ -473,7 +483,7 @@ class SetOccupancyAPI(APIView):
             return Response(DeskSerializer(desk).data,
                             status=status.HTTP_200_OK)
         return Response("Desk " + request.data.get("key") + " not found", status=status.HTTP_404_NOT_FOUND)
-        
+
 
 # Title : Get user absed on user category chair.
 # URL : /API/room_generator
@@ -660,3 +670,6 @@ class RegisterUserAPI(APIView):
 class Login(CreateView):
     model = User
     fields = ['username', 'password']
+
+def Download_Alertness_Questionnaire(request):
+    do_download(AlertnessQuestionnaire._meta, AlertnessQuestionnaire.objects.all())
