@@ -25,7 +25,7 @@ def task_number_one():
 									Sensor.objects.create(column_number=idx, sensor_name=field)
 						if not "Timestamp" in row:
 							for desk in desks:
-								if isdigit(row[desk.illuminance_sensor.column_number]) and isdigit(row[desk.occupancy_sensor.column_number]):
+								if row[desk.illuminance_sensor.column_number].isdigit() and row[desk.occupancy_sensor.column_number].isdigit():
 									desk.illuminance = float(row[desk.illuminance_sensor.column_number])
 									desk.occupancy = int(row[desk.occupancy_sensor.column_number])
 									desk.save()
