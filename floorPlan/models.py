@@ -12,14 +12,14 @@ from rest_framework.authtoken.models import Token
 
 class Sensor(models.Model):
     column_number = models.IntegerField()
-    sensor_name = models.CharField(max_length=200, unique=True)
+    sensor_name = models.CharField(max_length=250, unique=True)
 
     def __str__(self):
         return self.sensor_name + ' (column ' + str(self.column_number) + ')'
 
 
 class Room(models.Model):
-    room_name = models.CharField(max_length=10)                             # code is a string of max length 10
+    room_name = models.CharField(max_length=250)
 
     def get_absolute_url(self):
         return reverse('floorPlan:room-plan')
@@ -37,6 +37,7 @@ class Desk(models.Model):
     pos_y = models.IntegerField()                               # posY
     length_x = models.IntegerField()                            # lengthX
     length_y = models.IntegerField()                            # lengthY
+    chair_side = models.IntegerField()
     illuminance = models.FloatField()                           # illuminance
     occupied = models.BooleanField(default=False)
 
@@ -56,16 +57,16 @@ class Desk(models.Model):
 
 
 # Model that defines the blueprint of a Chair on the Database
-class Chair(models.Model):
-    desk = models.OneToOneField(Desk, on_delete=models.CASCADE, related_name="chair")
-    side = models.IntegerField()
+# class Chair(models.Model):
+#     desk = models.OneToOneField(Desk, on_delete=models.CASCADE, related_name="chair")
+#     side = models.IntegerField()
 
-    def get_absolute_url(self):
-        return reverse('floorPlan:room-plan')
+#     def get_absolute_url(self):
+#         return reverse('floorPlan:room-plan')
 
-    # Defines how a Chair object is displayed
-    def __str__(self):
-        return 'Chair ' + str(self.pk)
+#     # Defines how a Chair object is displayed
+#     def __str__(self):
+#         return 'Chair ' + str(self.pk)
 
 
 # Model that defines the blueprint of a Sensor on the Database
