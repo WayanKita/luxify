@@ -11,13 +11,13 @@
                {% for desk in room.desk_set.all %}
                     <li>
                         {{ desk }}
-                        <ul>
+                        <!-- <ul>
                             {% for chair in desk.chair_set.all %}
                                 <li>
                                     {{ chair }}
                                 </li>
                             {% endfor %}
-                        </ul>
+                        </ul> -->
                         </li>
                 {% endfor %}
                 {% for window in room.window_set.all %}
