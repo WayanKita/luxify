@@ -247,12 +247,12 @@ class SensorTableAPI(APIView):
 
     def get(self, request, pk):
         if int(pk) > 0:
-            if Sensor_Table.objects.filter(pk=pk).count() > 0:
-                return Response(SensorTableSerializer(Sensor_Table.objects.filter(pk=pk), many=True).data,
+            if Sensor_History.objects.filter(pk=pk).count() > 0:
+                return Response(SensorTableSerializer(Sensor_History.objects.filter(pk=pk), many=True).data,
                                 status=status.HTTP_200_OK)
             return Response("Sensor table " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
         else:
-            return Response(SensorTableSerializer(Sensor_Table.objects.all(), many=True).data,
+            return Response(SensorTableSerializer(Sensor_History.objects.all(), many=True).data,
                             status=status.HTTP_200_OK)
 
 
@@ -430,7 +430,7 @@ class RecommendDeskAPI(APIView):
             room = Room.objects.get(pk=user_room)
             desks = Desk.objects.filter(room=room).order_by('-illuminance')
             for desk in desks:
-                if desk.chair.occupied:
+                if desk.occupied:
                     desks = desks.exclude(pk=desk.pk)
             return Response(DeskSerializer(desks, many=True).data,
                             status=status.HTTP_200_OK)
