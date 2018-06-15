@@ -25,8 +25,9 @@ def task_number_one():
 									Sensor.objects.create(column_number=idx, sensor_name=field)
 						if not "Timestamp" in row:
 							for desk in desks:
-								desk.illuminance = float(row[desk.illuminance_sensor.column_number])
-								desk.occupancy = int(row[desk.occupancy_sensor.column_number])
-								desk.save()
-								Sensor_History.objects.create(desk=desk, time_stamp=timezone.now(), light_value=row[desk.illuminance_sensor.column_number], occupancy_value=row[desk.occupancy_sensor.column_number])
+								if isdigit(row[desk.illuminance_sensor.column_number]) and isdigit(row[desk.occupancy_sensor.column_number]):
+									desk.illuminance = float(row[desk.illuminance_sensor.column_number])
+									desk.occupancy = int(row[desk.occupancy_sensor.column_number])
+									desk.save()
+									Sensor_History.objects.create(desk=desk, time_stamp=timezone.now(), light_value=row[desk.illuminance_sensor.column_number], occupancy_value=row[desk.occupancy_sensor.column_number])
 					os.rename(path + '/' + file, path + '/archives/' + file)
