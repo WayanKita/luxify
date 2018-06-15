@@ -51,7 +51,7 @@ urlpatterns = [
     re_path(r'^data/download/$', login_required(views.send_file), name='download'),
 
     # downloads
-    re_path(r'^data/download_alertness_questionnaire/$', login_required(views.download_alertness_questionnaire), name='download-alertness-questionnaire'),
+    re_path(r'^data/download_alertness_questionnaire/$', login_required(views.Download_Alertness_Questionnaire), name='download-alertness-questionnaire'),
 
     # Login URL
     re_path(r'^login/$', auth_views.LoginView.as_view(
