@@ -29,7 +29,7 @@ admin.site.register(Room, RoomAdmin)
 admin.site.register(Desk)
 admin.site.register(Participant)
 admin.site.register(Sensor, SensorAdmin) # sensors are automatically created
-admin.site.register(Sensor_Table)
+admin.site.register(Sensor_History)
 admin.site.register(Sensor_User)
 admin.site.register(Window)
 admin.site.register(Chair)

@@ -160,7 +160,7 @@ class WindowCreate(CreateView):
 
 # Defines the fields for the Sensor form on sensor_form.html
 class SensorCreate(CreateView):
-    model = Sensor_Table
+    model = Sensor_History
     fields = ['desk', 'time_stamp', 'light_value', 'occupancy_value']
 
 

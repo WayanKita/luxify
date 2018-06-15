@@ -64,7 +64,7 @@ class UserSerializer(serializers.ModelSerializer):
 class SensorTableSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Sensor_Table
+        model = Sensor_History
         fields = '__all__'
 
 

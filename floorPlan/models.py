@@ -37,7 +37,9 @@ class Desk(models.Model):
     pos_y = models.IntegerField()                               # posY
     length_x = models.IntegerField()                            # lengthX
     length_y = models.IntegerField()                            # lengthY
-    illuminance = models.IntegerField()                         # illuminance
+    illuminance = models.FloatField()                           # illuminance
+    occupancy = models.BooleanField(default=False)
+
     # extra field chair on android app
     illuminance_sensor = models.ForeignKey(Sensor, on_delete=models.SET_NULL, related_name="illuminance_sensor", null=True, blank=True)
     occupancy_sensor = models.ForeignKey(Sensor, on_delete=models.SET_NULL, related_name="occupancy_sensor", null=True, blank=True)
@@ -57,7 +59,6 @@ class Desk(models.Model):
 class Chair(models.Model):
     desk = models.OneToOneField(Desk, on_delete=models.CASCADE, related_name="chair")
     side = models.IntegerField()
-    occupied = models.BooleanField(default=False)                        # occupied is a boolean, False when created
 
     def get_absolute_url(self):
         return reverse('floorPlan:room-plan')
@@ -68,8 +69,8 @@ class Chair(models.Model):
 
 
 # Model that defines the blueprint of a Sensor on the Database
-class Sensor_Table(models.Model):
-    table = models.ForeignKey(Desk, on_delete=models.CASCADE)
+class Sensor_History(models.Model):
+    desk = models.ForeignKey(Desk, on_delete=models.CASCADE)
     time_stamp = models.DateTimeField()
     light_value = models.FloatField()
     occupancy_value = models.FloatField()
