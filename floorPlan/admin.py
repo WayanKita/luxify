@@ -7,9 +7,6 @@ class WindowInline(admin.TabularInline):
 class DoorInline(admin.TabularInline):
 	model = Door
 
-class ChairInline(admin.TabularInline):
-	model = Chair
-
 class DeskInline(admin.TabularInline):
 	model = Desk
 
