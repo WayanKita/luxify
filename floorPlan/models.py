@@ -78,7 +78,7 @@ class Sensor_History(models.Model):
 
     # Defines how a Sensor object is displayed
     def __str__(self):
-        return str(self.table) + ': ' + str(self.light_value)
+        return str(self.desk) + ': ' + str(self.light_value)
 
 
 # Model that defines the blueprint of a Window on the Database  # android application names
