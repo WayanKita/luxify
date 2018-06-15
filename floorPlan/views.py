@@ -143,7 +143,7 @@ class RoomCreate(CreateView):
 # Defines the fields for the Table form on desk_form.html
 class DeskCreate(CreateView):
     model = Desk
-    fields = ['room', 'number', 'pos_x', 'pos_y', 'length_x', 'length_y', 'illuminance']
+    fields = ['room', 'number', 'pos_x', 'pos_y', 'length_x', 'length_y', 'chair_side']
 
 
 # Defines the fields for the Chair form on chair_form.html

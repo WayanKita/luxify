@@ -38,7 +38,7 @@ class Desk(models.Model):
     length_x = models.IntegerField()                            # lengthX
     length_y = models.IntegerField()                            # lengthY
     chair_side = models.IntegerField()
-    illuminance = models.FloatField()                           # illuminance
+    illuminance = models.FloatField(default=0)                           # illuminance
     occupied = models.BooleanField(default=False)
 
     # extra field chair on android app
