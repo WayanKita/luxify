@@ -672,4 +672,4 @@ class Login(CreateView):
     fields = ['username', 'password']
 
 def Download_Alertness_Questionnaire(request):
-    do_download(AlertnessQuestionnaire._meta, AlertnessQuestionnaire.objects.all())
+    return do_download(AlertnessQuestionnaire._meta, AlertnessQuestionnaire.objects.all())
