@@ -31,5 +31,5 @@ def task_number_one():
 									desk.illuminance = float(row[desk.illuminance_sensor.column_number])
 									desk.occupied = int(row[desk.occupancy_sensor.column_number])
 									desk.save()
-									Sensor_History.objects.create(desk=desk, time_stamp=timezone.now(), light_value=float(row[illuminance_column]), occupancy_value=int(row[occupancy_column]))
+									Sensor_History.objects.create(desk=desk, time_stamp=timezone.now(), light_value=desk.illuminance, occupancy_value=desk.occupied)
 					os.rename(path + '/' + file, path + '/archives/' + file)
