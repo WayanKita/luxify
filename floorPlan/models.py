@@ -86,7 +86,7 @@ class Window(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="window")
     margin = models.IntegerField()                              # margin
     length = models.IntegerField()                              # length
-    side = models.IntegerField()                                # side; int[1-4] defines the side the window is on
+    side = models.IntegerField(default=1)                                # side; int[1-4] defines the side the window is on
     # pk -> windowID
 
     def get_absolute_url(self):
