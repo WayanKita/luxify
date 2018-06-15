@@ -147,9 +147,9 @@ class DeskCreate(CreateView):
 
 
 # Defines the fields for the Chair form on chair_form.html
-class ChairCreate(CreateView):
-    model = Chair
-    fields = ['desk', 'side', 'occupied']
+# class ChairCreate(CreateView):
+#     model = Chair
+#     fields = ['desk', 'side', 'occupied']
 
 
 # Defines the fields for the Window form on window_form.html
@@ -325,7 +325,7 @@ class WindowAPI(APIView):
 # Data Params : [{ username : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class UserAPI(APIView):
-    serializer_class = ChairTestPostSerializer
+    #serializer_class = ChairTestPostSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, user):
@@ -338,7 +338,7 @@ class UserAPI(APIView):
     def post(self, request, user):
         try:
             participant = Participant.objects.get(username=User.objects.get(username=user))
-            participant.chair = request.data.get("chair")
+            #participant.chair = request.data.get("chair")
             participant.save()
             return Response("Chair"+request.data.get("chair")+" has been set",
                             status=status.HTTP_200_OK)
@@ -379,19 +379,19 @@ class RoomAPI(APIView):
 # Method : POST
 # Data Params : [{ username : [string], password : [string]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
-class ChairAPI(APIView):
-    serializer_class = AuthenticateParticipant
-    permission_classes = (permissions.IsAuthenticated,)
+# class ChairAPI(APIView):
+#     serializer_class = AuthenticateParticipant
+#     permission_classes = (permissions.IsAuthenticated,)
 
-    def get(self, request, pk):
-        if int(pk) > 0:
-            if Chair.objects.filter(pk=pk).count() > 0:
-                return Response(ChairSerializer(Chair.objects.filter(pk=pk), many=True).data,
-                                status=status.HTTP_200_OK)
-            return Response("Chair " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
-        else:
-            return Response(ChairSerializer(Chair.objects.all(), many=True).data,
-                            status=status.HTTP_200_OK)
+#     def get(self, request, pk):
+#         if int(pk) > 0:
+#             if Chair.objects.filter(pk=pk).count() > 0:
+#                 return Response(ChairSerializer(Chair.objects.filter(pk=pk), many=True).data,
+#                                 status=status.HTTP_200_OK)
+#             return Response("Chair " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
+#         else:
+#             return Response(ChairSerializer(Chair.objects.all(), many=True).data,
+#                             status=status.HTTP_200_OK)
 
 
 # Title : Get a bundled room plan (with table(with chair), windows and doors) information.
@@ -443,21 +443,21 @@ class RecommendDeskAPI(APIView):
 # Method : POST
 # Data Params : [{ username : [string], room_type : [rooms] | [int(1+)]}]
 # Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
-class SetOccupancyAPI(APIView):
-    serializer_class = SetOccupancyPostSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+# class SetOccupancyAPI(APIView):
+#     serializer_class = SetOccupancyPostSerializer
+#     permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request):
-        if Chair.objects.filter(pk=request.data.get("key")).count() > 0:
-            chair = Chair.objects.get(pk=request.data.get("key"))
-            if int(request.data.get('occupied')) > 0:
-                chair.occupied = True
-            else:
-                chair.occupied = False
-            chair.save()
-            return Response(ChairSerializer(chair).data,
-                            status=status.HTTP_200_OK)
-        return Response("Chair " + request.data.get("key") + " not found", status=status.HTTP_404_NOT_FOUND)
+#     def post(self, request):
+#         if Chair.objects.filter(pk=request.data.get("key")).count() > 0:
+#             chair = Chair.objects.get(pk=request.data.get("key"))
+#             if int(request.data.get('occupied')) > 0:
+#                 chair.occupied = True
+#             else:
+#                 chair.occupied = False
+#             chair.save()
+#             return Response(ChairSerializer(chair).data,
+#                             status=status.HTTP_200_OK)
+#         return Response("Chair " + request.data.get("key") + " not found", status=status.HTTP_404_NOT_FOUND)
 
 
 # Title : Get user absed on user category chair.
