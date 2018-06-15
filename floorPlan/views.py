@@ -463,7 +463,7 @@ class SetOccupancyAPI(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
-        if Desk.objects.filter(pk=pk).count() > 0:
+        if Desk.objects.filter(pk=request.data.get("key")).count() > 0:
             desk = Desk.objects.get(pk=request.data.get("key"))
             if int(request.data.get('occupied')) > 0:
                 desk.occupied = 1
