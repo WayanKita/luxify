@@ -2,7 +2,7 @@
 {% block title %}Album Details{% endblock %}
 
 {% block body %}
-    <ul class="nav navbar-nav navbar-right">
+<!--     <ul class="nav navbar-nav navbar-right">
         <li>
             <form action="{% url 'floorPlan:room-delete' room.id %}" method="post" style="display: inline">
                 <input type="hidden" name="next" value="{{ next }}" />
@@ -19,7 +19,7 @@
                 </button>
             </form>
         </li>
-    </ul>
+    </ul> -->
     <h1>{{ room.code }}</h1>
     <ul>
         {% for desk in room.desk_set.all %}
