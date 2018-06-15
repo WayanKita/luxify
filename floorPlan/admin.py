@@ -32,7 +32,6 @@ admin.site.register(Sensor, SensorAdmin) # sensors are automatically created
 admin.site.register(Sensor_History)
 admin.site.register(Sensor_User)
 admin.site.register(Window)
-admin.site.register(Chair)
 # admin.site.register(Door)
 admin.site.register(AlertnessQuestionnaire)
 admin.site.register(DemographicQuestionnaire)
