@@ -33,7 +33,7 @@ def do_download(model, all_objects):
     response['Content-Disposition'] = 'attachment; filename={}.csv'.format('test')
     writer = csv.writer(response)
 
-    fields = [field for field in model.get_fields() if not field.many_to_many and not field.one_to_many and not field.is_relation]
+    fields = [field for field in model.get_fields() if not field.many_to_many and not field.one_to_many]
    
     writer.writerow([field.name for field in fields])
    
