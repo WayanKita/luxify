@@ -122,7 +122,7 @@ class Participant(models.Model):                                        # User o
     survey_done = models.BooleanField(default=False)                    # demographicStatus ; not used
     in_workspace = models.BooleanField(default=False)                   # demographicStatus ; not used
     room = models.IntegerField(blank=True, null=True, default=None)        # roomID
-    chair = models.IntegerField(blank=True, null=True, default=None)        # deskID
+    desk = models.IntegerField(blank=True, null=True, default=None)        # deskID
     profile = models.IntegerField(blank=True, null=True, default=None)        # deskID
     user_category = models.IntegerField(blank=True, null=True, default=None)
 
@@ -207,8 +207,8 @@ class ParticipantWorkspace(models.Model):
     room = models.IntegerField()
 
 
-class ChairPostTest(models.Model):
-    chair = models.IntegerField()
+# class ChairPostTest(models.Model):
+#     chair = models.IntegerField()
 
 
 class PostDemographicRequest(models.Model):
