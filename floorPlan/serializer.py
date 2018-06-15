@@ -113,7 +113,7 @@ class TableSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Desk
-        fields = ('room', 'number', 'pos_x', 'pos_y', 'length_x', 'length_y', 'illuminance')
+        fields = ('room', 'number', 'pos_x', 'pos_y', 'length_x', 'length_y', 'illuminance', 'occupied', 'chair_side')
 
 
 class RoomGeneratorSerializer(serializers.ModelSerializer):
