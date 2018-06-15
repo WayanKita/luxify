@@ -131,17 +131,6 @@ class Participant(models.Model):                                        # User o
         return str(self.username)
 
 
-# Model that defines the blueprint of a Sensor on the Database
-class Sensor_User(models.Model):
-    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
-    time_stamp = models.DateTimeField()
-    light_value = models.IntegerField()
-
-    # Defines how a Sensor object is displayed
-    def __str__(self):
-        return str(self.participant)
-
-
 # Model that defines format for alertness questionnaire answers storage
 class AlertnessQuestionnaire(models.Model):
     username = models.ForeignKey(Participant, on_delete=models.CASCADE)

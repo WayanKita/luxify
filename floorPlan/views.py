@@ -393,7 +393,6 @@ class RoomAPI(APIView):
 #             return Response(ChairSerializer(Chair.objects.all(), many=True).data,
 #                             status=status.HTTP_200_OK)
 
-
 # Title : Get a bundled room plan (with table(with chair), windows and doors) information.
 # URL : /API/room_generator
 # URL : luxify/API/room_generator

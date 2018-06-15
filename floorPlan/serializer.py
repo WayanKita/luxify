@@ -68,14 +68,6 @@ class SensorTableSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# Serializes a Sensor object to/from JSON
-class SensorUserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Sensor_User
-        fields = '__all__'
-
-
 # Serializes a Table object to/from JSON
 class DeskSerializer(serializers.ModelSerializer):
 
