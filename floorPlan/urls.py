@@ -27,7 +27,7 @@ urlpatterns = [
     re_path(r'^API/workspace/$', views.WorkspaceAPI.as_view(), name='android-workspace'),
     re_path(r'^API/room_generator/(?P<pk>[0-9]+)/$', views.RoomGeneratorAPI.as_view(), name='android-window'),
     re_path(r'^API/recommend_desk/(?P<user>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$', views.RecommendDeskAPI.as_view(), name='android-window'),
-    #re_path(r'^API/set_occupancy/$', views.SetOccupancyAPI.as_view(), name='android-window'),
+    re_path(r'^API/set_occupancy/$', views.SetOccupancyAPI.as_view(), name='android-window'),
     re_path(r'^API/user_category/(?P<user>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$', views.UserCategoryAPI.as_view(), name='android-window'),
 
     # Create URLs
