@@ -673,3 +673,9 @@ class Login(CreateView):
 
 def Download_Alertness_Questionnaire(request):
     return do_download(AlertnessQuestionnaire._meta, AlertnessQuestionnaire.objects.all())
+
+def Download_Analytics(request):
+    return do_download(Analytics._meta, Analytics.objects.all())
+
+def Download_Demographic_Questionnaire(request):
+    return do_download(DemographicQuestionnaire._meta, DemographicQuestionnaire.objects.all())
