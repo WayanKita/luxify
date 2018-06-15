@@ -32,7 +32,7 @@ urlpatterns = [
 
     # Create URLs
     re_path(r'^room_plan/$', login_required(views.room_plan), name='room-plan'),
-    re_path(r'^room_plan/add_chair/$', login_required(views.ChairCreate.as_view()), name='chair-add'),
+    #re_path(r'^room_plan/add_chair/$', login_required(views.ChairCreate.as_view()), name='chair-add'),
     re_path(r'^room_plan/add_room/$', login_required(views.RoomCreate.as_view()), name='room-add'),
     re_path(r'^room_plan/add_sensor/$', login_required(views.SensorCreate.as_view()), name='sensor-add'),
     re_path(r'^room_plan/add_desk/$', login_required(views.DeskCreate.as_view()), name='desk-add'),
