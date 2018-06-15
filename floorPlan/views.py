@@ -458,6 +458,22 @@ class RecommendDeskAPI(APIView):
 #                             status=status.HTTP_200_OK)
 #         return Response("Chair " + request.data.get("key") + " not found", status=status.HTTP_404_NOT_FOUND)
 
+class SetOccupancyAPI(APIView):
+    serializer_class = SetOccupancyPostSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        if Desk.objects.filter(pk=pk).count() > 0:
+            desk = Desk.objects.get(pk=request.data.get("key"))
+            if int(request.data.get('occupied')) > 0:
+                desk.occupied = 1
+            else:
+                desk.occupied = 0
+            desk.save()
+            return Response(DeskSerializer(desk).data,
+                            status=status.HTTP_200_OK)
+        return Response("Desk " + request.data.get("key") + " not found", status=status.HTTP_404_NOT_FOUND)
+        
 
 # Title : Get user absed on user category chair.
 # URL : /API/room_generator
