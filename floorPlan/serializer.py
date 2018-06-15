@@ -101,19 +101,19 @@ class DoorSerializer(serializers.ModelSerializer):
 
 
 # Serializes a Chair object to/from JSON
-class ChairSerializer(serializers.ModelSerializer):
+# class ChairSerializer(serializers.ModelSerializer):
 
-    class Meta:
-        model = Chair
-        fields = '__all__'
+#     class Meta:
+#         model = Chair
+#         fields = '__all__'
 
 
 class TableSerializer(serializers.ModelSerializer):
-    chair = ChairSerializer(read_only=True)
+    # chair = ChairSerializer(read_only=True)
 
     class Meta:
         model = Desk
-        fields = ('room', 'number', 'pos_x', 'pos_y', 'length_x', 'length_y', 'illuminance', 'chair')
+        fields = ('room', 'number', 'pos_x', 'pos_y', 'length_x', 'length_y', 'illuminance')
 
 
 class RoomGeneratorSerializer(serializers.ModelSerializer):
@@ -300,10 +300,10 @@ class ParticipantInWorkSpaceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ChairTestPostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ChairPostTest
-        fields = '__all__'
+# class ChairTestPostSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ChairPostTest
+#         fields = '__all__'
 
 
 class AnalyticsSerializer(serializers.ModelSerializer):
