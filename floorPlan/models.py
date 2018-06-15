@@ -38,7 +38,7 @@ class Desk(models.Model):
     length_x = models.IntegerField()                            # lengthX
     length_y = models.IntegerField()                            # lengthY
     illuminance = models.FloatField()                           # illuminance
-    occupancy = models.BooleanField(default=False)
+    occupied = models.BooleanField(default=False)
 
     # extra field chair on android app
     illuminance_sensor = models.ForeignKey(Sensor, on_delete=models.SET_NULL, related_name="illuminance_sensor", null=True, blank=True)
