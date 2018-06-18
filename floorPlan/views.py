@@ -352,9 +352,9 @@ class UserAPI(APIView):
     def post(self, request, user):
         try:
             participant = Participant.objects.get(username=User.objects.get(username=user))
-            #participant.chair = request.data.get("chair")
+            participant.desk = request.data.get("desk")
             participant.save()
-            return Response("Chair"+request.data.get("chair")+" has been set",
+            return Response("Desk"+request.data.get("desk")+" has been set",
                             status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response("User not found", status=status.HTTP_404_NOT_FOUND)
