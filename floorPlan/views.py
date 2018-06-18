@@ -345,29 +345,25 @@ class DemographicQuestionnaireAPI(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = AuthenticateUser(data=request.data)
-        if serializer.is_valid():
-            demographic_answer = DemographicQuestionnaire()
-            participant = User.objects.get(username=request.data.get("username"))
-            demographic_answer.username = participant.participant
-            demographic_answer.time_stamp = request.data.get('time_stamp')
-            demographic_answer.answer = request.data.get('answer')
-            demographic_answer.save()
-            user = User.objects.get(username=request.data.get("username"))
-            demographic_answer.username = user.participant
-            try:
-                profile_table = ParticipantProfiles.objects.get(answer=request.data.get("answer"))
-                user.participant.profile = profile_table.profile
-            except ObjectDoesNotExist:
-                count = ParticipantProfiles.objects.all().count()
-                user.participant.profile = count + 1
-                new_profile = ParticipantProfiles()
-                new_profile.answer = request.data.get('answer')
-                new_profile.profile = count + 1
-                user.save()
-                new_profile.save()
-            return Response(DemographicQuestionnaireSerializer(demographic_answer).data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        demographic_answer = DemographicQuestionnaire()
+        user = User.objects.get(username=request.data.get("username"))
+        demographic_answer.username = user.participant
+        demographic_answer.time_stamp = request.data.get('time_stamp')
+        demographic_answer.answer = request.data.get('answer')
+        demographic_answer.save()
+        participant = user.participant
+        try:
+            profile_table = ParticipantProfiles.objects.get(answer=request.data.get("answer"))
+            participant.profile = profile_table.profile
+        except ObjectDoesNotExist:
+            count = ParticipantProfiles.objects.all().count()
+            participant.profile = count + 1
+            new_profile = ParticipantProfiles()
+            new_profile.answer = request.data.get('answer')
+            new_profile.profile = count + 1
+            participant.save()
+            new_profile.save()
+        return Response(DemographicQuestionnaireSerializer(demographic_answer).data, status=status.HTTP_201_CREATED)
 
 
 class WorkspaceAPI(APIView):

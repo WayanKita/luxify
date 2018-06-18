@@ -89,7 +89,7 @@ class Participant(models.Model):
     desk = models.IntegerField(blank=True, null=True, default=None)
     profile = models.IntegerField(blank=True, null=True, default=None)
     user_category = models.IntegerField(blank=True, null=True, default=0)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, blank=True, null=True, default=None)
 
     def __str__(self):
         return str(self.username)
