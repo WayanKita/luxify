@@ -125,6 +125,7 @@ class Participant(models.Model):                                        # User o
     desk = models.IntegerField(blank=True, null=True, default=None)        # deskID
     profile = models.IntegerField(blank=True, null=True, default=None)        # deskID
     user_category = models.IntegerField(blank=True, null=True, default=None)
+    name = models.CharField(max_length=50)
 
     # Defines how a User object is displayed
     def __str__(self):
@@ -222,28 +223,9 @@ class PostAnalyticRequest(models.Model):
     event = models.CharField(max_length=200)
     time_stamp = models.DateTimeField()
 
-
-class UserCategory(models.Model):
-
-    USER_CATEGORY = (
-        (1, "1"),
-        (2, "2"),
-        (3, "3"),
-    )
-
-    user_category = models.IntegerField(choices=USER_CATEGORY, unique=True)
-    recommendation = models.BooleanField(default=False)
-    visualization = models.BooleanField(default=False)
-    guidance = models.BooleanField(default=False)
-
-    def __str__(self):
-        return str(self.user_category)+" : " + \
-               str(self.recommendation)+", " + \
-               str(self.visualization)+", " + \
-               str(self.guidance)
-
-    class Meta:
-        verbose_name_plural = "user categories"
+class Recommendation(models.Model):
+    profile = models.OneToOneField(ParticipantProfiles, on_delete=models.CASCADE)
+    formula = models.CharField(max_length=300)
 
 
 class Layout(models.Model):
@@ -263,6 +245,19 @@ class Layout(models.Model):
                str(self.visualization)+", " + \
                str(self.guidance)
 
+
+class UserCategory(models.Model):
+    user_category = models.ForeignKey(Layout, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.user_category)
+
+
+class AlertnessTime(models.Model):
+    interval = models.IntegerField()
+
+    def __str__(self):
+        return str(self.interval)
 
 
 

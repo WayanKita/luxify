@@ -292,6 +292,14 @@ class ParticipantInWorkSpaceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# Serializes a Survey object to/from JSON
+class AlertnessTimeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AlertnessTime
+        fields = "__all__"
+
+
 # class ChairTestPostSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = ChairPostTest
@@ -311,3 +319,5 @@ class AnalyticsSerializer(serializers.ModelSerializer):
             if not participant_login_check(username):
                 raise ValidationError("User " + username + " is not logged in")
             return data
+
+

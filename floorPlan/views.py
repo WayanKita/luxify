@@ -266,25 +266,29 @@ class SensorTableAPI(APIView):
                             status=status.HTTP_200_OK)
 
 
-# Title : Get sensor information.
-# URL : /API/sensor
-# URL : luxify/API/sensor
-# Method : POST
-# Data Params : [{ username : [string], password : [string]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
-class SensorUserAPI(APIView):
-    serializer_class = AuthenticateParticipant
+class UserNameAPI(APIView):
+    serializer_class = ParticipantSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    def get(self, request, pk):
-        if int(pk) > 0:
-            if Sensor_User.objects.filter(pk=pk).count() > 0:
-                return Response(SensorUserSerializer(Sensor_User.objects.filter(pk=pk), many=True).data,
-                                status=status.HTTP_200_OK)
-            return Response("Sensor user " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
-        else:
-            return Response(SensorUserSerializer(Sensor_User.objects.all(), many=True).data,
+    def post(self, request, user):
+        try:
+            participant = Participant.objects.get(username=User.objects.get(username=user))
+            participant.name = request.data.get("name")
+            participant.save()
+            return Response("Name"+request.data.get("name")+" has been set",
                             status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+
+
+class AlertnessIntervalAPI(APIView):
+    serializer_class = AlertnessTimeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        alertness = AlertnessTime.objects.all()
+        serializer = AlertnessTimeSerializer(alertness,  many=True)
+        return Response(serializer.data)
 
 
 # Title : Get table information.
