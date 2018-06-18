@@ -1,32 +1,30 @@
 import csv
-import time
-
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.template import loader
 from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login
 from django.views.generic import View
-from django.contrib.auth.models import User
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, DeleteView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.core import management
 from django.core.exceptions import ObjectDoesNotExist
 import logging
 from .form import *
-from .models import *
 from .serializer import *
-from survey.models import question
 
 
 logger = logging.getLogger(__name__)
-# from survey.models import *
+
+# TODO: change all bad POST requests
+# TODO: remove all views linked to website luxify
+# TODO: add comments to code
+# TODO: remove API views of API and ensure that this did not affect correctness of API
+# (look into necessity of serializers)
+
 
 def do_download(model, all_objects):
     response = HttpResponse(content_type='text/csv')
@@ -46,8 +44,7 @@ def do_download(model, all_objects):
         writer.writerow(row)
     return response
 
-# INDEX PAGE
-# Defines presentation of the index page /floorPlan
+
 def room_plan(request):
     all_rooms = Room.objects.all()
     return render(request,
@@ -55,7 +52,6 @@ def room_plan(request):
                   {'all_rooms': all_rooms})
 
 
-# Defines presentation of the index page /API
 @login_required
 @staff_member_required
 def home(request):
@@ -131,58 +127,41 @@ def send_file(request):
     return response
 
 
-# Defines the fields for the Questionnaire form
 class QuestionnaireCreate(CreateView):
     model = Survey
     fields = ['name', 'description']
 
 
-# Defines the fields for the Question form
 class DemographicCreate(CreateView):
     model = Question
     fields = ['text', 'order', 'survey', 'type', 'choices']
 
 
-# CREATE VIEWS
-# Defines the fields for the Room form on room_form.html
 class RoomCreate(CreateView):
     model = Room
     fields = ["room_name"]
 
 
-# Defines the fields for the Table form on desk_form.html
 class DeskCreate(CreateView):
     model = Desk
     fields = ['room', 'number', 'pos_x', 'pos_y', 'length_x', 'length_y', 'chair_side']
 
 
-# Defines the fields for the Chair form on chair_form.html
-# class ChairCreate(CreateView):
-#     model = Chair
-#     fields = ['desk', 'side', 'occupied']
-
-
-# Defines the fields for the Window form on window_form.html
 class WindowCreate(CreateView):
     model = Window
     fields = ['room', 'margin', 'length', 'side']
 
 
-# Defines the fields for the Sensor form on sensor_form.html
 class SensorCreate(CreateView):
-    model = Sensor_History
+    model = SensorHistory
     fields = ['desk', 'time_stamp', 'light_value', 'occupancy_value']
 
 
-# DETAILED VIEWS
-# Defines the detailed view of a Room on room_detail.html
 class DetailView(generic.DetailView):
     model = Room
     template_name = 'floorPlan/room_detail.html'
 
 
-# DELETE VIEWS
-# Defines the delete view of a Room on room_detail.html
 class RoomDelete(DeleteView):
     model = Room
     success_url = reverse_lazy('floorPlan:room-plan')
@@ -213,13 +192,6 @@ class ParticipantFormView(View):
         return render(request, self.template_name, {'form': form})
 
 
-# API VIEWS
-# Title : Get registered Participants | Register Participants.
-# URL : /API/add_user
-# URL : luxify/API/add_user
-# Method : GET | POST
-# Data Params : [{ username : [string], password : [string]}]
-# Response Codes: Success (201 CREATED), Bad Request (400),
 class RegisterAPI(APIView):
     form_class = ParticipantForm
 
@@ -231,39 +203,30 @@ class RegisterAPI(APIView):
     def post(self, request):
         serializer = ParticipantForm(data=request.data)
         if serializer.is_valid():
-            # serializer.save()
+
             participant = Participant.objects.get(username=request.data.get('username'))
             if Participant.objects.latest('user_category').user_category() == 0:
                 participant.user_category = 1
             else:
-                # user_category = Participant.objects.latest('user_category').user_category
-                # participant.user_category = (user_category % 3)+1
                 participant.user_category = 2
             participant.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-# Title : Get sensor information.
-# URL : /API/sensor
-# Title : Log in Participants.
-# URL : luxify/API/login
-# Method : POST
-# Data Params : [{ username : [string], password : [string]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
-class SensorTableAPI(APIView):
-    serializer_class = AuthenticateParticipant
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get(self, request, pk):
-        if int(pk) > 0:
-            if Sensor_History.objects.filter(pk=pk).count() > 0:
-                return Response(SensorTableSerializer(Sensor_History.objects.filter(pk=pk), many=True).data,
-                                status=status.HTTP_200_OK)
-            return Response("Sensor table " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
-        else:
-            return Response(SensorTableSerializer(Sensor_History.objects.all(), many=True).data,
-                            status=status.HTTP_200_OK)
+#
+# class SensorTableAPI(APIView):
+#     serializer_class = AuthenticateParticipant
+#     permission_classes = (permissions.IsAuthenticated,)
+#
+#     def get(self, request, pk):
+#         if int(pk) > 0:
+#             if SensorHistory.objects.filter(pk=pk).count() > 0:
+#                 return Response(SensorTableSerializer(SensorHistory.objects.filter(pk=pk), many=True).data,
+#                                 status=status.HTTP_200_OK)
+#             return Response("Sensor table " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
+#         else:
+#             return Response(SensorTableSerializer(SensorHistory.objects.all(), many=True).data,
+#                             status=status.HTTP_200_OK)
 
 
 class UserNameAPI(APIView):
@@ -291,55 +254,7 @@ class AlertnessIntervalAPI(APIView):
         return Response(serializer.data)
 
 
-# Title : Get table information.
-# URL : None
-# Method : POST
-# Data Params : [{ username : [string], password : [string]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
-class DeskAPI(APIView):
-    serializer_class = AuthenticateParticipant
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get(self, request, pk):
-        if int(pk) > 0:
-            if Desk.objects.filter(pk=pk).count() > 0:
-                return Response(DeskSerializer(Desk.objects.filter(pk=pk), many=True).data,
-                                status=status.HTTP_200_OK)
-            return Response("Desk " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
-        else:
-            return Response(DeskSerializer(Desk.objects.all(), many=True).data,
-                            status=status.HTTP_200_OK)
-
-
-# Title : Get window information.
-# URL : /API/window
-# URL : luxify/API/window
-# Method : POST
-# Data Params : [{ username : [string], password : [string]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
-class WindowAPI(APIView):
-    serializer_class = AuthenticateParticipant
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get(self, request, pk):
-        if int(pk) > 0:
-            if Window.objects.filter(pk=pk).count() > 0:
-                return Response(WindowSerializer(Window.objects.filter(pk=pk), many=True).data,
-                                status=status.HTTP_200_OK)
-            return Response("Window " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
-        else:
-            return Response(WindowSerializer(Window.objects.all(), many=True).data,
-                            status=status.HTTP_200_OK)
-
-
-# Title : Get/Set User information.
-# URL : /API/user/<email>
-# URL : luxify/API/window
-# Method : POST
-# Data Params : [{ username : [string], password : [string]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class UserAPI(APIView):
-    #serializer_class = ChairTestPostSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, user):
@@ -360,59 +275,6 @@ class UserAPI(APIView):
             return Response("User not found", status=status.HTTP_404_NOT_FOUND)
 
 
-# Title : Get room information.
-# URL : /API/room
-# Method : GET
-# Data Params :
-# Response Codes: Success (200 OK), Internal Server Error (500)
-# URL : luxify/API/room
-# Method : POST
-# Data Params : [{ username : [string], password : [string]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
-class RoomAPI(APIView):
-    serializer_class = AuthenticateParticipant
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get(self, request, pk):
-        if int(pk) > 0:
-            if Room.objects.filter(pk=pk).count() > 0:
-                return Response(RoomSerializer(Room.objects.filter(pk=pk), many=True).data,
-                                status=status.HTTP_200_OK)
-            return Response("Room " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
-        else:
-            return Response(RoomSerializer(Room.objects.all(), many=True).data,
-                            status=status.HTTP_200_OK)
-
-
-# Title : Get chair information.
-# URL : /API/room
-# Method : GET
-# Data Params :
-# Response Codes: Success (200 OK), Internal Server Error (500)
-# URL : luxify/API/room
-# Method : POST
-# Data Params : [{ username : [string], password : [string]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
-# class ChairAPI(APIView):
-#     serializer_class = AuthenticateParticipant
-#     permission_classes = (permissions.IsAuthenticated,)
-
-#     def get(self, request, pk):
-#         if int(pk) > 0:
-#             if Chair.objects.filter(pk=pk).count() > 0:
-#                 return Response(ChairSerializer(Chair.objects.filter(pk=pk), many=True).data,
-#                                 status=status.HTTP_200_OK)
-#             return Response("Chair " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
-#         else:
-#             return Response(ChairSerializer(Chair.objects.all(), many=True).data,
-#                             status=status.HTTP_200_OK)
-
-# Title : Get a bundled room plan (with table(with chair), windows and doors) information.
-# URL : /API/room_generator
-# URL : luxify/API/room_generator
-# Method : POST
-# Data Params : [{ username : [string], room_type : [rooms] | [int(1+)]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class RoomGeneratorAPI(APIView):
     serializer_class = ParticipantRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -427,12 +289,6 @@ class RoomGeneratorAPI(APIView):
             return Response(RoomSerializer(Room.objects.all(), many=True).data, status=status.HTTP_200_OK)
 
 
-# Title : Get a bundled room plan (with table(with chair), windows and doors) information.
-# URL : /API/room_generator
-# URL : luxify/API/room_generator
-# Method : POST
-# Data Params : [{ username : [string], room_type : [rooms] | [int(1+)]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class RecommendDeskAPI(APIView):
     serializer_class = ParticipantRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -449,28 +305,6 @@ class RecommendDeskAPI(APIView):
                             status=status.HTTP_200_OK)
         return Response("User not found", status=status.HTTP_404_NOT_FOUND)
 
-
-# Title : Set Occupancy chair.
-# URL : /API/room_generator
-# URL : luxify/API/room_generator
-# Method : POST
-# Data Params : [{ username : [string], room_type : [rooms] | [int(1+)]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
-# class SetOccupancyAPI(APIView):
-#     serializer_class = SetOccupancyPostSerializer
-#     permission_classes = (permissions.IsAuthenticated,)
-
-#     def post(self, request):
-#         if Chair.objects.filter(pk=request.data.get("key")).count() > 0:
-#             chair = Chair.objects.get(pk=request.data.get("key"))
-#             if int(request.data.get('occupied')) > 0:
-#                 chair.occupied = True
-#             else:
-#                 chair.occupied = False
-#             chair.save()
-#             return Response(ChairSerializer(chair).data,
-#                             status=status.HTTP_200_OK)
-#         return Response("Chair " + request.data.get("key") + " not found", status=status.HTTP_404_NOT_FOUND)
 
 class SetOccupancyAPI(APIView):
     serializer_class = SetOccupancyPostSerializer
@@ -489,54 +323,34 @@ class SetOccupancyAPI(APIView):
         return Response("Desk " + request.data.get("key") + " not found", status=status.HTTP_404_NOT_FOUND)
 
 
-# Title : Get user absed on user category chair.
-# URL : /API/room_generator
-# URL : luxify/API/room_generator
-# Method : POST
-# Data Params : [{ username : [string], room_type : [rooms] | [int(1+)]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class UserCategoryAPI(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, user):
         try:
             participant = User.objects.get(username=user).participant
-            user_category = UserCategory.objects.get(user_category=participant.user_category)
-            return Response(UserCategorySerializer(user_category).data,
+            layout = participant.user_category
+            user_category = Layout.objects.get(pk=layout)
+            return Response(LayoutSerializer(user_category).data,
                             status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response("User category for " + user + " not found", status=status.HTTP_404_NOT_FOUND)
 
 
-# Title : Receive alertness questionnaire answer.
-# URL : /API/alertness_questionnaire
-# URL : luxify/API/alertness_questionnaire
-# Method : POST
-# Data Params : [{ username : [string], time_stamp : [YYYY-MM-DDTHH:MM], answer : int[1-10]}]
-# Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
 class AlertnessQuestionnaireAPI(APIView):
-    serializer_class = AlertnessQuestionnairePostSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
-        serializer = AuthenticateUser(data=request.data)
-        if serializer.is_valid():
-            alert_answer = AlertnessQuestionnaire()
-            participant = User.objects.get(username=request.data.get("username"))
-            alert_answer.username = participant.participant
-            alert_answer.time_stamp = request.data.get('time_stamp')
-            alert_answer.answer = request.data.get('answer')
-            alert_answer.save()
-            return Response(AlertnessQuestionnaireSerializer(alert_answer).data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = AlertnessQuestionnaireSerializer
+        alert_answer = AlertnessQuestionnaire()
+        participant = User.objects.get(username=request.data.get("username"))
+        alert_answer.username = participant.participant
+        alert_answer.time_stamp = request.data.get('time_stamp')
+        alert_answer.answer = request.data.get('answer')
+        alert_answer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-# Title : Receive alertness questionnaire answer.
-# URL : /API/alertness_questionnaire
-# URL : luxify/API/alertness_questionnaire
-# Method : POST
-# Data Params : [{ username : [string], time_stamp : [YYYY-MM-DDTHH:MM], answer : [comma separated string]]
-# Response Codes: Success (201 CREATED), Bad Request (400), Internal Server Error (500)
 class DemographicQuestionnaireAPI(APIView):
     serializer_class = DemographicQuestionnairePostSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -560,7 +374,7 @@ class DemographicQuestionnaireAPI(APIView):
             try:
                 profile_table = ParticipantProfiles.objects.get(answer=request.data.get("answer"))
                 user.participant.profile = profile_table.profile
-            except:
+            except ObjectDoesNotExist:
                 count = ParticipantProfiles.objects.all().count()
                 user.participant.profile = count + 1
                 new_profile = ParticipantProfiles()
@@ -572,12 +386,6 @@ class DemographicQuestionnaireAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Title : Get a bundled room plan (with table(with chair), windows and doors) information.
-# URL : /API/workspace
-# URL : luxify/API/room_generator
-# Method : POST
-# Data Params : [{ username : [string], room_type : [rooms] | [int(1+)]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class WorkspaceAPI(APIView):
     serializer_class = ParticipantInWorkSpaceSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -590,12 +398,6 @@ class WorkspaceAPI(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Title : Get a bundled room plan (with table(with chair), windows and doors) information.
-# URL : /API/questionnaire_check
-# URL : luxify/API/room_generator
-# Method : POST
-# Data Params : [{ username : [string], room_type : [rooms] | [int(1+)]}]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class QuestionnaireCheckAPI(APIView):
     serializer_class = UserRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -613,11 +415,6 @@ class QuestionnaireCheckAPI(APIView):
             return Response("User not found", status=status.HTTP_400_BAD_REQUEST)
 
 
-# Title : Receive analytics from the application
-# URL : luxify/API/analytic
-# Method : POST
-# Data Params : [{ username : [string], time_stamp : [datetime], event : [string] }]
-# Response Codes: Success (200 OK), Bad Request (400), Internal Server Error (500)
 class AnalyticsAPI(APIView):
     serializer_class = AnalyticsSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -635,18 +432,6 @@ class AnalyticsAPI(APIView):
             return Response("User not found", status=status.HTTP_400_BAD_REQUEST)
 
 
-# SURVEY MODELS
-
-
-# SECURE USER
-
-
-# API VIEWS
-# Title : Get registered Participants | Register Participants.
-# URL : /API/register
-# Method : GET | POST
-# Data Params : [{ username : [string], password : [string]}]
-# Response Codes: Success (201 CREATED), Bad Request (400),
 class RegisterUserAPI(APIView):
     serializer_class = UserSerializer
 
@@ -670,16 +455,14 @@ class RegisterUserAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# LOGIN
-class Login(CreateView):
-    model = User
-    fields = ['username', 'password']
 
 def Download_Alertness_Questionnaire(request):
     return do_download(AlertnessQuestionnaire._meta, AlertnessQuestionnaire.objects.all())
 
+
 def Download_Analytics(request):
     return do_download(Analytics._meta, Analytics.objects.all())
+
 
 def Download_Demographic_Questionnaire(request):
     return do_download(DemographicQuestionnaire._meta, DemographicQuestionnaire.objects.all())

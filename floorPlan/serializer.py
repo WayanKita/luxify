@@ -1,16 +1,13 @@
-from django.db.models import Q
 from rest_framework import serializers
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from rest_framework.exceptions import ValidationError
-
-
-from floorPlan.form import ParticipantForm, UserForm
 from .models import *
 from survey.models import Survey, Question
 
+# TODO: remove API serializers once VIEWS todo have bee completed
+# TODO: add comments
 
-# Function to check whether a Participant with username matches a Participant in the database
+
 def participant_authentication_check(username):
     try:
         participant = Participant.objects.get(username=username)
@@ -22,7 +19,6 @@ def participant_authentication_check(username):
         return False
 
 
-# Function to check whether a Participant with username is logged in
 def participant_login_check(username):
     try:
         participant = Participant.objects.get(username=username)
@@ -34,18 +30,13 @@ def participant_login_check(username):
         return False
 
 
-# Serializes a Room object to/from JSON
 class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
         fields = '__all__'
-        # select all fields from Room model
-        # exclude = ()                                              # select all fields except ()
-        # fields = ['name', 'size']                                 # select name and size fields
 
 
-# Serializes a ParticipantForm object to/from JSON
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -60,15 +51,13 @@ class UserSerializer(serializers.ModelSerializer):
             return data
 
 
-# Serializes a Sensor object to/from JSON
 class SensorTableSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Sensor_History
+        model = SensorHistory
         fields = '__all__'
 
 
-# Serializes a Table object to/from JSON
 class DeskSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -76,7 +65,6 @@ class DeskSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# Serializes a Window object to/from JSON
 class WindowSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -84,7 +72,6 @@ class WindowSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# Serializes a Window object to/from JSON
 class DoorSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -92,16 +79,7 @@ class DoorSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# Serializes a Chair object to/from JSON
-# class ChairSerializer(serializers.ModelSerializer):
-
-#     class Meta:
-#         model = Chair
-#         fields = '__all__'
-
-
 class TableSerializer(serializers.ModelSerializer):
-    # chair = ChairSerializer(read_only=True)
 
     class Meta:
         model = Desk
@@ -118,7 +96,6 @@ class RoomGeneratorSerializer(serializers.ModelSerializer):
         fields = ("room_name", "desk", "window", "door")
 
 
-# Serializes a Participant object to/from JSON
 class ParticipantSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -126,7 +103,6 @@ class ParticipantSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-# Serializes a Survey object to/from JSON
 class SurveySerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -134,7 +110,6 @@ class SurveySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-# Serializes a Question object to/from JSON
 class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -154,40 +129,33 @@ class UserRequestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# Validates a Participant object sent by Android application
 class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
         fields = "__all__"
 
-    # Overwrites is_valid function from Django
     def validate(self, data):
-        # get username and password from POST body
         username = data.get("username", None)
         password = data.get("password", None)
-        # Try to find a Participant with matching email from POST body else raise ValidationError
         try:
             user = Participant.objects.get(username=username)
             raise ValidationError("User: " + username + " already exists")
         except:
             user = User()
             user.username = username
-            user.set_password(password)                              # changes the log in state of Participant to True
-            user.save()  # saves changes made to Participant on the database
+            user.set_password(password)
+            user.save()
         return data
 
 
-# Validates a Participant object sent by Android application
 class ParticipantToggleWorkspaceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ParticipantWorkspace
         fields = "__all__"
 
-    # Overwrites is_valid function from Django
     def validate(self, data):
-        # get username and password from POST body
         username = data.get("username", None)
         participant = User.objects.get(username=username).participant
         participant.username = User.objects.get(username=username)
@@ -197,62 +165,31 @@ class ParticipantToggleWorkspaceSerializer(serializers.ModelSerializer):
         return data
 
 
-# Validate that Participant making a request is logged in
-class AuthenticateParticipant(serializers.ModelSerializer):
-
-    class Meta:
-        model = ParticipantRequest
-        fields = "__all__"
-
-    # Overwrite default authentication for Participant
-    def validate(self, data):
-        username = data.get("username", None)
-        if not participant_authentication_check(username):
-            raise ValidationError("User: "+username+" does not exist")
-        if not participant_login_check(username):
-            raise ValidationError("User "+username+" is not logged in")
-        return data
-
-
-# Validate that Participant making a request is logged in
 class AuthenticateUser(serializers.ModelSerializer):
 
     class Meta:
         model = UserRequest
         fields = "__all__"
 
-    # Overwrite default authentication for Participant
     def validate(self, data):
         username = data.get("username", None)
         token = data.get("CSRFTOKEN", None)
         return data
 
 
-# Validate that Participant making a request is logged in
 class AlertnessQuestionnaireSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AlertnessQuestionnaire
         fields = "__all__"
 
-    # Overwrite default authentication for Participant
-    def validate(self, data):
-        username = data.get("username", None)
-        if not participant_authentication_check(username):
-            raise ValidationError("User: " + username + " does not exist")
-        if not participant_login_check(username):
-            raise ValidationError("User " + username + " is not logged in")
-        return data
 
-
-# Validate that Participant making a request is logged in
 class DemographicQuestionnaireSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DemographicQuestionnaire
         fields = "__all__"
 
-    # Overwrite default authentication for Participant
     def validate(self, data):
         username = data.get("username", None)
         if not participant_authentication_check(username):
@@ -274,6 +211,12 @@ class UserCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class LayoutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Layout
+        fields = '__all__'
+
+
 class SetOccupancyPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = SetOccupancyRequest
@@ -292,7 +235,6 @@ class ParticipantInWorkSpaceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# Serializes a Survey object to/from JSON
 class AlertnessTimeSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -300,24 +242,9 @@ class AlertnessTimeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-# class ChairTestPostSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = ChairPostTest
-#         fields = '__all__'
-
-
 class AnalyticsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostAnalyticRequest
         fields = '__all__'
-
-        # Overwrite default authentication for Participant
-        def validate(self, data):
-            username = data.get("username", None)
-            if not participant_authentication_check(username):
-                raise ValidationError("User: " + username + " does not exist")
-            if not participant_login_check(username):
-                raise ValidationError("User " + username + " is not logged in")
-            return data
 
 
