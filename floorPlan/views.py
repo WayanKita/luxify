@@ -1,4 +1,6 @@
 import csv
+import random
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -426,17 +428,9 @@ class RegisterUserAPI(APIView):
         user.save()
         participant = Participant()
         participant.username = User.objects.get(username=username)
-        try:
-            latest_cat = Participant.objects.filter(user_category__gt=0).latest('user_category')
-            participant.user_category = (latest_cat.user_category % 3) + 1
-            participant.save()
-            return Response(ParticipantSerializer(participant).data, status=status.HTTP_201_CREATED)
-        except ObjectDoesNotExist:
-            participant.user_category = 1
-            participant.save()
-            return Response(ParticipantSerializer(participant).data, status=status.HTTP_400_BAD_REQUEST)
-
-
+        participant.user_category = random.randint(1, 3)
+        participant.save()
+        return Response(ParticipantSerializer(participant).data, status=status.HTTP_201_CREATED)
 
 
 def Download_Alertness_Questionnaire(request):
