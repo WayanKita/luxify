@@ -355,6 +355,7 @@ class DemographicQuestionnaireAPI(APIView):
         try:
             profile_table = ParticipantProfiles.objects.get(answer=request.data.get("answer"))
             participant.profile = profile_table.profile
+            participant.save()
         except ObjectDoesNotExist:
             count = ParticipantProfiles.objects.all().count()
             participant.profile = count + 1
