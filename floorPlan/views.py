@@ -191,28 +191,6 @@ class ParticipantFormView(View):
 
         return render(request, self.template_name, {'form': form})
 
-
-class RegisterAPI(APIView):
-    form_class = ParticipantForm
-
-    def get(self, request):
-        participant = Participant.objects.all()
-        serializer = ParticipantSerializer(participant, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        serializer = ParticipantForm(data=request.data)
-        if serializer.is_valid():
-
-            participant = Participant.objects.get(username=request.data.get('username'))
-            if Participant.objects.latest('user_category').user_category() == 0:
-                participant.user_category = 1
-            else:
-                participant.user_category = 2
-            participant.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 #
 # class SensorTableAPI(APIView):
 #     serializer_class = AuthenticateParticipant
@@ -295,7 +273,11 @@ class RecommendDeskAPI(APIView):
 
     def get(self, request, user):
         if User.objects.filter(username=user).count() > 0:
-            user_room = User.objects.get(username=user).participant.room
+            participant = User.objects.get(username=user).participant
+            user_room = participant.room
+            formula = Recommendation.objects.get(profile=participant.profile).formula
+            formula.replace("^", "**")
+            # formula =
             room = Room.objects.get(pk=user_room)
             desks = Desk.objects.filter(room=room).order_by('-illuminance')
             for desk in desks:
@@ -437,22 +419,23 @@ class RegisterUserAPI(APIView):
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            username = request.data.get("username")
-            password = request.data.get("password")
-            user = User.objects.create_user(username=username)
-            user.set_password(password)
-            user.save()
-            participant = Participant()
-            participant.username = User.objects.get(username=username)
-            try:
-                cat = Participant.objects.filter(user_category__gt=0).latest('user_category')
-                participant.user_category = (cat.user_category % 3) + 1
-            except ObjectDoesNotExist:
-                participant.user_category = 1
+        username = request.data.get("username")
+        password = request.data.get("password")
+        user = User.objects.create_user(username=username)
+        user.set_password(password)
+        user.save()
+        participant = Participant()
+        participant.username = User.objects.get(username=username)
+        try:
+            latest_cat = Participant.objects.filter(user_category__gt=0).latest('user_category')
+            participant.user_category = (latest_cat.user_category % 3) + 1
             participant.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(ParticipantSerializer(participant).data, status=status.HTTP_201_CREATED)
+        except ObjectDoesNotExist:
+            participant.user_category = 1
+            participant.save()
+            return Response(ParticipantSerializer(participant).data, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 

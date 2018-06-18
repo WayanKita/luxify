@@ -88,7 +88,7 @@ class Participant(models.Model):
     room = models.IntegerField(blank=True, null=True, default=None)
     desk = models.IntegerField(blank=True, null=True, default=None)
     profile = models.IntegerField(blank=True, null=True, default=None)
-    user_category = models.IntegerField(blank=True, null=True, default=None)
+    user_category = models.IntegerField(blank=True, null=True, default=0)
     name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -179,6 +179,9 @@ class PostAnalyticRequest(models.Model):
 class Recommendation(models.Model):
     profile = models.OneToOneField(ParticipantProfiles, on_delete=models.CASCADE)
     formula = models.CharField(max_length=300)
+
+    def __str__(self):
+        return str(self.profile.profile)+" has formula: "+str(self.formula)
 
 
 class Layout(models.Model):
