@@ -20,7 +20,6 @@ urlpatterns = [
     re_path(r'^API/room/(?P<pk>[0-9]+)/$', views.RoomAPI.as_view(), name='room-detail'),
     #re_path(r'^API/chair/(?P<pk>[0-9]+)/$', views.ChairAPI.as_view(), name='room-detail'),
     re_path(r'^API/sensor_table/(?P<pk>[0-9]+)/$', views.SensorTableAPI.as_view(), name='android-sensor'),
-    re_path(r'^API/sensor_user/(?P<pk>[0-9]+)/$', views.SensorUserAPI.as_view(), name='android-sensor'),
     re_path(r'^API/desk/(?P<pk>[0-9]+)/$', views.DeskAPI.as_view(), name='android-desk'),
     re_path(r'^API/window/(?P<pk>[0-9]+)/$', views.WindowAPI.as_view(), name='android-window'),
     re_path(r'^API/user/(?P<user>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$', views.UserAPI.as_view(), name='user'),

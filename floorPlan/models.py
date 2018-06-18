@@ -56,19 +56,6 @@ class Desk(models.Model):
     #     return '%d: %s' % (self.number, self.illuminance)
 
 
-# Model that defines the blueprint of a Chair on the Database
-# class Chair(models.Model):
-#     desk = models.OneToOneField(Desk, on_delete=models.CASCADE, related_name="chair")
-#     side = models.IntegerField()
-
-#     def get_absolute_url(self):
-#         return reverse('floorPlan:room-plan')
-
-#     # Defines how a Chair object is displayed
-#     def __str__(self):
-#         return 'Chair ' + str(self.pk)
-
-
 # Model that defines the blueprint of a Sensor on the Database
 class Sensor_History(models.Model):
     desk = models.ForeignKey(Desk, on_delete=models.CASCADE)
