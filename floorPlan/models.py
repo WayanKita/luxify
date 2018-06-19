@@ -34,6 +34,7 @@ class Desk(models.Model):
     length_y = models.IntegerField()
     chair_side = models.IntegerField()
     illuminance = models.FloatField(default=0)
+    score = models.FloatField(default=0)
     occupied = models.IntegerField(default=0)
     illuminance_sensor = models.ForeignKey(Sensor, on_delete=models.SET_NULL, related_name="illuminance_sensor", null=True, blank=True)
     occupancy_sensor = models.ForeignKey(Sensor, on_delete=models.SET_NULL, related_name="occupancy_sensor", null=True, blank=True)

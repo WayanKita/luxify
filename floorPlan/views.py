@@ -277,16 +277,26 @@ class RecommendDeskAPI(APIView):
         if User.objects.filter(username=user).count() > 0:
             participant = User.objects.get(username=user).participant
             user_room = participant.room
-            formula = Recommendation.objects.get(profile=participant.profile).formula
-            formula.replace("^", "**")
-            # formula =
-            room = Room.objects.get(pk=user_room)
-            desks = Desk.objects.filter(room=room).order_by('-illuminance')
-            for desk in desks:
-                if desk.occupied:
-                    desks = desks.exclude(pk=desk.pk)
-            return Response(DeskSerializer(desks, many=True).data,
-                            status=status.HTTP_200_OK)
+            try:
+                formula = Recommendation.objects.get(profile=participant.profile).formula
+                formula = formula.replace("^", "**")
+                target = eval(formula)
+                try:
+                    room = Room.objects.get(pk=user_room)
+                    desks = Desk.objects.filter(room=room)
+                    for desk in desks:
+                        if desk.occupied:
+                            desks = desks.exclude(pk=desk.pk)
+                        else:
+                            desk.score = abs(target-desk.illuminance)
+                            desk.save()
+                    desks = Desk.objects.filter(room=room).order_by('score')
+                    return Response(DeskSerializer(desks, many=True).data,
+                                    status=status.HTTP_200_OK)
+                except ObjectDoesNotExist:
+                    return Response("Room for user not found", status=status.HTTP_404_NOT_FOUND)
+            except ObjectDoesNotExist:
+                return Response("Recommendation not found", status=status.HTTP_404_NOT_FOUND)
         return Response("User not found", status=status.HTTP_404_NOT_FOUND)
 
 
