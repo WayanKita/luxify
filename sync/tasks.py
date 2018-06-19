@@ -45,8 +45,8 @@ def task_number_one():
 						occupancy_column = desk.occupancy_sensor.column_number
 						if is_float(row[desk.illuminance_sensor.column_number]):
 							desk.illuminance = float(row[desk.illuminance_sensor.column_number])
-						if is_int(row[desk.occupancy_sensor.column_number]):
-							desk.occupied = int(row[desk.occupancy_sensor.column_number])
+						#if is_int(row[desk.occupancy_sensor.column_number]):
+							#desk.occupied = int(row[desk.occupancy_sensor.column_number])
 						desk.save()
 						if is_float(row[desk.illuminance_sensor.column_number]) and is_int(row[desk.occupancy_sensor.column_number]):
 							SensorHistory.objects.create(desk=desk, time_stamp=timezone.now(), light_value=float(row[illuminance_column]), occupancy_value=int(row[occupancy_column]))
