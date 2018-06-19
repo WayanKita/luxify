@@ -24,7 +24,6 @@ class Room(models.Model):
 
 class Desk(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="desk")
-    number = models.IntegerField()
     pos_x = models.IntegerField()
     pos_y = models.IntegerField()
     length_x = models.IntegerField()
