@@ -7,6 +7,20 @@ from django.utils import timezone
 
 path = settings.SYNC_PATH
 
+def is_float(value):
+	try:
+		float(value)
+		return True
+	except ValueError:
+		return False
+
+def is_int(value):
+	try:
+		int(value)
+		return True
+	except ValueError:
+		return False
+
 @task
 def task_number_one():
 	if settings.SYNC_ENABLED:
@@ -29,8 +43,11 @@ def task_number_one():
 					for desk in desks:
 						illuminance_column = desk.illuminance_sensor.column_number
 						occupancy_column = desk.occupancy_sensor.column_number
-						desk.illuminance = float(row[desk.illuminance_sensor.column_number])
-						desk.occupied = int(row[desk.occupancy_sensor.column_number])
+						if is_float(row[desk.illuminance_sensor.column_number]):
+							desk.illuminance = float(row[desk.illuminance_sensor.column_number])
+						if is_int(row[desk.occupancy_sensor.column_number]):
+							desk.occupied = int(row[desk.occupancy_sensor.column_number])
 						desk.save()
-						SensorHistory.objects.create(desk=desk, time_stamp=timezone.now(), light_value=float(row[illuminance_column]), occupancy_value=int(row[occupancy_column]))
+						if is_float(row[desk.illuminance_sensor.column_number]) and is_int(row[desk.occupancy_sensor.column_number]):
+							SensorHistory.objects.create(desk=desk, time_stamp=timezone.now(), light_value=float(row[illuminance_column]), occupancy_value=int(row[occupancy_column]))
 				#os.rename(path + '/' + file, path + '/archives/' + file)
