@@ -16,10 +16,7 @@ class Sensor(models.Model):
 
 
 class Room(models.Model):
-    room_name = models.CharField(max_length=250)
-
-    def get_absolute_url(self):
-        return reverse('floorPlan:room-plan')
+    room_name = models.CharField(max_length=250, unique=True)
 
     def __str__(self):
         return self.room_name
@@ -38,9 +35,6 @@ class Desk(models.Model):
     occupied = models.IntegerField(default=0)
     illuminance_sensor = models.ForeignKey(Sensor, on_delete=models.SET_NULL, related_name="illuminance_sensor", null=True, blank=True)
     occupancy_sensor = models.ForeignKey(Sensor, on_delete=models.SET_NULL, related_name="occupancy_sensor", null=True, blank=True)
-
-    def get_absolute_url(self):
-        return reverse('floorPlan:room-plan')
 
     def __str__(self):
         return 'Desk ' + str(self.pk)
@@ -62,9 +56,6 @@ class Window(models.Model):
     length = models.IntegerField()
     side = models.IntegerField(default=1)
 
-    def get_absolute_url(self):
-        return reverse('floorPlan:room-plan')
-
     def __str__(self):
         return 'Window from '+str(self.margin) + ' to '+str(self.length+self.margin)
 
@@ -74,9 +65,6 @@ class Door(models.Model):
     margin = models.IntegerField()
     length = models.IntegerField()
     side = models.IntegerField()
-
-    def get_absolute_url(self):
-        return reverse('floorPlan:room-plan')
 
     def __str__(self):
         return 'Door from '+str(self.margin) + ' to '+str(self.length+self.margin)
