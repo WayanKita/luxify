@@ -1,15 +1,6 @@
 import csv
 import random
-
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from django.views import generic
-from django.urls import reverse_lazy
-from django.contrib.auth import authenticate, login
-from django.views.generic import View
-from django.views.generic.edit import CreateView, DeleteView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -47,68 +38,6 @@ def do_download(model, all_objects):
     return response
 
 
-def room_plan(request):
-    all_rooms = Room.objects.all()
-    return render(request,
-                  'floorPlan/floorPlan.html',
-                  {'all_rooms': all_rooms})
-
-
-@login_required
-@staff_member_required
-def home(request):
-    all_rooms = Room.objects.all()
-    return render(request,
-                  'floorPlan/home.html',
-                  {'all_rooms': all_rooms})
-
-
-def alertness_questionnaire(request):
-    all_questionnaire = AlertnessQuestionnaire.objects.all()
-    return render(request,
-                  'floorPlan/alertness_questionnaire.html',
-                  {'all_questionnaire': all_questionnaire})
-
-
-def demographic_questionnaire(request):
-    all_questionnaire = DemographicQuestionnaire.objects.all()
-    return render(request,
-                  'floorPlan/demographic_questionnaire.html',
-                  {'all_questionnaire': all_questionnaire})
-
-
-def user(request):
-    all_participant = Participant.objects.all()
-    all_room = Room.objects.all()
-    return render(request,
-                  'floorPlan/user.html',
-                  {'all_participant': all_participant,
-                   'all_room:': all_room})
-
-
-def analytics(request):
-    all_analytics = Analytics.objects.all()
-    return render(request,
-                  'floorPlan/analytics.html',
-                  {'all_analytics': all_analytics})
-
-
-def user_category(request):
-    all_user_category = UserCategory.objects.all()
-    all_layout = Layout.objects.all()
-    return render(request,
-                  'floorPlan/user_category_setting.html',
-                  {'all_user_category': all_user_category,
-                   'all_layout': all_layout})
-
-
-def alertness(request):
-    all_user_category = UserCategory.objects.all()
-    return render(request,
-                  'floorPlan/user_category_setting.html',
-                  {'all_user_category': all_user_category})
-
-
 def send_file(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename={}.csv'.format('test')
@@ -127,71 +56,6 @@ def send_file(request):
 
         writer.writerow(row)
     return response
-
-
-class QuestionnaireCreate(CreateView):
-    model = Survey
-    fields = ['name', 'description']
-
-
-class DemographicCreate(CreateView):
-    model = Question
-    fields = ['text', 'order', 'survey', 'type', 'choices']
-
-
-class RoomCreate(CreateView):
-    model = Room
-    fields = ["room_name"]
-
-
-class DeskCreate(CreateView):
-    model = Desk
-    fields = ['room', 'number', 'pos_x', 'pos_y', 'length_x', 'length_y', 'chair_side']
-
-
-class WindowCreate(CreateView):
-    model = Window
-    fields = ['room', 'margin', 'length', 'side']
-
-
-class SensorCreate(CreateView):
-    model = SensorHistory
-    fields = ['desk', 'time_stamp', 'light_value', 'occupancy_value']
-
-
-class DetailView(generic.DetailView):
-    model = Room
-    template_name = 'floorPlan/room_detail.html'
-
-
-class RoomDelete(DeleteView):
-    model = Room
-    success_url = reverse_lazy('floorPlan:room-plan')
-
-
-class ParticipantFormView(View):
-    form_class = ParticipantForm
-    template_name = 'floorPlan/registration_form.html'
-
-    def get(self, request):
-        form = self.form_class(None)
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request):
-        form = self.form_class(request.POST)
-
-        if form.is_valid():
-            user = form.save(commit=False)
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user.save()
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return redirect('floorPlan:index')
-
-        return render(request, self.template_name, {'form': form})
 
 #
 # class SensorTableAPI(APIView):
@@ -440,13 +304,13 @@ class RegisterUserAPI(APIView):
         return Response(ParticipantSerializer(participant).data, status=status.HTTP_201_CREATED)
 
 
-def Download_Alertness_Questionnaire(request):
+def download_alertness_questionnaire(request):
     return do_download(AlertnessQuestionnaire._meta, AlertnessQuestionnaire.objects.all())
 
 
-def Download_Analytics(request):
+def download_analytics(request):
     return do_download(Analytics._meta, Analytics.objects.all())
 
 
-def Download_Demographic_Questionnaire(request):
+def download_demographic_questionnaire(request):
     return do_download(DemographicQuestionnaire._meta, DemographicQuestionnaire.objects.all())

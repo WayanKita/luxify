@@ -8,28 +8,6 @@ from survey.models import Survey, Question
 # TODO: add comments
 
 
-def participant_authentication_check(username):
-    try:
-        participant = Participant.objects.get(username=username)
-    except:
-        return False
-    if participant.username == username:
-        return True
-    else:
-        return False
-
-
-def participant_login_check(username):
-    try:
-        participant = Participant.objects.get(username=username)
-    except:
-        return False
-    if participant.logged_in:
-        return True
-    else:
-        return False
-
-
 class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -189,14 +167,6 @@ class DemographicQuestionnaireSerializer(serializers.ModelSerializer):
     class Meta:
         model = DemographicQuestionnaire
         fields = "__all__"
-
-    def validate(self, data):
-        username = data.get("username", None)
-        if not participant_authentication_check(username):
-            raise ValidationError("User: " + username + " does not exist")
-        if not participant_login_check(username):
-            raise ValidationError("User " + username + " is not logged in")
-        return data
 
 
 class AlertnessQuestionnairePostSerializer(serializers.ModelSerializer):
