@@ -65,20 +65,12 @@ class SensorAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
-    def has_change_permission(self, request, obj=None):
-        if request.user.is_staff:
-            return False
-
 
 class SensorHistoryAdmin(admin.ModelAdmin):
     actions = [download_sensor_history]
 
     def has_add_permission(self, request):
         return False
-
-    def has_change_permission(self, request, obj=None):
-        if request.user.is_staff:
-            return False
 
 
 class AlertnessQuestionnaireAdmin(admin.ModelAdmin):
