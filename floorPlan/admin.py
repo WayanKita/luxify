@@ -29,6 +29,11 @@ class SensorAdmin(admin.ModelAdmin):
         return False
 
 
+class AlertnessQuestionnaireAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return False
+
+
 # Allows the admin to edit thee following tables on url [...]/admin
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Participant)
