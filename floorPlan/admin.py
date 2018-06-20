@@ -80,6 +80,7 @@ class SensorHistoryAdmin(admin.ModelAdmin):
         if request.user.is_staff:
             return False
 
+
 class AlertnessQuestionnaireAdmin(admin.ModelAdmin):
     actions = [download_alertness_questionnaire]
 
