@@ -38,7 +38,7 @@ def download_sensor_history(modeladmin, request, queryset):
 
 
 def download_analytics(modeladmin, request, queryset):
-    return do_download(SensorHistory._meta, SensorHistory.objects.all())
+    return do_download(Analytics._meta, Analytics.objects.all())
 
 
 class WindowInline(admin.TabularInline):
