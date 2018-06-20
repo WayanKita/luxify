@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.contrib.auth import user
 from .models import *
 
 # TODO: remove edit rights to views in admin panel
@@ -27,8 +26,7 @@ class RoomAdmin(admin.ModelAdmin):
 
 class SensorAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
-        if user.is_staff:
-            return False
+        return False
 
 
 class AlertnessQuestionnaireAdmin(admin.ModelAdmin):
