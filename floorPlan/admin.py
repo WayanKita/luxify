@@ -24,7 +24,7 @@ def do_download(model, all_objects):
     return response
 
 
-def download_alertness_questionnaire(request):
+def download_alertness_questionnaire(modeladmin, request, queryset):
     return do_download(AlertnessQuestionnaire._meta, AlertnessQuestionnaire.objects.all())
 
 
@@ -54,7 +54,7 @@ class SensorAdmin(admin.ModelAdmin):
 
 class AlertnessQuestionnaireAdmin(admin.ModelAdmin):
     actions = [download_alertness_questionnaire]
-    
+
     def has_add_permission(self, request):
         return False
 
