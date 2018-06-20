@@ -43,7 +43,7 @@ class SensorHistory(models.Model):
     desk = models.ForeignKey(Desk, on_delete=models.CASCADE)
     time_stamp = models.DateTimeField()
     light_value = models.FloatField()
-    occupancy_value = models.FloatField()
+    occupancy_value = models.IntegerField()
 
     class Meta:
         verbose_name_plural = 'sensor history'
