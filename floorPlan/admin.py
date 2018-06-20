@@ -45,6 +45,10 @@ def download_participant(modeladmin, request, queryset):
     return do_download(Participant._meta, Participant.objects.all())
 
 
+def download_room(modeladmin, request, queryset):
+    return do_download(Room._meta, Room.objects.all())
+
+
 class WindowInline(admin.TabularInline):
     model = Window
 
@@ -58,11 +62,16 @@ class DeskInline(admin.TabularInline):
 
 
 class RoomAdmin(admin.ModelAdmin):
+    actions = [download_room]
+
     inlines = [
         WindowInline,
         DoorInline,
         DeskInline,
     ]
+
+    def has_add_permission(self, request):
+        return False
 
 
 class SensorAdmin(admin.ModelAdmin):
@@ -89,6 +98,7 @@ class DemographicQuestionnaireAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
 
 class AnalyticsAdmin(admin.ModelAdmin):
     actions = [download_analytics]
