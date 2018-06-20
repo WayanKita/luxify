@@ -39,7 +39,7 @@ admin.site.register(Room, RoomAdmin)
 admin.site.register(Participant)
 admin.site.register(Sensor, SensorAdmin)  # sensors are automatically created
 admin.site.register(SensorHistory)
-admin.site.register(AlertnessQuestionnaire)
+admin.site.register(AlertnessQuestionnaire, AlertnessQuestionnaireAdmin)
 admin.site.register(DemographicQuestionnaire)
 admin.site.register(ParticipantProfiles)
 admin.site.register(Analytics)
