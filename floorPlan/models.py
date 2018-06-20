@@ -45,6 +45,9 @@ class SensorHistory(models.Model):
     light_value = models.FloatField()
     occupancy_value = models.FloatField()
 
+    class Meta:
+        verbose_name_plural = 'sensor history'
+
     def __str__(self):
         return str(self.desk) + ': ' + str(self.light_value)
 
@@ -192,6 +195,9 @@ class Layout(models.Model):
 
 class UserCategory(models.Model):
     user_category = models.ForeignKey(Layout, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = 'user categories'
 
     def __str__(self):
         return str(self.user_category)
