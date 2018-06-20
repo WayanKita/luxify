@@ -64,9 +64,6 @@ class RoomAdmin(admin.ModelAdmin):
         DeskInline,
     ]
 
-    def has_add_permission(self, request):
-        return False
-
 
 class SensorAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
