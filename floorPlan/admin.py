@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.http import HttpResponse
 from .models import *
+from survey.models import *
 import csv
 
 # TODO: remove edit rights to views in admin panel
@@ -39,6 +40,14 @@ def download_sensor_history(modeladmin, request, queryset):
 
 def download_analytics(modeladmin, request, queryset):
     return do_download(Analytics._meta, Analytics.objects.all())
+
+
+def download_survey(modeladmin, request, queryset):
+    return do_download(Survey._meta, Survey.objects.all())
+
+
+def download_question(modeladmin, request, queryset):
+    return do_download(Question._meta, Question.objects.all())
 
 
 class WindowInline(admin.TabularInline):
