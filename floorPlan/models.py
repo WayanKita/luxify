@@ -204,7 +204,7 @@ class UserCategory(models.Model):
 
 
 class AlertnessTime(models.Model):
-    interval = models.IntegerField()
+    interval = models.IntegerField(verbose_name='interval (in minutes)')
 
     def __str__(self):
         return str(self.interval)
