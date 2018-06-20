@@ -11,8 +11,7 @@ def do_download(model, all_objects):
     response['Content-Disposition'] = 'attachment; filename={}.csv'.format('test')
     writer = csv.writer(response)
 
-    #fields = [field for field in model.get_fields() if not field.many_to_many and not field.one_to_many]
-    fields = [field for field in model.get_fields()]
+    fields = [field for field in model.get_fields() if not field.many_to_many and not field.one_to_many]
    
     writer.writerow([field.name for field in fields])
    
@@ -46,10 +45,6 @@ def download_participant(modeladmin, request, queryset):
     return do_download(Participant._meta, Participant.objects.all())
 
 
-def download_room(modeladmin, request, queryset):
-    return do_download(Room._meta, Room.objects.all())
-
-
 class WindowInline(admin.TabularInline):
     model = Window
 
@@ -63,8 +58,6 @@ class DeskInline(admin.TabularInline):
 
 
 class RoomAdmin(admin.ModelAdmin):
-    actions = [download_room]
-
     inlines = [
         WindowInline,
         DoorInline,
