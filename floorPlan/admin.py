@@ -33,6 +33,10 @@ def download_demographic_questionnaire(modeladmin, request, queryset):
     return do_download(DemographicQuestionnaire._meta, DemographicQuestionnaire.objects.all())
 
 
+def download_sensor_history(modeladmin, request, queryset):
+    return do_download(SensorHistory._meta, SensorHistory.objects.all())
+
+
 class WindowInline(admin.TabularInline):
     model = Window
 
@@ -57,6 +61,12 @@ class SensorAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
+class SensorHistoryAdmin(admin.ModelAdmin):
+    actions = [download_sensor_history]
+
+    def has_add_permission(self, request):
+        return False
+
 class AlertnessQuestionnaireAdmin(admin.ModelAdmin):
     actions = [download_alertness_questionnaire]
 
@@ -75,7 +85,7 @@ class DemographicQuestionnaireAdmin(admin.ModelAdmin):
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Participant)
 admin.site.register(Sensor, SensorAdmin)  # sensors are automatically created
-admin.site.register(SensorHistory)
+admin.site.register(SensorHistory, SensorHistoryAdmin)
 admin.site.register(AlertnessQuestionnaire, AlertnessQuestionnaireAdmin)
 admin.site.register(DemographicQuestionnaire, DemographicQuestionnaireAdmin)
 admin.site.register(ParticipantProfiles)
