@@ -41,6 +41,10 @@ def download_analytics(modeladmin, request, queryset):
     return do_download(Analytics._meta, Analytics.objects.all())
 
 
+def download_participant(modeladmin, request, queryset):
+    return do_download(Participant._meta, Participant.objects.all())
+
+
 class WindowInline(admin.TabularInline):
     model = Window
 
@@ -93,9 +97,16 @@ class AnalyticsAdmin(admin.ModelAdmin):
         return False
 
 
+class ParticipantAdmin(admin.ModelAdmin):
+    actions = [download_participant]
+
+    def has_add_permission(self, request):
+        return False
+
+
 # Allows the admin to edit thee following tables on url [...]/admin
 admin.site.register(Room, RoomAdmin)
-admin.site.register(Participant)
+admin.site.register(Participant, ParticipantAdmin)
 admin.site.register(Sensor, SensorAdmin)  # sensors are automatically created
 admin.site.register(SensorHistory, SensorHistoryAdmin)
 admin.site.register(AlertnessQuestionnaire, AlertnessQuestionnaireAdmin)
