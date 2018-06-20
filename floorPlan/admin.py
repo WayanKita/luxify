@@ -11,14 +11,14 @@ def do_download(model, all_objects):
     response['Content-Disposition'] = 'attachment; filename={}.csv'.format('test')
     writer = csv.writer(response)
 
-    fields = [field for field in model.get_fields() if not field.many_to_many]
+    fields = [field for field in model.get_fields() if not field.many_to_many and not field.one_to_many]
    
     writer.writerow([field.name for field in fields])
    
-    for desk in all_objects:
+    for item in all_objects:
         row = []
         for field in fields:
-            field_value = getattr(desk, field.name)
+            field_value = getattr(item, field.name)
             row.append(field_value)
 
         writer.writerow(row)
