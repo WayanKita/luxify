@@ -37,6 +37,10 @@ def download_sensor_history(modeladmin, request, queryset):
     return do_download(SensorHistory._meta, SensorHistory.objects.all())
 
 
+def download_analytics(modeladmin, request, queryset):
+    return do_download(SensorHistory._meta, SensorHistory.objects.all())
+
+
 class WindowInline(admin.TabularInline):
     model = Window
 
@@ -80,6 +84,12 @@ class DemographicQuestionnaireAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
+class AnalyticsAdmin(admin.ModelAdmin):
+    actions = [download_analytics]
+
+    def has_add_permission(self, request):
+        return False
+
 
 # Allows the admin to edit thee following tables on url [...]/admin
 admin.site.register(Room, RoomAdmin)
@@ -89,7 +99,7 @@ admin.site.register(SensorHistory, SensorHistoryAdmin)
 admin.site.register(AlertnessQuestionnaire, AlertnessQuestionnaireAdmin)
 admin.site.register(DemographicQuestionnaire, DemographicQuestionnaireAdmin)
 admin.site.register(ParticipantProfiles)
-admin.site.register(Analytics)
+admin.site.register(Analyticsm AnalyticsAdmin)
 admin.site.register(UserCategory)
 admin.site.register(Layout)
 admin.site.register(AlertnessTime)
