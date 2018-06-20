@@ -29,6 +29,10 @@ def download_alertness_questionnaire(modeladmin, request, queryset):
     return do_download(AlertnessQuestionnaire._meta, AlertnessQuestionnaire.objects.all())
 
 
+def download_demographic_questionnaire(modeladmin, request, queryset):
+    return do_download(DemographicQuestionnaire._meta, DemographicQuestionnaire.objects.all())
+
+
 class WindowInline(admin.TabularInline):
     model = Window
 
@@ -61,6 +65,8 @@ class AlertnessQuestionnaireAdmin(admin.ModelAdmin):
 
 
 class DemographicQuestionnaireAdmin(admin.ModelAdmin):
+    actions = [download_demographic_questionnaire]
+
     def has_add_permission(self, request):
         return False
 
