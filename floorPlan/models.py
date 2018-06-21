@@ -11,7 +11,7 @@ from django.core.exceptions import PermissionDenied
 # TODO: add comments
 
 @receiver(pre_delete, sender=User)
-def delete_user(send, instance, **kwargs):
+def delete_user(sender, instance, **kwargs):
     if instance.is_superuser or instance.is_staff:
         raise PermissionDenied
 
