@@ -87,7 +87,6 @@ class Participant(models.Model):
 
     def delete(self, *args, **kwargs):
         self.username.delete()
-        return super(self.__class__, self).delete(*args, **kwargs)
 
 
 class AlertnessQuestionnaire(models.Model):

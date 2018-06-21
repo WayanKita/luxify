@@ -104,13 +104,6 @@ class ParticipantAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
-    def has_delete_permission(self, request, obj=None):
-        if not obj == None:
-            if request.user.is_staff:
-                return True
-
-        return True
-
 
 # Allows the admin to edit thee following tables on url [...]/admin
 admin.site.register(Room, RoomAdmin)
