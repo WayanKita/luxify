@@ -300,6 +300,10 @@ class DemographicQuestionnaireAPI(APIView):
             new_profile.profile = count + 1
             participant.save()
             new_profile.save()
+            recommendation = Recommendation()
+            recommendation.profile = new_profile
+            recommendation.formula = "100000"
+            recommendation.save()
         return Response(DemographicQuestionnaireSerializer(demographic_answer).data, status=status.HTTP_201_CREATED)
 
 
