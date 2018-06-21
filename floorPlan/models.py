@@ -169,7 +169,7 @@ class PostAnalyticRequest(models.Model):
 
 class Recommendation(models.Model):
     profile = models.OneToOneField(ParticipantProfiles, on_delete=models.CASCADE)
-    formula = models.CharField(max_length=300)
+    formula = models.CharField(max_length=300, default="100000")
 
     def __str__(self):
         return str(self.profile.profile)+" has formula: "+str(self.formula)

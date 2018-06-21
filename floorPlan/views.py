@@ -173,12 +173,12 @@ class RecommendDeskAPI(APIView):
                     room = Room.objects.get(pk=user_room)
                     desks = Desk.objects.filter(room=room)
                     for desk in desks:
+                        desk.score = abs(target-desk.illuminance)
+                        desk.save()
+                    desks = Desk.objects.filter(room=room).order_by('score')
+                    for desk in desks:
                         if desk.occupied:
                             desks = desks.exclude(pk=desk.pk)
-                        else:
-                            desk.score = abs(target-desk.illuminance)
-                            desk.save()
-                    desks = Desk.objects.filter(room=room).order_by('score')
                     return Response(DeskSerializer(desks, many=True).data,
                                     status=status.HTTP_200_OK)
                 except ObjectDoesNotExist:
