@@ -109,9 +109,6 @@ class ParticipantAdmin(admin.ModelAdmin):
             return False
 
 
-class UserAdmin
-
-
 # Allows the admin to edit thee following tables on url [...]/admin
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Participant, ParticipantAdmin)
