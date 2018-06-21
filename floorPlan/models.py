@@ -188,9 +188,9 @@ class Layout(models.Model):
 
     def __str__(self):
         return "Layout "+str(self.layout)+" : " + \
-               str(self.recommendation)+", " + \
-               str(self.visualization)+", " + \
-               str(self.guidance)
+               "Guidance: " + str(self.guidance) + \
+               "Recommendation: " + str(self.recommendation)+", " + \
+               "Visualization: " + str(self.visualization)+", "
 
 
 class UserCategory(models.Model):

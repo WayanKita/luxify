@@ -38,46 +38,22 @@ def do_download(model, all_objects):
     return response
 
 
-def send_file(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename={}.csv'.format('test')
-    writer = csv.writer(response)
-    model = Desk._meta
-
-    fields = [field for field in model.get_fields() if not field.many_to_many and not field.one_to_many and not field.is_relation]
-   
-    writer.writerow([field.name for field in fields])
-   
-    for desk in Desk.objects.all():
-        row = []
-        for field in fields:
-            field_value = getattr(desk, field.name)
-            row.append(field_value)
-
-        writer.writerow(row)
-    return response
-
-#
-# class SensorTableAPI(APIView):
-#     serializer_class = AuthenticateParticipant
-#     permission_classes = (permissions.IsAuthenticated,)
-#
-#     def get(self, request, pk):
-#         if int(pk) > 0:
-#             if SensorHistory.objects.filter(pk=pk).count() > 0:
-#                 return Response(SensorTableSerializer(SensorHistory.objects.filter(pk=pk), many=True).data,
-#                                 status=status.HTTP_200_OK)
-#             return Response("Sensor table " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
-#         else:
-#             return Response(SensorTableSerializer(SensorHistory.objects.all(), many=True).data,
-#                             status=status.HTTP_200_OK)
-
-
 class UserNameAPI(APIView):
+    """
+    Changes the name field of a Participant
+    """
     serializer_class = ParticipantSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, user):
+        """
+        JSON :param request: name: name of the participant you wish to add (i.e Joe)
+        URL :param user: email of the participant you wish to change the name of (i.e example@example.com)
+        :return:
+            200 OK if request was successful
+            401 Unauthorized if request header does not contain BASIC AUTH
+            404 NOT FOUND if request was unsuccessful
+        """
         try:
             participant = Participant.objects.get(username=User.objects.get(username=user))
             participant.name = request.data.get("name")
@@ -89,19 +65,39 @@ class UserNameAPI(APIView):
 
 
 class AlertnessIntervalAPI(APIView):
+    """
+    Returns the time interval to display the Alertness Questionnaire notification
+    """
     serializer_class = AlertnessTimeSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
+        """
+        :return:
+            200 OK if request was successful
+                {
+                    id: int
+                    interval: int
+                }
+            401 Unauthorized if request header does not contain BASIC AUTH
+        """
         alertness = AlertnessTime.objects.all()
         serializer = AlertnessTimeSerializer(alertness,  many=True)
         return Response(serializer.data)
 
 
 class UserAPI(APIView):
+    """
+    Handles User.Participant
+    """
     permission_classes = (permissions.IsAuthenticated,)
 
-    def get(self, request, user):
+    def get(self, user):
+        """
+        Returns all of the Participant's fields with matching email
+        :param user: email of the participant's info you want to retrieve
+        :return:
+        """
         try:
             return Response(ParticipantSerializer(Participant.objects.filter(username=User.objects.get(username=user)), many=True).data,
                             status=status.HTTP_200_OK)
@@ -109,6 +105,14 @@ class UserAPI(APIView):
             return Response("User not found", status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request, user):
+        """
+        Modify the desk field on Participant
+        :param request:
+            desk: desk.pk that the user will be sitting at
+        :param user: email of the participant's info you want to retrieve
+        :return:
+
+        """
         try:
             participant = Participant.objects.get(username=User.objects.get(username=user))
             participant.desk = request.data.get("desk")
@@ -120,10 +124,19 @@ class UserAPI(APIView):
 
 
 class RoomGeneratorAPI(APIView):
+    """
+
+    """
     serializer_class = ParticipantRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, pk):
+        """
+
+        :param request:
+        :param pk:
+        :return:
+        """
         if int(pk) > 0:
             if Room.objects.filter(pk=pk).count() > 0:
                 return Response(RoomGeneratorSerializer(Room.objects.filter(pk=pk), many=True, label="room").data,
@@ -134,10 +147,19 @@ class RoomGeneratorAPI(APIView):
 
 
 class RecommendDeskAPI(APIView):
+    """
+
+    """
     serializer_class = ParticipantRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, user):
+        """
+
+        :param request:
+        :param user:
+        :return:
+        """
         if User.objects.filter(username=user).count() > 0:
             participant = User.objects.get(username=user).participant
             user_room = participant.room
@@ -165,10 +187,18 @@ class RecommendDeskAPI(APIView):
 
 
 class SetOccupancyAPI(APIView):
+    """
+
+    """
     serializer_class = SetOccupancyPostSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
+        """
+
+        :param request:
+        :return:
+        """
         if Desk.objects.filter(pk=request.data.get("key")).count() > 0:
             desk = Desk.objects.get(pk=request.data.get("key"))
             if int(request.data.get('occupied')) > 0:
@@ -182,9 +212,18 @@ class SetOccupancyAPI(APIView):
 
 
 class UserCategoryAPI(APIView):
+    """
+
+    """
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, user):
+        """
+
+        :param request:
+        :param user:
+        :return:
+        """
         try:
             participant = User.objects.get(username=user).participant
             layout = participant.user_category
@@ -196,9 +235,17 @@ class UserCategoryAPI(APIView):
 
 
 class AlertnessQuestionnaireAPI(APIView):
+    """
+
+    """
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
+        """
+
+        :param request:
+        :return:
+        """
         serializer = AlertnessQuestionnaireSerializer
         alert_answer = AlertnessQuestionnaire()
         participant = User.objects.get(username=request.data.get("username"))
@@ -210,15 +257,28 @@ class AlertnessQuestionnaireAPI(APIView):
 
 
 class DemographicQuestionnaireAPI(APIView):
+    """
+
+    """
     serializer_class = DemographicQuestionnairePostSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
+        """
+
+        :param request:
+        :return:
+        """
         survey = Question.objects.all()
         serializer = QuestionSerializer(survey, many=True)
         return Response(serializer.data)
 
     def post(self, request):
+        """
+
+        :param request:
+        :return:
+        """
         demographic_answer = DemographicQuestionnaire()
         user = User.objects.get(username=request.data.get("username"))
         demographic_answer.username = user.participant
@@ -242,10 +302,18 @@ class DemographicQuestionnaireAPI(APIView):
 
 
 class WorkspaceAPI(APIView):
+    """
+
+    """
     serializer_class = ParticipantInWorkSpaceSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
+        """
+
+        :param request:
+        :return:
+        """
         serializer = ParticipantToggleWorkspaceSerializer(data=request.data)
         if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -254,10 +322,19 @@ class WorkspaceAPI(APIView):
 
 
 class QuestionnaireCheckAPI(APIView):
+    """
+
+    """
     serializer_class = UserRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, key):
+        """
+
+        :param request:
+        :param key:
+        :return:
+        """
         if int(key) == 0:
             participant = User.objects.get(username=request.data.get('username')).participant
             return Response(ParticipantSerializer(participant).data, status=status.HTTP_200_OK)
@@ -271,10 +348,18 @@ class QuestionnaireCheckAPI(APIView):
 
 
 class AnalyticsAPI(APIView):
+    """
+
+    """
     serializer_class = AnalyticsSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
+        """
+
+        :param request:
+        :return:
+        """
         if User.objects.filter(username=request.data.get("username")).count() > 0:
             analytics = Analytics()
             analytics.username = User.objects.get(username=request.data.get("username")).participant
@@ -288,9 +373,17 @@ class AnalyticsAPI(APIView):
 
 
 class RegisterUserAPI(APIView):
+    """
+
+    """
     serializer_class = UserSerializer
 
     def post(self, request):
+        """
+
+        :param request:
+        :return:
+        """
         serializer = UserSerializer(data=request.data)
         username = request.data.get("username")
         password = request.data.get("password")
