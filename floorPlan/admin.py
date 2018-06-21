@@ -112,6 +112,8 @@ class UserProfileAdmin(UserAdmin):
         if request.user.is_staff:
             self.fields = [username, last_login, date_joined]
 
+        return super(UserProfileAdmin, self).get_form(request, obj, **kwargs)
+
 
 # Allows the admin to edit thee following tables on url [...]/admin
 admin.site.unregister(User)
