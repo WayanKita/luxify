@@ -94,7 +94,7 @@ class UserAPI(APIView):
     """
     permission_classes = (permissions.IsAuthenticated,)
 
-    def get(self, user):
+    def get(self, request, user):
         """
         Returns all of the Participant's fields with matching email
         :param user: email of the participant's info you want to retrieve
