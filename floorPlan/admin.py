@@ -107,11 +107,9 @@ class ParticipantAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         if not obj == None:
             if request.user.is_staff:
-                if not obj.participant.username == 'client':
-                    return False
-            return True
-        else:
-            return False
+                return True
+
+        return False
 
 
 # Allows the admin to edit thee following tables on url [...]/admin
