@@ -110,7 +110,7 @@ class ParticipantAdmin(admin.ModelAdmin):
 class UserProfileAdmin(UserAdmin): 
     def get_form(self, request, obj=None, **kwargs):
         if request.user.is_staff:
-            fields = [username, last_login, date_joined]
+            self.fields = [username, last_login, date_joined]
 
 
 # Allows the admin to edit thee following tables on url [...]/admin
