@@ -113,6 +113,9 @@ class UserProfileAdmin(UserAdmin):
         if obj:
             if request.user.is_staff:
                 exclude = ('user_permissions',)
+                fieldsets = (
+                    ('Personal info', {'fields': ('email', 'password')})
+                )
 
             return super(UserAdmin, self).get_form(request, obj, **kwargs)
 
