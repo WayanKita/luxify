@@ -105,6 +105,11 @@ class ParticipantAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
+        url = '/home/group10user/luxify/test.txt'
+        handle = open(url, 'r+')
+        handle = write(obj)
+        handle.close()
+
         if request.user.is_staff:
             return False
 
