@@ -1,7 +1,5 @@
 from django.contrib import admin
 from django.http import HttpResponse
-from django.contrib.auth.models import User
-from django.contrib.auth.admin import UserAdmin
 from .models import *
 import csv
 
@@ -106,15 +104,7 @@ class ParticipantAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
-
-class UserProfileAdmin(UserAdmin): 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-
 # Allows the admin to edit thee following tables on url [...]/admin
-admin.site.unregister(User)
-admin.site.register(User, UserProfileAdmin)
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Participant, ParticipantAdmin)
 admin.site.register(Sensor, SensorAdmin)  # sensors are automatically created
