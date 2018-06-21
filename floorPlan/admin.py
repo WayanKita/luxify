@@ -106,6 +106,7 @@ class ParticipantAdmin(admin.ModelAdmin):
 
 
 # Allows the admin to edit thee following tables on url [...]/admin
+admin.site.register(User)
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Participant, ParticipantAdmin)
 admin.site.register(Sensor, SensorAdmin)  # sensors are automatically created

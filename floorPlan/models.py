@@ -85,9 +85,6 @@ class Participant(models.Model):
     def __str__(self):
         return str(self.username)
 
-    def delete(self, *args, **kwargs):
-        self.username.delete()
-
 
 class AlertnessQuestionnaire(models.Model):
     username = models.ForeignKey(Participant, on_delete=models.CASCADE)
