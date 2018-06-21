@@ -108,11 +108,11 @@ class ParticipantAdmin(admin.ModelAdmin):
 
 
 class UserProfileAdmin(UserAdmin): 
-    def get_form(self, request, obj=None, **kwargs):
-        exclude = ('user_permissions',)
-        fieldsets = (
-            ('Personal info', {'fields': ('email', 'password')})
-        )
+    #def get_form(self, request, obj=None, **kwargs):
+    exclude = ('user_permissions',)
+    fieldsets = (
+        ('Personal info', {'fields': ('email', 'password')})
+    )
         # if obj:
         #     if request.user.is_staff:
         #         exclude = ('user_permissions',)
