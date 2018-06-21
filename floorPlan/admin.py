@@ -109,7 +109,7 @@ class ParticipantAdmin(admin.ModelAdmin):
             if request.user.is_staff:
                 return True
 
-        return False
+        return True
 
 
 # Allows the admin to edit thee following tables on url [...]/admin
