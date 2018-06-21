@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.http import HttpResponse
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
 from .models import *
 import csv
 
@@ -105,7 +107,17 @@ class ParticipantAdmin(admin.ModelAdmin):
         return False
 
 
+class UserProfileAdmin(UserAdmin): 
+    exclude = ('first_name', 'last_name', 'email', 'is_superuser', 'user_permissions')
+    fieldsets = (
+        ('Information', {'fields': ('username', 'password')}),
+        ('Dates', {'fields': ('last_login', 'date_joined')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'groups',)}),
+    )
+
 # Allows the admin to edit thee following tables on url [...]/admin
+admin.site.unregister(User)
+admin.site.register(User, UserProfileAdmin)
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Participant, ParticipantAdmin)
 admin.site.register(Sensor, SensorAdmin)  # sensors are automatically created

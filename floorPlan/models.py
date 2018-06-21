@@ -2,9 +2,19 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from rest_framework.authtoken.models import Token
+from django.db.models.signals import pre_delete
+from django.dispatch.dispatcher import receiver
+from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 
 # TODO: remove models linked with API serializers, complete SERIALIZERs todo before
 # TODO: add comments
+
+@receiver(pre_delete, sender=User)
+def delete_user(sender, instance, **kwargs):
+    if sender.is_staff:
+        if instance.is_superuser or instance.is_staff:
+            raise PermissionDenied
 
 
 class Sensor(models.Model):
