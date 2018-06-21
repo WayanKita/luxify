@@ -111,9 +111,11 @@ class UserProfileAdmin(UserAdmin):
     def get_form(self, request, obj=None, **kwargs):
         if obj:
             if request.user.is_staff:
-                self.exclude = ('user_permissions',)
+                self.fieldsets(
+                    (None, {'fields': ('email', 'password')}),
+                )
 
-            return super(UserAdmin, self).get_form(request, obj, **kwargs)
+            # return super(UserAdmin, self).get_form(request, obj, **kwargs)
 
 
 # Allows the admin to edit thee following tables on url [...]/admin
