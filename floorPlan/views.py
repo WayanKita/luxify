@@ -1,5 +1,7 @@
 import csv
 import random
+
+from django.db import IntegrityError
 from django.http import HttpResponse
 from rest_framework import status, permissions
 from rest_framework.response import Response
@@ -387,9 +389,13 @@ class RegisterUserAPI(APIView):
         serializer = UserSerializer(data=request.data)
         username = request.data.get("username")
         password = request.data.get("password")
-        user = User.objects.create_user(username=username)
-        user.set_password(password)
-        user.save()
+        try:
+            user = User.objects.create_user(username=username)
+            user.set_password(password)
+            user.save()
+        except IntegrityError:
+            return Response("Don't do it", status=status.HTTP_406_NOT_ACCEPTABLE)
+
         participant = Participant()
         participant.username = User.objects.get(username=username)
         participant.user_category = random.randint(1, 3)
