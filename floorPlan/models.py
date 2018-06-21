@@ -200,7 +200,7 @@ class UserCategory(models.Model):
         verbose_name_plural = 'user categories'
 
     def __str__(self):
-        return "User category "+self.user_category.pk+" has :"+str(self.user_category)
+        return "User category "+str(self.user_category.pk)+" has :"+str(self.user_category)
 
 
 class AlertnessTime(models.Model):
