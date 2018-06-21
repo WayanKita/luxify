@@ -109,11 +109,11 @@ class ParticipantAdmin(admin.ModelAdmin):
 
 class UserProfileAdmin(UserAdmin): 
     #def get_form(self, request, obj=None, **kwargs):
-    exclude = ('username',)
+    exclude = ('username', 'first_name', 'last_name', 'email', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
     fieldsets = (
-        ('Personal info', {'fields': ('first_name', 'last_name', 'email', 'password')}),
-        ('Important dates', {'fields': ('last_login', 'date_joined')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Information', {'fields': ('username', 'password')}),
+        ('Dates', {'fields': ('last_login', 'date_joined')}),
+        ('Permissions', {'fields': ('is_active',)}),
     )
         # if obj:
         #     if request.user.is_staff:
