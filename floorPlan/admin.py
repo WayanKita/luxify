@@ -109,13 +109,12 @@ class ParticipantAdmin(admin.ModelAdmin):
 
 class UserProfileAdmin(UserAdmin): 
     def get_form(self, request, obj=None, **kwargs):
+        list_display = ('username', 'email',)
         if obj:
             if request.user.is_staff:
-                self.fieldsets(
-                    (None, {'fields': ('email', 'password')}),
-                )
+                exclude = ('user_permissions',)
 
-            # return super(UserAdmin, self).get_form(request, obj, **kwargs)
+            return super(UserAdmin, self).get_form(request, obj, **kwargs)
 
 
 # Allows the admin to edit thee following tables on url [...]/admin
