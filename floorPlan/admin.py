@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.http import HttpResponse
+from django.contrib.auth.models import User
 from .models import *
 import csv
 
