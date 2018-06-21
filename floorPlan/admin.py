@@ -108,22 +108,12 @@ class ParticipantAdmin(admin.ModelAdmin):
 
 
 class UserProfileAdmin(UserAdmin): 
-    #def get_form(self, request, obj=None, **kwargs):
-    exclude = ('first_name', 'last_name', 'email', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
+    exclude = ('first_name', 'last_name', 'email', 'is_staff', 'is_superuser', 'user_permissions')
     fieldsets = (
         ('Information', {'fields': ('username', 'password')}),
         ('Dates', {'fields': ('last_login', 'date_joined')}),
-        ('Permissions', {'fields': ('is_active',)}),
+        ('Permissions', {'fields': ('is_active', 'groups',)}),
     )
-        # if obj:
-        #     if request.user.is_staff:
-        #         exclude = ('user_permissions',)
-        #         fieldsets = (
-        #             ('Personal info', {'fields': ('email', 'password')})
-        #         )
-
-        #     return super(UserAdmin, self).get_form(request, obj, **kwargs)
-
 
 # Allows the admin to edit thee following tables on url [...]/admin
 admin.site.unregister(User)
