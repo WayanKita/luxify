@@ -307,6 +307,21 @@ class DemographicQuestionnaireAPI(APIView):
         return Response(DemographicQuestionnaireSerializer(demographic_answer).data, status=status.HTTP_201_CREATED)
 
 
+class DeskAPI(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, pk):
+        if int(pk) > 0:
+            try:
+                return Response(DeskSerializer(Desk.objects.filter(pk=pk), many=True).data,
+                                status=status.HTTP_200_OK)
+            except ObjectDoesNotExist:
+                return Response("Desk " + pk + " not found", status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(DeskSerializer(Desk.objects.all(), many=True).data,
+                            status=status.HTTP_200_OK)
+
+
 class WorkspaceAPI(APIView):
     """
 
