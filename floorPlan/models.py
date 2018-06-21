@@ -12,8 +12,9 @@ from django.core.exceptions import PermissionDenied
 
 @receiver(pre_delete, sender=User)
 def delete_user(sender, instance, **kwargs):
-    if instance.is_superuser or instance.is_staff:
-        raise PermissionDenied
+    if sender.is_staff:
+        if instance.is_superuser or instance.is_staff:
+            raise PermissionDenied
 
 
 class Sensor(models.Model):
