@@ -162,7 +162,7 @@ class RecommendDeskAPI(APIView):
         :param user:
         :return:
         """
-        if User.objects.filter(username=user).count() > 0:
+        try:
             participant = User.objects.get(username=user).participant
             user_room = participant.room
             try:
@@ -184,8 +184,9 @@ class RecommendDeskAPI(APIView):
                 except ObjectDoesNotExist:
                     return Response("Room for user not found", status=status.HTTP_404_NOT_FOUND)
             except ObjectDoesNotExist:
-                return Response("Recommendation not found", status=status.HTTP_404_NOT_FOUND)
-        return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+                return Response("Recommendation" +str(Recommendation.objects.get(profile=participant.profile))+" not found", status=status.HTTP_404_NOT_FOUND)
+        except ObjectDoesNotExist:
+            return Response("User not found", status=status.HTTP_404_NOT_FOUND)
 
 
 class SetOccupancyAPI(APIView):
