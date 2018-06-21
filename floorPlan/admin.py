@@ -106,7 +106,7 @@ class ParticipantAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         if request.user.is_staff:
-            if not obj.user.username == 'client':
+            if not obj.participant.username == 'client':
                 return True
 
 
