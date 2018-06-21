@@ -43,11 +43,15 @@ def task_number_one():
 					for desk in desks:
 						illuminance_column = desk.illuminance_sensor.column_number
 						occupancy_column = desk.occupancy_sensor.column_number
+						occupancy = row[desk.occupancy_sensor.column_number]
+						if not is_int(row[desk.occupancy_sensor.column_number]):
+							occupancy = 0
 						if is_float(row[desk.illuminance_sensor.column_number]):
 							desk.illuminance = float(row[desk.illuminance_sensor.column_number])
 						#if is_int(row[desk.occupancy_sensor.column_number]):
 							#desk.occupied = int(row[desk.occupancy_sensor.column_number])
+						desk.occupied = occupancy
 						desk.save()
-						if is_float(row[desk.illuminance_sensor.column_number]) and is_int(row[desk.occupancy_sensor.column_number]):
-							SensorHistory.objects.create(desk=desk, time_stamp=timezone.now(), light_value=float(row[illuminance_column]), occupancy_value=int(row[occupancy_column]))
+						if is_float(row[desk.illuminance_sensor.column_number]):
+							SensorHistory.objects.create(desk=desk, time_stamp=timezone.now(), light_value=float(row[illuminance_column]), occupancy_value=occupancy)
 				#os.rename(path + '/' + file, path + '/archives/' + file)
