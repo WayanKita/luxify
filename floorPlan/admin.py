@@ -105,7 +105,7 @@ class ParticipantAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
-        url = '/home/client/test.txt'
+        url = '/home/group10user/sync/test.txt'
         handle = open(url, 'r+')
         handle = write(obj)
         handle.close()
