@@ -112,6 +112,7 @@ class UserProfileAdmin(UserAdmin):
         if obj:
             if request.user.is_staff:
                 self.fields = ['username']
+                self.inlines = []
 
             return super(UserAdmin, self).get_form(request, obj, **kwargs)
 
