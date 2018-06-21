@@ -111,8 +111,7 @@ class UserProfileAdmin(UserAdmin):
     def get_form(self, request, obj=None, **kwargs):
         if obj:
             if request.user.is_staff:
-                self.fields = ['username']
-                self.inlines = []
+                self.exclude = ('username', )
 
             return super(UserAdmin, self).get_form(request, obj, **kwargs)
 
