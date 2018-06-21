@@ -108,11 +108,11 @@ class ParticipantAdmin(admin.ModelAdmin):
 
 
 class UserProfileAdmin(UserAdmin): 
-    exclude = ('first_name', 'last_name', 'email', 'is_staff', 'is_superuser', 'user_permissions')
+    exclude = ('first_name', 'last_name', 'email', 'is_superuser', 'user_permissions')
     fieldsets = (
         ('Information', {'fields': ('username', 'password')}),
         ('Dates', {'fields': ('last_login', 'date_joined')}),
-        ('Permissions', {'fields': ('is_active', 'groups',)}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'groups',)}),
     )
 
 # Allows the admin to edit thee following tables on url [...]/admin
