@@ -108,7 +108,8 @@ class ParticipantAdmin(admin.ModelAdmin):
         if not obj == None:
             if request.user.is_staff:
                 if not obj.participant.username == 'client':
-                    return True
+                    return False
+            return True
         else:
             return False
 
