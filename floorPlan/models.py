@@ -6,6 +6,7 @@ from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
+from django.conf import settings
 
 # TODO: remove models linked with API serializers, complete SERIALIZERs todo before
 # TODO: add comments
