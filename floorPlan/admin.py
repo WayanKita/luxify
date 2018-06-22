@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin import AdminSite
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
@@ -115,6 +116,7 @@ class UserProfileAdmin(UserAdmin):
         ('Permissions', {'fields': ('is_active', 'is_staff', 'groups',)}),
     )
 
+admin.site.site_header = 'Luxify Admin'
 # Allows the admin to edit thee following tables on url [...]/admin
 admin.site.unregister(User)
 admin.site.register(User, UserProfileAdmin)
