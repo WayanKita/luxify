@@ -29,6 +29,6 @@ PyYAML==3.12
 matplotlib==2.1.0rc1
 seaborn==0.8.1
 numpy==1.13.3
-celery==4.1.0
+celery==5.2.2
 django-queryset-csv==1.0.1
 django-cors-headers==2.2.0
